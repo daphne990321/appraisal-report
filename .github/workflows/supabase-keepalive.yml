@@ -1,0 +1,24 @@
+# 每 3 天呼叫一次 Supabase，避免免費專案 7 天沒使用被自動暫停
+# 只呼叫 keepalive()（回傳數字 1），不讀寫任何案件資料
+# 網址與公開金鑰本來就會放在網頁裡，不是機密
+name: Supabase 防暫停
+
+on:
+  schedule:
+    - cron: '0 1 */3 * *'   # 每月 1、4、7…日 01:00 UTC（台灣 09:00）
+  workflow_dispatch:         # 也可以在 GitHub 網頁手動執行
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 呼叫 keepalive
+        env:
+          SUPABASE_URL: https://ucqcwxawntocqkwlanbp.supabase.co
+          SUPABASE_PUBLISHABLE_KEY: sb_publishable_F-T_ZM4BtwiJ4ItTX2K0Vg_AM5bY7n8
+        run: |
+          r=$(curl -sS --retry 3 --retry-delay 20 -X POST "$SUPABASE_URL/rest/v1/rpc/keepalive" \
+                -H "apikey: $SUPABASE_PUBLISHABLE_KEY" -H "Content-Type: application/json" -d '{}')
+          echo "回應：$r"
+          test "$r" = "1"
