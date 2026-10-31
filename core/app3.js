@@ -275,7 +275,12 @@ document.addEventListener('click', function(e){
   else if (act==='download'){ exportHtml(c); }
 });
 function visibleReport(){ return Array.from(document.querySelectorAll('article.paper')).find(function(el){ return el.offsetParent!==null; }) || document.querySelector('article.paper'); }
-function getDL(){ try { if (window.claude && window.claude.use) return window.claude.use('downloads').then(function(d){ return d; }, function(){ return null; }); } catch(e){} return Promise.resolve(null); }
+/* 下載：在 claude.ai 頁面用其下載管道；一般瀏覽器（本機開啟、線上服務）用瀏覽器內建下載 */
+function browserDL(){ return {save:function(o){ return new Promise(function(res){
+  var b=(o.data instanceof Blob)?o.data:new Blob([o.data],{type:/\.json$/.test(o.filename)?'application/json;charset=utf-8':'text/html;charset=utf-8'});
+  var u=URL.createObjectURL(b), a=document.createElement('a'); a.href=u; a.download=o.filename; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(u); }, 1000); res(); }); }}; }
+function getDL(){ try { if (window.claude && window.claude.use) return window.claude.use('downloads').then(function(d){ return d; }, function(){ return null; }); } catch(e){} return Promise.resolve(browserDL()); }
 function exportHtml(c){ getDL().then(function(DL){
   var el=visibleReport(); if(!el) return;
   if (!DL){ toast('這個檢視無法下載檔案，請改用「複製全文」'); return; }
