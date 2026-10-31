@@ -208,6 +208,7 @@ function wMarkAuto(){
     document.querySelectorAll('input.ci[data-b="'+path+'"]').forEach(function(el){ el.title='自動補齊，使合計為 100%'; el.insertAdjacentHTML('afterend','<span class="law wauto" title="自動補齊，使合計為 100%">自動</span>'); }); });
 }
 function render(){
+  if (typeof cloudLvrCheck === 'function') cloudLvrCheck(); /* 登入後依案件條件載入雲端實價登錄（條件不變就不查） */
   var ae=document.activeElement, fid_=ae&&ae.id, selS=null, selE=null; try{ selS=ae.selectionStart; selE=ae.selectionEnd; }catch(e){}
   var c=cur(), k=calc(c, MOD(c), A), v=validate(c, k, A), mob=isM();
   var body={report:tabReport,data:tabData,survey:tabSurvey,comp:tabComp,income:tabIncome,cost:tabCost,land:tabLand,final:tabFinal,params:tabParams}[A.tab](c,k,v);

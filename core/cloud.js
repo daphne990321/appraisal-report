@@ -8,6 +8,7 @@ var CLOUD_BACKUP_KEY = 'appraisal-generator-v5-local-backup';
 var CLOUD_STATUS = '';      /* '' | 'syncing' | 'ok' | 'error' */
 var CLOUD_SYNCED = null;    /* 上次同步內容 {cases:{案號:JSON}, models:{代號:JSON}, settings:JSON}；null＝尚未完成讀取 */
 var CLOUD_GEN = 0;          /* 每次登入／登出加 1，讓過期的非同步結果被丟棄 */
+var CLOUD_LVR_CACHE = {}, CLOUD_LVR_KEY = '', CLOUD_LVR_LOADING = false, CLOUD_LVR_REQ = 0; /* P3-5：雲端實價登錄（只在本次瀏覽的記憶體） */
 var cloudSyncT = null, cloudPushing = false, cloudPushAgain = false;
 function loadSupabase(){
   if (CLOUD_CLIENT) return Promise.resolve(CLOUD_CLIENT);
@@ -115,6 +116,7 @@ function cloudSignOut(){
   var done=function(){
     CLOUD_GEN++; clearTimeout(cloudSyncT); clearTimeout(saveT); /* 避免舊資料晚一步寫回 localStorage */
     CLOUD_ME=null; CLOUD_SYNCED=null; CLOUD_STATUS=''; cloudPushAgain=false;
+    CLOUD_LVR_CACHE={}; CLOUD_LVR_KEY=''; CLOUD_LVR_LOADING=false; CLOUD_LVR_REQ++; delete A.cloudLvr; /* 登出：清掉雲端實價登錄與快取 */
     var bak=null;
     try { bak=localStorage.getItem(CLOUD_BACKUP_KEY); if (bak!==null){ localStorage.setItem(KEY, bak); localStorage.removeItem(CLOUD_BACKUP_KEY); } } catch(e){}
     A = (bak!==null) ? load() : fresh();
@@ -124,7 +126,7 @@ function cloudSignOut(){
   loadSupabase().then(function(cl){ return cl.auth.signOut(); }).then(done, function(err){ toast((err&&err.message)||'登出失敗'); });
 }
 /* ===== 雲端同步（P2-4） ===== */
-function cloudStatusText(){ return CLOUD_STATUS==='syncing' ? '同步中…' : CLOUD_STATUS==='ok' ? '已同步' : CLOUD_STATUS==='error' ? '同步失敗' : ''; }
+function cloudStatusText(){ return CLOUD_LVR_LOADING && CLOUD_STATUS!=='syncing' && CLOUD_STATUS!=='error' ? '實價登錄載入中…' : CLOUD_STATUS==='syncing' ? '同步中…' : CLOUD_STATUS==='ok' ? '已同步' : CLOUD_STATUS==='error' ? '同步失敗' : ''; }
 /* 只改狀態文字，不整頁 render()（避免輸入中游標跳掉）；桌面用 #cloudStatus，手機選單用 .cloud-st */
 function cloudSetStatus(st){
   CLOUD_STATUS=st;
@@ -242,6 +244,70 @@ function cloudPush(){
     if (firstErr){ cloudSetStatus('error'); toast('雲端儲存失敗：'+cloudErrMsg(firstErr)); }
     else cloudSetStatus('ok');
     if (cloudPushAgain){ cloudPushAgain=false; if (!firstErr) cloudScheduleSync(); }
+  });
+}
+/* ===== 雲端實價登錄（P3-5）：登入後挑比較標的、租金行情直接查 public.lvr_records ===== */
+var CLOUD_LVR_COLS = 'serial,kind,county,district,type,zone,ym,floor_num,total_floors,completed,age,area_ping,unit_wan,total_wan,rent_total,rent_per_ping,park,presale,elevator,mgmt,furnished,lease,special,note,addr,road';
+var CLOUD_LVR_PAGE = 1000, CLOUD_LVR_MAX = 8000;
+function cloudLvrSince(c, months){
+  var pd=pdOf(c), y=Number(pd.slice(0,4)), m=Number(pd.slice(5,7)), t=y*12+(m-1)-(Math.round(Number(months))||0);
+  return Math.floor(t/12)+'-'+('0'+(t%12+1)).slice(-2);
+}
+/* 依案件與模型規則組出兩組篩選條件（買賣、租賃），每項 [PostgREST 運算, 欄位, 值]；縣市空白回傳 null */
+function cloudLvrSpec(c, M){
+  var b=c.basic, R=M.select, RR=M.rentSelect || M.select; if (!b.county) return null;
+  var land=isLandKind(c.kind), base=function(RX, kind){
+    var f=[['eq','county',b.county]];
+    if (RX.sameDistrict && b.district) f.push(['eq','district',b.district]);
+    f.push(['gte','ym',cloudLvrSince(c, RX.months)]);
+    f.push(['eq','kind',kind]);
+    return f;
+  };
+  var sales=base(R, land?'landsale':'sale'); if (!land && R.sameType && b.btype) sales.push(['eq','type',b.btype]);
+  var rents=base(RR, 'rent'); if (RR.sameType && b.btype) rents.push(['eq','type',b.btype]);
+  return {sales:sales, rents:rents, months:Number(R.months)||0, county:b.county, district:(R.sameDistrict && b.district) ? b.district : ''};
+}
+function cloudLvrKey(c, M){ var sp=cloudLvrSpec(c, M); return sp ? JSON.stringify([sp.sales, sp.rents]) : ''; }
+/* 分頁讀取（每頁 1000 筆、最多 8000 筆，依 ym 新到舊）；回傳 {rows, truncated} */
+function cloudLvrFetch(cl, filters){
+  var rows=[];
+  function page(from){
+    var q=cl.from('lvr_records').select(CLOUD_LVR_COLS);
+    filters.forEach(function(f){ q=q[f[0]](f[1], f[2]); });
+    return q.order('ym', {ascending:false}).order('serial').range(from, from+CLOUD_LVR_PAGE-1).then(function(r){
+      cloudChk(r); var d=r.data||[]; rows=rows.concat(d);
+      if (d.length<CLOUD_LVR_PAGE) return {rows:rows, truncated:false};
+      if (rows.length>=CLOUD_LVR_MAX) return {rows:rows.slice(0, CLOUD_LVR_MAX), truncated:true};
+      return page(from+CLOUD_LVR_PAGE);
+    });
+  }
+  return page(0);
+}
+function cloudLvrApply(res, sp){
+  A.cloudLvr = {sales:res.sales, rents:res.rents, counties:[sp.county], info:{county:sp.county, district:sp.district, months:sp.months}};
+}
+/* 在 render 開頭呼叫：登入且雲端資料讀完後，條件（key）改變才查；沒變就什麼都不做 */
+function cloudLvrCheck(){
+  if (!CLOUD_ME || !CLOUD_SYNCED || !CLOUD_CLIENT) return;
+  var c=cur(), M=MOD(c), sp=cloudLvrSpec(c, M), key=cloudLvrKey(c, M);
+  if (key===CLOUD_LVR_KEY) return;
+  CLOUD_LVR_KEY=key; CLOUD_LVR_REQ++;
+  if (!sp){ delete A.cloudLvr; CLOUD_LVR_LOADING=false; return; }
+  if (CLOUD_LVR_CACHE[key]){ cloudLvrApply(CLOUD_LVR_CACHE[key], sp); CLOUD_LVR_LOADING=false; return; }
+  cloudLvrRefresh(sp, key);
+}
+function cloudLvrRefresh(sp, key){
+  var gen=CLOUD_GEN, req=CLOUD_LVR_REQ, cl=CLOUD_CLIENT;
+  CLOUD_LVR_LOADING=true; setTimeout(function(){ cloudSetStatus(CLOUD_STATUS); }, 0);
+  return Promise.all([cloudLvrFetch(cl, sp.sales), cloudLvrFetch(cl, sp.rents)]).then(function(rs){
+    if (gen!==CLOUD_GEN || req!==CLOUD_LVR_REQ) return;
+    var res={sales:rs[0].rows.map(lvrRowToRecord), rents:rs[1].rows.map(lvrRowToRecord)};
+    CLOUD_LVR_CACHE[key]=res; CLOUD_LVR_LOADING=false;
+    cloudLvrApply(res, sp); render();
+    if (rs[0].truncated || rs[1].truncated) toast('符合條件的實價登錄超過 '+CLOUD_LVR_MAX+' 筆，只取最近的 '+CLOUD_LVR_MAX+' 筆，建議開啟同區篩選');
+  }).catch(function(e){
+    if (gen!==CLOUD_GEN || req!==CLOUD_LVR_REQ) return;
+    CLOUD_LVR_LOADING=false; cloudSetStatus(CLOUD_STATUS); render(); toast('實價登錄讀取失敗：'+cloudErrMsg(e));
   });
 }
 function cloudBoot(){

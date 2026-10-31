@@ -40,7 +40,9 @@ function dataSubject(c,k,M){
 }
 function libSummary(){
   var bs=BUILTIN.sales.length, br=BUILTIN.rents.length, is=A.imported.sales.length, ir=A.imported.rents.length;
-  return '<div class="rowb"><span class="small">內建 '+LVR_META.county+' 買賣 <b class="num">'+bs+'</b> 筆、租賃 <b class="num">'+br+'</b> 筆'+(A.hideBuiltin?'（已停用）':'')+'；匯入買賣 <b class="num">'+is+'</b> 筆、租賃 <b class="num">'+ir+'</b> 筆；本所案例 <b class="num">'+A.own.length+'</b> 筆</span>'
+  var cl = CLOUD_ME && A.cloudLvr && A.cloudLvr.info;
+  var cloudLine = CLOUD_ME && (cl || CLOUD_LVR_LOADING) ? '<div class="small" style="margin-bottom:6px">'+(cl ? '雲端實價登錄：'+esc(cl.county+cl.district)+' 近 '+cl.months+' 個月 共 <b class="num">'+(A.cloudLvr.sales.length+A.cloudLvr.rents.length)+'</b> 筆（每月自動更新）' : '雲端實價登錄載入中…')+'</div>' : '';
+  return cloudLine+'<div class="rowb"><span class="small">內建 '+LVR_META.county+' 買賣 <b class="num">'+bs+'</b> 筆、租賃 <b class="num">'+br+'</b> 筆'+(A.hideBuiltin?'（已停用）':'')+'；匯入買賣 <b class="num">'+is+'</b> 筆、租賃 <b class="num">'+ir+'</b> 筆；本所案例 <b class="num">'+A.own.length+'</b> 筆</span>'
    +'<span style="display:flex;gap:6px;flex-wrap:wrap">'+(is||ir?'<button class="btn ghost sm" data-act="clearImported">清除匯入資料</button>':'')+'</span></div>';
 }
 function dropZone(){

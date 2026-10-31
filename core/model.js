@@ -208,10 +208,36 @@ function indAll(M, c){ var k=setKey(c); return (M.indicatorSets && M.indicatorSe
 function indsOf(M, c){ return indAll(M, c).filter(function(x){ return x.on; }); }
 function expOf(M, c){ var k=setKey(c); return (M.exp||[]).filter(function(x){ return x.on && (!x.sets || x.sets.indexOf(k)>=0); }); }
 /* ===== 資料庫、選取規則 =====
-   db = { models:[估價模型], imported:{sales:[], rents:[]}, own:[自有案例], hideBuiltin:boolean }
+   db = { models:[估價模型], imported:{sales:[], rents:[]}, own:[自有案例], hideBuiltin:boolean, cloudLvr:可選 }
+   db.cloudLvr = {sales:[], rents:[], counties:[縣市名…]}：登入後網頁版從雲端 lvr_records 讀到的實價登錄（只在記憶體，不存本機、不同步）；
+     沒登入時不存在。有值時，內建資料中屬於 counties 內縣市的部分略過（以雲端為準）；各來源依 serial 去重，雲端優先
    核心程式不得讀取全域 A，資料一律由參數 db 傳入（網頁版把整個 app 狀態 A 當 db 傳入） */
-function salesLib(db){ return (db.hideBuiltin?[]:BUILTIN.sales).concat(db.imported.sales); }
-function rentLib(db){ return (db.hideBuiltin?[]:BUILTIN.rents).concat(db.imported.rents); }
+/* 合併資料：list 依序為內建、匯入、雲端；有 serial 且已出現過的略過，雲端優先保留（所以由後往前掃再還原順序） */
+function mergeLib(parts){
+  var seen={}, out=[];
+  for (var i=parts.length-1;i>=0;i--){ var part=[];
+    parts[i].forEach(function(x){ if (x.serial){ if (seen[x.serial]) return; seen[x.serial]=1; } part.push(x); });
+    out=part.concat(out); }
+  return out;
+}
+function cloudCounties(db){ return (db.cloudLvr && db.cloudLvr.counties) || []; }
+function libOf(db, key, builtin){
+  var cl=db.cloudLvr; if (!cl) return (db.hideBuiltin?[]:builtin).concat(db.imported[key]);
+  var cc=cloudCounties(db), bi=db.hideBuiltin ? [] : builtin.filter(function(x){ return cc.indexOf(x.county)<0; });
+  return mergeLib([bi, db.imported[key], cl[key]||[]]);
+}
+function salesLib(db){ return libOf(db, 'sales', BUILTIN.sales); }
+function rentLib(db){ return libOf(db, 'rents', BUILTIN.rents); }
+/* lvr_records 一列（snake_case）→ importLvr 輸出的物件形狀；null 轉成 importLvr 的慣用預設 */
+function lvrRowToRecord(r){
+  var n0=function(v){ return v===null||v===undefined ? 0 : Number(v); }, t=function(v){ return v===null||v===undefined ? '' : String(v); };
+  var o={id:'L'+r.serial, kind:r.kind, src:'實價登錄', serial:r.serial, imported:'雲端實價登錄', county:t(r.county), district:t(r.district), type:t(r.type), zone:t(r.zone), date:t(r.ym),
+    floorNum:n0(r.floor_num), completed:t(r.completed), age:(r.age===null||r.age===undefined) ? '' : Number(r.age), areaPing:n0(r.area_ping), note:t(r.note), addr:t(r.addr), road:t(r.road)};
+  if (r.kind==='rent'){ o.rentTotal=n0(r.rent_total); o.rentPerPing=n0(r.rent_per_ping); o.furnished=!!r.furnished; o.lease=t(r.lease); return o; }
+  o.totalFloors=n0(r.total_floors); o.unitWan=n0(r.unit_wan); o.totalWan=n0(r.total_wan); o.park=!!r.park; o.special=t(r.special); o.presale=!!r.presale;
+  if (r.kind==='sale'){ o.elevator=!!r.elevator; o.mgmt=!!r.mgmt; }
+  return o;
+}
 function allSales(db, M){ var s=M.sources||{lvr:true,own:true}; return (s.lvr?salesLib(db):[]).concat(s.own?db.own:[]); }
 function libFind(db, id){ return salesLib(db).concat(db.own).find(function(x){ return x.id===id; }); }
 function pdOf(c){ return c.basic.priceDate || new Date().toISOString().slice(0,10); }
@@ -437,4 +463,4 @@ function importCaseFile(o, models, opts){
   if (opts && opts.caseExists && opts.caseExists(c.id)){ var from=c.id; c.id=opts.nextId(); idChanged={from:from, to:c.id}; notes.push('案號 '+from+' 已存在，改為 '+c.id); }
   return {case:c, models:ms, modelAdded:modelAdded, idChanged:idChanged, notes:notes};
 }
-if (typeof module !== 'undefined' && module.exports) module.exports = {fmt:fmt, pct:pct, parseCSV:parseCSV, rocToYM:rocToYM, cnToNum:cnToNum, matchType:matchType, cleanZone:cleanZone, guessCounty:guessCounty, importLvr:importLvr, BUILTIN:BUILTIN, adjFrom:adjFrom, newComp:newComp, blankCase:blankCase, draftRegion:draftRegion, draftIndiv:draftIndiv, draftHbu:draftHbu, sampleCase:sampleCase, sampleLand:sampleLand, sampleHotel:sampleHotel, fresh:fresh, findModel:findModel, modelOf:modelOf, purposeRule:purposeRule, setKey:setKey, indAll:indAll, indsOf:indsOf, expOf:expOf, salesLib:salesLib, rentLib:rentLib, allSales:allSales, libFind:libFind, pdOf:pdOf, basePing:basePing, areaOf:areaOf, subj:subj, scoreOf:scoreOf, filteredSales:filteredSales, isWhole:isWhole, filteredRents:filteredRents, quantile:quantile, marketStats:marketStats, rentStats:rentStats, rowVar:rowVar, regression:regression, MNAMES:MNAMES, modelWeights:modelWeights, calc:calc, ITEMS15:ITEMS15, CAPNAMES:CAPNAMES, validate:validate, selText:selText, deepMerge:deepMerge, importCaseFile:importCaseFile};
+if (typeof module !== 'undefined' && module.exports) module.exports = {fmt:fmt, pct:pct, parseCSV:parseCSV, rocToYM:rocToYM, cnToNum:cnToNum, matchType:matchType, cleanZone:cleanZone, guessCounty:guessCounty, importLvr:importLvr, BUILTIN:BUILTIN, adjFrom:adjFrom, newComp:newComp, blankCase:blankCase, draftRegion:draftRegion, draftIndiv:draftIndiv, draftHbu:draftHbu, sampleCase:sampleCase, sampleLand:sampleLand, sampleHotel:sampleHotel, fresh:fresh, findModel:findModel, modelOf:modelOf, purposeRule:purposeRule, setKey:setKey, indAll:indAll, indsOf:indsOf, expOf:expOf, salesLib:salesLib, lvrRowToRecord:lvrRowToRecord, rentLib:rentLib, allSales:allSales, libFind:libFind, pdOf:pdOf, basePing:basePing, areaOf:areaOf, subj:subj, scoreOf:scoreOf, filteredSales:filteredSales, isWhole:isWhole, filteredRents:filteredRents, quantile:quantile, marketStats:marketStats, rentStats:rentStats, rowVar:rowVar, regression:regression, MNAMES:MNAMES, modelWeights:modelWeights, calc:calc, ITEMS15:ITEMS15, CAPNAMES:CAPNAMES, validate:validate, selText:selText, deepMerge:deepMerge, importCaseFile:importCaseFile};
