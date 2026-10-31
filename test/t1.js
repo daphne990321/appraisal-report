@@ -1,7 +1,7 @@
 const E = require('../lib/engine').load();
-const A = E.fresh(); E.setA(A);
-for (const c of A.cases){
-  const M = A.models[0], k = E.calc(c, M), v = E.validate(c, k);
+const db = E.fresh();
+for (const c of db.cases){
+  const M = db.models[0], k = E.calc(c, M, db), v = E.validate(c, k, db);
   console.log('==', c.id, c.kind, 'comp', k.comp.unit, 'inc', k.inc.unit, 'cost', k.cost.unit, 'land', k.land.unit, 'fin', k.fin.unit, k.fin.totalWan, k.fin.yuan);
   if (k.parcels) console.log('  parcels ping', k.parcels.ping.toFixed(2), 'total', k.parcels.total, 'tax', k.parcels.tax);
   console.log('  bl:', v.bl.map(x=>x.t).join(' | '));

@@ -31,7 +31,7 @@ function reportPane(c,k,v){
 function line2(rows){ return rows.map(function(x){return '<div class="ck"><span>'+x[0]+'</span><span class="num">'+(typeof x[1]==='string'?x[1]:(x[1]<0?'−':'')+fmt(Math.abs(x[1])))+'</span></div>';}).join(''); }
 function U(v,d){ return v!==null&&v!==undefined? fmt(v,d)+' <span style="font-size:14px;color:var(--band-muted)">萬元/坪</span>':'—'; }
 function outs(){
-  var c=cur(), k=calc(c), S=k.S, o={}, cc=k.comp, isD=c.comp.method==='diff', area=k.area;
+  var c=cur(), k=calc(c, MOD(c), A), S=k.S, o={}, cc=k.comp, isD=c.comp.method==='diff', area=k.area;
   (cc.rows||[]).forEach(function(r,i){
     o['date-'+i]=pct(r.date); o['rs-'+i]='<span class="'+cls(r.r)+'">'+(isD?sgn(r.rv):pct(r.r))+'</span>'; o['is-'+i]='<span class="'+cls(r.i)+'">'+(isD?sgn(r.iv):pct(r.i))+'</span>';
     o['tot-'+i]=fmt(r.total,1)+'%'; o['trial-'+i]=fmt(r.trial,2); o['w-'+i]=r.usable?fmt(r.weight,1)+'%':'—'; o['abs-'+i]=fmt(r.absSum,1); o['vp-'+i]=r.volPrice===null||r.volPrice===undefined?'—':fmt(r.volPrice,2);
@@ -82,7 +82,7 @@ function outs(){
   return {o:o, c:c, k:k};
 }
 function refresh(){
-  var r=outs(), o=r.o, v=validate(r.c,r.k);
+  var r=outs(), o=r.o, v=validate(r.c, r.k, A);
   o.fabSt = r.c.signed?'<span class="chip ok">已交付</span>':v.bl.length?'<span class="chip warn">待處理 '+v.bl.length+'</span>':'<span class="chip ok">可簽名</span>';
   o.msSt = o.fabSt;
   document.querySelectorAll('[data-o]').forEach(function(el){ var key=el.getAttribute('data-o'); if (key in o) el.innerHTML=o[key]; });
@@ -122,7 +122,7 @@ function sheetHtml(c){
 }
 function render(){
   var ae=document.activeElement, fid_=ae&&ae.id, selS=null, selE=null; try{ selS=ae.selectionStart; selE=ae.selectionEnd; }catch(e){}
-  var c=cur(), k=calc(c), v=validate(c,k), mob=isM();
+  var c=cur(), k=calc(c, MOD(c), A), v=validate(c, k, A), mob=isM();
   var body={report:tabReport,data:tabData,survey:tabSurvey,comp:tabComp,income:tabIncome,cost:tabCost,land:tabLand,final:tabFinal,params:tabParams}[A.tab](c,k,v);
   var side = !mob && A.side && A.tab!=='report';
   var html='<header class="top"><div class="top-in"><div class="brand"><span class="seal-mark">估</span><span>估價報告產生器</span></div>'
@@ -230,19 +230,19 @@ document.addEventListener('click', function(e){
   else if (act==='exportCase'){ exportCase(c); }
   else if (act==='importCase'){ var fi=document.getElementById('casefile'); if (fi) fi.click(); }
   else if (act==='dupCase'){ var d=JSON.parse(JSON.stringify(c)); d.id=nextId(); d.signed=false; d.signedAt=''; d.modelSnapshot=null; if (!A.models.some(function(m){ return m.id===d.modelId; })) d.modelId=A.models[0].id; A.cases.unshift(d); A.caseId=d.id; A.ui.sheet=null; save(); render(); toast('已複製為 '+d.id); }
-  else if (act==='addLib'){ if(L()) return; var lib=libFind(t.getAttribute('data-id')); if(!lib) return; var lab=nextLabel(c); c.comps.push(newComp(lab, lib)); save(); render(); toast('已加入比較標的 '+lab+(lib.special?'：屬特殊交易，須做情況調整':'')); }
+  else if (act==='addLib'){ if(L()) return; var lib=libFind(A, t.getAttribute('data-id')); if(!lib) return; var lab=nextLabel(c); c.comps.push(newComp(lab, lib)); save(); render(); toast('已加入比較標的 '+lab+(lib.special?'：屬特殊交易，須做情況調整':'')); }
   else if (act==='autoPick'){ if(L()) return;
     if (c.comps.length && !A.ui.pickConfirm){ A.ui.pickConfirm=true; render(); return; }
-    var rows=filteredSales(c,M).slice(0, Math.max(1,Math.min(6,Number(M.select.autoN)||3))), N=rows.length; if (!N) return;
+    var rows=filteredSales(c, M, A).slice(0, Math.max(1,Math.min(6,Number(M.select.autoN)||3))), N=rows.length; if (!N) return;
     var each=Math.floor(100/N); c.comps=rows.map(function(x,i){ var cp=newComp('ABCDEF'[i], x); cp.weight=each+(i===0?100-each*N:0); return cp; });
     A.ui.pickConfirm=false; save(); render(); toast('已依模型分數挑選 '+N+' 件比較標的，請到「比較法」逐筆調整'); }
   else if (act==='autoPickCancel'){ A.ui.pickConfirm=false; render(); }
   else if (act==='addBlank'){ if(L()) return; c.comps.push(newComp(nextLabel(c))); save(); render(); }
   else if (act==='rmComp'){ if(L()) return; c.comps.splice(Number(t.getAttribute('data-i')),1); A.ui.open=null; save(); render(); }
-  else if (act==='dateManual'){ if(L()) return; var i=Number(t.getAttribute('data-i')); c.comps[i].dateAdj=calc(c).comp.rows[i].date; c.comps[i].dateManual=true; save(); render(); }
+  else if (act==='dateManual'){ if(L()) return; var i=Number(t.getAttribute('data-i')); c.comps[i].dateAdj=calc(c, MOD(c), A).comp.rows[i].date; c.comps[i].dateManual=true; save(); render(); }
   else if (act==='dateAuto'){ if(L()) return; c.comps[Number(t.getAttribute('data-i'))].dateManual=false; save(); render(); }
   else if (act==='applyRate'){ if(L()) return; M.settings.monthlyRate=Math.round(Number(v)*100)/100; M.settings.dateMode='auto'; M.updated=today(); save(); render(); toast('模型「'+M.name+'」價格月變動率已設為 '+pct(M.settings.monthlyRate,2)+'／月'); }
-  else if (act==='useRent'){ if(L()) return; var rs=rentStats(c,M), R=M.rentSelect; c.income.rent=Number(v);
+  else if (act==='useRent'){ if(L()) return; var rs=rentStats(c, M, A), R=M.rentSelect; c.income.rent=Number(v);
     c.income.rentSource='依內政部實價登錄租賃實例 '+rs.n+' 筆（'+(R.sameDistrict?c.basic.county+c.basic.district:c.basic.county)+'，價格日期前 '+R.months+' 個月內'+(R.onlyWhole?'、整戶出租':'')+'），每坪月租金中位數 '+fmt(rs.med,0)+' 元 × '+fmt(c.basic.area,2)+' 坪決定';
     save(); render(); toast('收益法月租金已設為 '+fmt(Number(v))+' 元'); }
   else if (act==='applyUnit'){ if(L()) return; var row=M.cost.table[Number(t.getAttribute('data-i'))]; if(!row) return; c.cost.unitCost=Number(row.unit)||0; c.cost.conMethod='unit'; c.cost.unitCostNote='本所估價模型「'+M.name+'」營造單價表「'+row.name+'」'; save(); render(); toast('已套用 '+fmt(row.unit,1)+' 萬元/坪到成本法'); }
@@ -251,7 +251,7 @@ document.addEventListener('click', function(e){
   else if (act==='listAdd'){ var path=t.getAttribute('data-path'); if (path[0]==='c' && L()) return; var arr=getP(path); if (!Array.isArray(arr)){ setP(path,[]); arr=getP(path); } arr.push(JSON.parse(t.getAttribute('data-tpl')||'{}')); save(); render(); }
   else if (act==='listRm'){ var path2=t.getAttribute('data-path'); if (path2[0]==='c' && L()) return; getP(path2).splice(Number(t.getAttribute('data-i')),1); save(); render(); }
   else if (act==='draftFactors'){ if(L()) return; c.analysis.region=draftRegion(c); c.analysis.indiv=draftIndiv(c); if(!c.analysis.hbu) c.analysis.hbu=draftHbu(c); c.analysis.confirmed=false; save(); render(); toast('已產生草稿，請確認後勾選'); }
-  else if (act==='draftReason'){ if(L()) return; var kk=calc(c), f=kk.fin, S=kk.S;
+  else if (act==='draftReason'){ if(L()) return; var kk=calc(c, MOD(c), A), f=kk.fin, S=kk.S;
     var parts=f.methods.map(function(m){return m.name+'（每坪 '+fmt(m.unit,S.unitDec)+' 萬元）給予 '+(f.methods.length>1?fmt(m.w,1):'100')+'%';});
     c.final.reason='綜合考量各方法所蒐集資料之可信度、估價目的（'+c.basic.purpose+'）及價格形成因素之相近程度'+(c.final.useModelWeights?'，依本所估價模型「'+kk.M.name+'」對此目的之權重':'')+'，'+parts.join('，')+'，決定勘估標的單價每坪 '+fmt(f.unit,S.unitDec)+' 萬元。'+(f.methods.length>1&&f.diff>=S.diffThreshold?'各方法差異 '+fmt(f.diff,1)+'%，經重新檢討後維持上述權重。':'');
     save(); render(); toast('已產生理由草稿，請依實際判斷修改'); }
@@ -268,7 +268,7 @@ document.addEventListener('click', function(e){
   else if (act==='addOwn'){ var b=c.basic; A.own.push({id:'OWN'+Date.now().toString(36), kind:'sale', src:'本所案例', county:b.county, district:b.district||districtsOf(b.county)[0]||'', type:b.btype, zone:b.zone, date:(b.priceDate||today()).slice(0,7), floorNum:0, totalFloors:0, completed:'', age:'', areaPing:0, unitWan:0, park:false, note:'', special:'', presale:false, addr:'', road:'', elevator:false, mgmt:false}); save(); render(); }
   else if (act==='rmOwn'){ A.own.splice(Number(t.getAttribute('data-i')),1); save(); render(); }
   else if (act==='resetAll'){ A=fresh(); A.tab='params'; A.paramSub='check'; save(); render(); toast('已重設為範例資料'); }
-  else if (act==='sign'){ var k2=calc(c); if (validate(c,k2).bl.length || A.role!=='appraiser') return; c.modelSnapshot=JSON.parse(JSON.stringify(modelById(c.modelId))); c.signed=true; c.signedAt=today(); save(); render(); toast('已簽名交付，資料與模型快照已鎖定'); }
+  else if (act==='sign'){ var k2=calc(c, MOD(c), A); if (validate(c, k2, A).bl.length || A.role!=='appraiser') return; c.modelSnapshot=JSON.parse(JSON.stringify(modelById(c.modelId))); c.signed=true; c.signedAt=today(); save(); render(); toast('已簽名交付，資料與模型快照已鎖定'); }
   else if (act==='copy'){ var el=visibleReport(); if(!el) return;
     var sel=function(){ var r=document.createRange(); r.selectNodeContents(el); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r); toast('已選取全文，請按複製'); };
     try { navigator.clipboard.writeText(el.innerText).then(function(){ toast('已複製報告書全文'); }, sel); } catch(err){ sel(); } }
@@ -287,7 +287,7 @@ A = load();
 lastMob = isM();
 render();
 function reportCtx(c,k){
-  var M=k.M, st=null; try { st = marketStats(c,M); } catch(e){}
+  var M=k.M, st=null; try { st = marketStats(c, M, A); } catch(e){}
   return {kind:kindOf(c.kind), cn:CALC.cnAmount, inds:indsOf(M,c), exp:expOf(M,c), selText:c.comp.method==='reg'?'':selText(M), marketStats:st, capName:CAPNAMES[c.income.capMode]||''};
 }
 function reportBlocks(c,k,v){ return REPORT.build(c,k,v,reportCtx(c,k)); }
@@ -308,7 +308,7 @@ function loadDocx(){
   return loadDocx._p;
 }
 function exportDocx(c){
-  var k=calc(c), v=validate(c,k);
+  var k=calc(c, MOD(c), A), v=validate(c, k, A);
   toast('正在產生 Word 檔…');
   Promise.all([getDL(), loadDocx()]).then(function(r){ var DL=r[0], Dx=r[1];
     if (!DL){ toast('這個檢視無法下載檔案'); return; }

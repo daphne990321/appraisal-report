@@ -51,7 +51,7 @@ function subjLine(c){ var b=c.basic, s=subj(c);
   if (s.land) return '<div class="box info">勘估標的：'+esc(b.county)+esc(b.district)+'・土地・'+esc(b.zone||'使用分區未填')+'・'+fmt(s.area,2)+' 坪・價格日期 '+esc(b.priceDate||'未填')+'（僅比對土地交易；屋齡、樓層條件不適用）</div>';
   return '<div class="box info">勘估標的：'+esc(b.county)+esc(b.district)+'・'+esc(b.btype)+'・'+esc(b.zone||'使用分區未填')+'・屋齡 '+fmt(s.age,1)+' 年・'+fmt(s.area,2)+' 坪・'+(s.floor||'—')+' 樓・價格日期 '+esc(b.priceDate||'未填')+'</div>'; }
 function dataSales(c,k,M){
-  var st=marketStats(c,M), R='m.select.', used=c.comps.map(function(x){return x.libId;});
+  var st=marketStats(c, M, A), R='m.select.', used=c.comps.map(function(x){return x.libId;});
   var shown=st.rows.slice(0,80), pend=A.ui.pickConfirm;
   return '<section class="card"><h2>實價登錄資料 <span class="law">§4、§12</span></h2>'
    +'<div class="box info">已內建內政部實價登錄開放資料：'+esc(LVR_META.county)+'（'+esc(LVR_META.issued)+'，'+esc(LVR_META.fetched)+' 下載）。其他縣市請到「不動產交易實價查詢服務網」下載開放資料 CSV 後拖進下方；正式版會由系統直接介接內政部。</div>'
@@ -78,7 +78,7 @@ function dataSales(c,k,M){
    +'</tbody></table></div></section>';
 }
 function dataRents(c,k,M){
-  var R='m.rentSelect.', rs=rentStats(c,M), area=Number(c.basic.area)||0, sug=rs.med!==null&&area?Math.round(rs.med*area/100)*100:null;
+  var R='m.rentSelect.', rs=rentStats(c, M, A), area=Number(c.basic.area)||0, sug=rs.med!==null&&area?Math.round(rs.med*area/100)*100:null;
   return '<section class="card"><h2>租賃實例選取條件 <span class="law">模型「'+esc(M.name)+'」・§35</span></h2>'
    + subjLine(c)
    +'<div class="g3">'+CB('同縣市',R+'sameCounty')+CB('同鄉鎮市區',R+'sameDistrict')+CB('同建物型態',R+'sameType')+'</div>'
@@ -119,7 +119,7 @@ function tabSurvey(c){
    +'<section class="card"><h2>標的條件描述</h2><div class="g2">'+F('交通',d+'traffic')+F('生活機能',d+'life')+F('學區',d+'school')+F('嫌惡設施',d+'nuisance')
    +(land?'':F('樓層',d+'floor')+F('景觀',d+'view')+F('採光通風',d+'light')+F('格局',d+'layout')+F('屋齡屋況',d+'cond')+F('管理',d+'mgmt'))+'</div>'
    +'<div><button class="btn ghost sm" data-act="draftFactors"'+D()+'>依描述重新產生區域、個別因素草稿</button></div></section>'
-   + (expOf(MOD(c)).length?'<section class="card"><h2>勘估標的經驗調整條件 <span class="law">模型「'+esc(MOD(c).name)+'」</span></h2><div class="g2">'+expOf(MOD(c)).map(function(e){ return CB(esc(e.name)+' <span class="law">'+pct(e.pct)+'</span>','c.subjFlags.'+e.id); }).join('')+'</div><div class="hint">勾選後，比較法會依「勘估標的有、比較標的沒有」自動加減。</div></section>':'')
+   + (expOf(MOD(c), c).length?'<section class="card"><h2>勘估標的經驗調整條件 <span class="law">模型「'+esc(MOD(c).name)+'」</span></h2><div class="g2">'+expOf(MOD(c), c).map(function(e){ return CB(esc(e.name)+' <span class="law">'+pct(e.pct)+'</span>','c.subjFlags.'+e.id); }).join('')+'</div><div class="hint">勾選後，比較法會依「勘估標的有、比較標的沒有」自動加減。</div></section>':'')
    +'<section class="card"><h2>價格形成之主要因素分析 <span class="law">§16 II(11)</span></h2>'
    + F('一般因素（須引用價格日期前的公開資料並附出處）','c.analysis.general',{ta:true}) + F('不動產市場概況（供需、價格水準、交易量）','c.report.market',{ta:true}) + F('區域因素','c.analysis.region',{ta:true}) + F('個別因素','c.analysis.indiv',{ta:true}) + F('最有效使用','c.analysis.hbu',{ta:true})
    + CB('<b>估價師已確認本段內容</b>','c.analysis.confirmed') +'</section>';
@@ -137,7 +137,7 @@ function expCell(i, e, c){ var on=!!(c.comps[i].flags&&c.comps[i].flags[e.id]);
 function expLabel(e, c){ var on=!!(c.subjFlags&&c.subjFlags[e.id]);
   return '<label style="display:inline-flex;gap:6px;align-items:flex-start;cursor:pointer"><input type="checkbox" data-b="c.subjFlags.'+e.id+'" data-rr="1"'+(on?' checked':'')+D()+' style="margin-top:4px"><span>經驗：'+esc(e.name)+' <span class="law">'+pct(e.pct)+'・勾選＝勘估標的有</span></span></label>'; }
 function tabComp(c,k){
-  var M=k.M, S=k.S, n=c.comps.length, act=indsOf(M), ex=expOf(M), m=c.comp.method, land=isLandKind(c.kind);
+  var M=k.M, S=k.S, n=c.comps.length, act=indsOf(M, c), ex=expOf(M, c), m=c.comp.method, land=isLandKind(c.kind);
   if (!c.methods.comparison) return '<div class="card"><p style="margin:0">本案未採比較法，可在「價格決定」勾選。</p></div>';
   var pick=PICK('c.comp.method',[['pct','百分率法','依優劣程度評定差異百分率（§19(5)，原則）'],['diff','差額法','依優劣程度評定差額，單位萬元/坪（§19(6)）'],['reg','計量模型分析法','以實價登錄資料迴歸推估（§19(7)、§20）']],'比較法採用的方法','§24');
   if (m==='reg') return pick + regPanel(c,k);
@@ -233,7 +233,7 @@ function regPanel(c,k){
      +'<div class="ck"><div>調整後判定係數 ≥ 0.7<div class="law">§20(2)</div></div><span class="chip '+(R.ok20.r2?'ok':'fail')+'">'+fmt(R.adjR2,3)+'</span></div>'
      +'<div class="ck"><div>係數同時為零之顯著機率 ≤ 5%<div class="law">§20(3)，F 檢定</div></div><span class="chip '+(R.ok20.p?'ok':'fail')+'">'+(R.p<0.0001?'< 0.0001':fmt(R.p,4))+'</span></div></div>';
   }
-  return '<section class="card"><h2>計量模型分析法 <span class="law">依變數：成交單價（萬元/坪）</span></h2><div class="small" style="color:var(--ink2)">選擇自變數；樣本為依模型「'+esc(k.M.name)+'」選取條件篩選後的資料（'+filteredSales(c,k.M).length+' 筆）。</div>'+pickVars+body+'</section>'
+  return '<section class="card"><h2>計量模型分析法 <span class="law">依變數：成交單價（萬元/坪）</span></h2><div class="small" style="color:var(--ink2)">選擇自變數；樣本為依模型「'+esc(k.M.name)+'」選取條件篩選後的資料（'+filteredSales(c, k.M, A).length+' 筆）。</div>'+pickVars+body+'</section>'
    +'<section class="card bigfig"><div class="k">比較價格（計量模型）</div><div class="num" style="font-size:34px;line-height:1.1">'+(k.comp.unit!==null?fmt(k.comp.unit,uD)+' <span style="font-size:14px;color:var(--band-muted)">萬元/坪</span>':'—')+'</div></section>';
 }
 /* ===== 分頁：收益法 ===== */
@@ -368,8 +368,8 @@ function tabParams(){
   return head+tabs+body;
 }
 function pModels(p){
-  var c=cur(), S=MOD(c).settings, base=calc(c, MOD(c));
-  var rows=A.models.map(function(m){ var k=calc(c,m), f=k.fin, d=f.totalWan!==null&&base.fin.totalWan!==null?f.totalWan-base.fin.totalWan:null, v=validate(c,k);
+  var c=cur(), S=MOD(c).settings, base=calc(c, MOD(c), A);
+  var rows=A.models.map(function(m){ var k=calc(c, m, A), f=k.fin, d=f.totalWan!==null&&base.fin.totalWan!==null?f.totalWan-base.fin.totalWan:null, v=validate(c, k, A);
     return '<tr'+(m.id===c.modelId?' class="sum"':'')+'><td>'+esc(m.name)+(m.id===c.modelId?' <span class="chip info">本案使用</span>':'')+'</td><td class="r num">'+fmt(k.comp.unit,m.settings.unitDec)+'</td><td class="r num">'+fmt(k.inc.unit,m.settings.unitDec)+'</td><td class="r num">'+fmt(f.unit,m.settings.unitDec)+'</td><td class="r num">'+fmt(f.totalWan,m.settings.totalDec)+'</td><td class="r num">'+(d===null?'—':(d>0?'+':d<0?'−':'')+fmt(Math.abs(d)))+'</td><td>'+(v.bl.length?'<span class="chip warn">待處理 '+v.bl.length+'</span>':'<span class="chip ok">可簽名</span>')+'</td></tr>'; }).join('');
   return '<section class="card"><h2>同一案件、不同模型的結果 <span class="law">案件 '+esc(c.id)+'・'+esc(c.basic.purpose)+'</span></h2>'
    +'<div class="tw"><table class="t" style="min-width:640px"><thead><tr><th>模型</th><th class="r">比較價格</th><th class="r">收益價格</th><th class="r">決定單價</th><th class="r">總價（萬元）</th><th class="r">與本案差</th><th>檢核</th></tr></thead><tbody>'+rows+'</tbody></table></div>'

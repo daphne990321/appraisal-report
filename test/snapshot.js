@@ -5,16 +5,18 @@
 const fs = require('fs'), path = require('path');
 const E = require('../lib/engine').load();
 const FILE = path.join(__dirname, 'snapshots', 'cases.json');
+/* 防呆：核心的 model.js 不可讀取全域 A，資料一律由參數 db 傳入 */
+if (/(^|[^A-Za-z0-9_.$])A\./m.test(fs.readFileSync(path.join(__dirname, '..', 'core', 'model.js'), 'utf8'))){ console.log('core/model.js 不可讀取全域 A'); process.exit(1); }
 
 function build(){
-  const A = E.fresh(); E.setA(A);
+  const db = E.fresh();
   const out = {};
-  for (const c of A.cases){
-    for (const M of A.models){
-      const k = E.calc(c, M), v = E.validate(c, k);
-      const ctx = {kind:E.kindOf(c.kind), cn:E.CALC.cnAmount, inds:E.indsOf(M,c), exp:E.expOf(M,c), selText:E.selText(M), marketStats:E.marketStats(c, M)};
+  for (const c of db.cases){
+    for (const M of db.models){
+      const k = E.calc(c, M, db), v = E.validate(c, k, db);
+      const ctx = {kind:E.kindOf(c.kind), cn:E.CALC.cnAmount, inds:E.indsOf(M,c), exp:E.expOf(M,c), selText:E.selText(M), marketStats:E.marketStats(c, M, db)};
       const blocks = E.REPORT.build(c, k, v, ctx);
-      out[c.id + '@' + M.id] = { calc:k, validate:v, marketStats:ctx.marketStats, sales:E.filteredSales(c, M).map(x => x.id), blocks, html:E.REPORT.toHTML(blocks) };
+      out[c.id + '@' + M.id] = { calc:k, validate:v, marketStats:ctx.marketStats, sales:E.filteredSales(c, M, db).map(x => x.id), blocks, html:E.REPORT.toHTML(blocks) };
     }
   }
   return JSON.parse(JSON.stringify(out));

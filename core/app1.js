@@ -1,4 +1,5 @@
 /* 網頁介面：本機存檔、格式化與表單元件。只在瀏覽器使用，Node 不載入 */
+var A; /* 整個 app 狀態；同時當作計算核心的 db 傳入（核心程式不讀取 A） */
 var KEY = 'appraisal-generator-v5';
 function load(){ try { var raw = localStorage.getItem(KEY); if (raw){ var o = JSON.parse(raw); if (o && o.v===5 && o.cases && o.cases.length && o.models && o.models.length){ o.ui={}; return o; } } } catch(e){} return fresh(); }
 var saveT = null;
@@ -9,6 +10,8 @@ function esc(x){ return String(x==null?'':x).replace(/[&<>"']/g,function(ch){ret
 function sgn(v,d){ v=Number(v)||0; return (v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(d===undefined?2:d); }
 function cls(v){ return v>0?'pos':v<0?'neg':''; }
 function cur(){ return A.cases.find(function(c){return c.id===A.caseId;}) || A.cases[0]; }
+function modelById(id){ return findModel(A, id); }
+function MOD(c){ return modelOf(A, c || cur()); }
 function L(){ return cur().signed; }
 function D(){ return L() ? ' disabled' : ''; }
 function ph(t){ return '<span class="ph">'+esc(t)+'</span>'; }

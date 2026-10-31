@@ -69,7 +69,6 @@ function importLvr(text, fname, fbCounty){
 
 /* ===== 狀態 ===== */
 var BUILTIN = parseRawJ();
-var A;
 function adjFrom(map){ var o={}; Object.keys(map).forEach(function(k){ o[k]={lv:map[k], pct:map[k], amt:0}; }); return o; }
 function newComp(label, src){
   src = src || {};
@@ -197,18 +196,20 @@ function fresh(){
   return {v:5, models:[m1,m2], imported:{sales:[], rents:[]}, own:ownCases(), hideBuiltin:false,
     cases:[sampleCase(m1), sampleLand(m1), sampleHotel(m1)], caseId:'115-0412', tab:'report', dataSub:'subject', paramSub:'model', pModel:'m1', role:'appraiser', side:true, ui:{}};
 }
-function modelById(id){ return A.models.find(function(m){ return m.id===id; }) || A.models[0]; }
-function MOD(c){ c=c||cur(); return (c.signed && c.modelSnapshot) ? c.modelSnapshot : modelById(c.modelId); }
+function findModel(db, id){ return db.models.find(function(m){ return m.id===id; }) || db.models[0]; }
+function modelOf(db, c){ return (c.signed && c.modelSnapshot) ? c.modelSnapshot : findModel(db, c.modelId); }
 function purposeRule(c,M){ return (M.purpose && M.purpose[c.basic.purpose]) || {w:{comparison:80,income:20,cost:0,land:0}, capFloor:0, expMult:1}; }
 function setKey(c){ return kindOf(c && c.kind).set; }
 function indAll(M, c){ var k=setKey(c); return (M.indicatorSets && M.indicatorSets[k]) || (k==='bldg' ? M.indicators : defaultIndicatorSet(k)); }
-function indsOf(M, c){ return indAll(M, c||cur()).filter(function(x){ return x.on; }); }
-function expOf(M, c){ var k=setKey(c||cur()); return (M.exp||[]).filter(function(x){ return x.on && (!x.sets || x.sets.indexOf(k)>=0); }); }
-/* ===== 資料庫、選取規則 ===== */
-function salesLib(){ return (A.hideBuiltin?[]:BUILTIN.sales).concat(A.imported.sales); }
-function rentLib(){ return (A.hideBuiltin?[]:BUILTIN.rents).concat(A.imported.rents); }
-function allSales(M){ var s=M.sources||{lvr:true,own:true}; return (s.lvr?salesLib():[]).concat(s.own?A.own:[]); }
-function libFind(id){ return salesLib().concat(A.own).find(function(x){ return x.id===id; }); }
+function indsOf(M, c){ return indAll(M, c).filter(function(x){ return x.on; }); }
+function expOf(M, c){ var k=setKey(c); return (M.exp||[]).filter(function(x){ return x.on && (!x.sets || x.sets.indexOf(k)>=0); }); }
+/* ===== 資料庫、選取規則 =====
+   db = { models:[估價模型], imported:{sales:[], rents:[]}, own:[自有案例], hideBuiltin:boolean }
+   核心程式不得讀取全域 A，資料一律由參數 db 傳入（網頁版把整個 app 狀態 A 當 db 傳入） */
+function salesLib(db){ return (db.hideBuiltin?[]:BUILTIN.sales).concat(db.imported.sales); }
+function rentLib(db){ return (db.hideBuiltin?[]:BUILTIN.rents).concat(db.imported.rents); }
+function allSales(db, M){ var s=M.sources||{lvr:true,own:true}; return (s.lvr?salesLib(db):[]).concat(s.own?db.own:[]); }
+function libFind(db, id){ return salesLib(db).concat(db.own).find(function(x){ return x.id===id; }); }
 function pdOf(c){ return c.basic.priceDate || new Date().toISOString().slice(0,10); }
 function basePing(c){ return (c.parcels||[]).filter(function(p){ return !p.priceMode || p.priceMode==='base'; }).reduce(function(a,p){ return a + (Number(p.areaM2)||0)*(p.share===undefined||p.share===''?1:Number(p.share))/3.30579; }, 0); }
 function areaOf(c){ return isLandKind(c.kind) ? basePing(c) : Number(c.basic.area)||0; }
@@ -222,9 +223,9 @@ function scoreOf(x, c, R, pd, sv){
   pen += road ? 0 : Number(R.wRoad);
   return Math.max(0, Math.round(100-pen));
 }
-function filteredSales(c, M){
-  M=M||MOD(c); var R=M.select, b=c.basic, pd=pdOf(c), sv=subj(c), zc=zoneClass(b.zone);
-  return allSales(M).filter(function(x){
+function filteredSales(c, M, db){
+  var R=M.select, b=c.basic, pd=pdOf(c), sv=subj(c), zc=zoneClass(b.zone);
+  return allSales(db, M).filter(function(x){
     if (!(x.unitWan>0)) return false;
     if (sv.land !== (x.kind==='landsale')) return false;
     if (R.sameCounty && b.county && x.county!==b.county) return false;
@@ -242,9 +243,9 @@ function filteredSales(c, M){
   }).map(function(x){ return Object.assign({}, x, {score:scoreOf(x,c,R,pd,sv)}); }).sort(function(a,b){ return b.score-a.score || b.date.localeCompare(a.date); });
 }
 function isWhole(x){ return !x.lease || /整棟|分層/.test(x.lease); }
-function filteredRents(c, M){
-  M=M||MOD(c); var R=M.rentSelect, b=c.basic, pd=pdOf(c), sv=subj(c);
-  return rentLib().filter(function(x){
+function filteredRents(c, M, db){
+  var R=M.rentSelect, b=c.basic, pd=pdOf(c), sv=subj(c);
+  return rentLib(db).filter(function(x){
     if (!(x.rentPerPing>0)) return false;
     if (R.sameCounty && b.county && x.county!==b.county) return false;
     if (R.sameDistrict && b.district && x.district!==b.district) return false;
@@ -257,8 +258,8 @@ function filteredRents(c, M){
   }).sort(function(a,b){ return b.date.localeCompare(a.date); });
 }
 function quantile(arr,q){ if(!arr.length) return null; var s=arr.slice().sort(function(a,b){return a-b;}), pos=(s.length-1)*q, lo=Math.floor(pos), hi=Math.ceil(pos); return s[lo]+(s[hi]-s[lo])*(pos-lo); }
-function marketStats(c, M){
-  var rows=filteredSales(c,M), pd=pdOf(c), u=rows.map(function(x){return x.unitWan;});
+function marketStats(c, M, db){
+  var rows=filteredSales(c,M,db), pd=pdOf(c), u=rows.map(function(x){return x.unitWan;});
   var res={rows:rows, n:rows.length, med:quantile(u,0.5), p25:quantile(u,0.25), p75:quantile(u,0.75), mean:u.length?u.reduce(function(a,b){return a+b;},0)/u.length:null, rate:null};
   var months=Array.from(new Set(rows.map(function(x){ return x.date; })));
   if (rows.length>=6 && months.length>=3){ var X=rows.map(function(x){ return [1, -CALC.monthsBetween(x.date,pd), Number(x.age)||0]; }); var fit=CALC.ols(X, u);
@@ -266,13 +267,13 @@ function marketStats(c, M){
   res.monthsSpan=months.length;
   return res;
 }
-function rentStats(c, M){
-  var rows=filteredRents(c,M), u=rows.map(function(x){ return x.rentPerPing; });
+function rentStats(c, M, db){
+  var rows=filteredRents(c,M,db), u=rows.map(function(x){ return x.rentPerPing; });
   return {rows:rows, n:rows.length, med:quantile(u,0.5), p25:quantile(u,0.25), p75:quantile(u,0.75)};
 }
 function rowVar(x, key, pd){ if (key==='age') return Number(x.age)||0; if (key==='floor') return Number(x.floorNum)||0; if (key==='area') return Number(x.areaPing)||0; if (key==='months') return CALC.monthsBetween(x.date,pd); if (key==='totalFloors') return Number(x.totalFloors)||0; return 0; }
-function regression(c, M){
-  var vars=c.comp.regVars, rows=filteredSales(c,M), pd=pdOf(c);
+function regression(c, M, db){
+  var vars=c.comp.regVars, rows=filteredSales(c,M,db), pd=pdOf(c);
   if (!vars.length) return {err:'請至少選一個自變數'};
   if (rows.length<=vars.length+1) return {err:'樣本數不足', n:rows.length};
   var X=rows.map(function(x){ return [1].concat(vars.map(function(v){ return rowVar(x,v,pd); })); }), y=rows.map(function(x){return x.unitWan;});
@@ -286,11 +287,11 @@ function regression(c, M){
 /* ===== 計算與檢核 ===== */
 var MNAMES = {comparison:'比較法', income:'收益法', cost:'成本法', land:'土地開發分析法'};
 function modelWeights(c, M, P){ var kw=(M.kindWeights||{})[c.kind]; return kw || P.w; }
-function calc(c, Mo){
-  Mo = Mo || MOD(c); var S=Mo.settings, P=purposeRule(c,Mo), land=isLandKind(c.kind), area=areaOf(c);
+function calc(c, Mo, db){
+  var S=Mo.settings, P=purposeRule(c,Mo), land=isLandKind(c.kind), area=areaOf(c);
   var opt = {volumeBasis: land && c.comp.volumeBasis, subjFar: Number(c.comp.subjFar)||Number(c.land.far)||0};
   var comp = CALC.compCalc(c.comps, indsOf(Mo,c), S, c.basic.priceDate, c.comp.method==='diff'?'diff':'pct', c.comp.inputMode, expOf(Mo,c), c.subjFlags||{}, opt);
-  var reg = c.comp.method==='reg' ? regression(c,Mo) : null;
+  var reg = c.comp.method==='reg' ? regression(c,Mo,db) : null;
   if (c.comp.method==='reg'){ var u = reg && !reg.err ? Math.round(reg.pred*Math.pow(10,S.unitDec))/Math.pow(10,S.unitDec) : null; comp = {rows:[], usedCount:reg&&reg.n||0, gap:0, wSum:100, unitRaw:reg&&!reg.err?reg.pred:null, unit:u}; }
   var cost = CALC.costCalc(c.cost, Number(c.basic.area)||0, Number(c.basic.landShare)||0, c.basic.completed, c.basic.priceDate, S);
   if (cost.unitRaw !== null && Number(c.basic.area) > 0){ cost.unitRaw = cost.price/Number(c.basic.area)/10000; cost.unit = CALC.roundTo(cost.unitRaw, S.unitDec); }
@@ -319,7 +320,7 @@ function calc(c, Mo){
 }
 var ITEMS15 = ['委託人','勘估標的之基本資料','價格日期及勘察日期','價格種類','估價條件','估價目的','估價金額','所有權、他項權利及其他負擔','勘估標的使用現況','法定使用管制或其他管制事項','價格形成之主要因素分析','估價方法、估算過程及價格決定理由','依本規則規定須敘明之情況','其他與估價相關之必要事項','估價師姓名及證照字號'];
 var CAPNAMES = {input:'直接輸入',risk:'風險溢酬法',extract:'市場萃取法',wacc:'加權平均資金成本法',dcr:'債務保障比率法',egim:'有效總收入乘數法'};
-function validate(c,k){
+function validate(c,k,db){
   var S=k.S, M=k.M, P=k.P, b=c.basic, bl=[], notes=[], warns=[], cm=c.comp.method;
   if (c.methods.comparison && cm!=='reg' && c.comps.length) notes.push({t:'區域因素及個別因素調整採'+(cm==='diff'?'差額法':'百分率法')+(c.comp.inputMode==='grade'?'，依事務所指標級距表評定等級':'')+'。', law:'§24'});
   if (c.methods.comparison && cm==='reg' && k.reg && !k.reg.err) notes.push({t:'比較法採計量模型分析法，樣本 '+k.reg.n+' 筆、自變數 '+k.reg.k+' 個，調整後判定係數 '+fmt(k.reg.adjR2,3)+'，整體顯著機率 '+(k.reg.p<0.0001?'< 0.0001':fmt(k.reg.p,4))+'。', law:'§19(7)、§20'});
@@ -381,7 +382,7 @@ function validate(c,k){
   if ((c.methods.cost || (c.methods.income && c.income.costSource==='cost')) && (c.cost.design<2 || c.cost.design>3)) warns.push({t:'規劃設計費率 '+c.cost.design+'% 不在 2%～3% 之間', law:'§57'});
   if (Number(c.cost.salvage)>10 || Number(c.income.salvage)>10) warns.push({t:'殘餘價格率超過 10%', law:'§67'});
   if (k.cost.depNote && c.methods.cost) warns.push({t:k.cost.depNote, law:'§68'});
-  if (c.modelId && !A.models.some(function(m){ return m.id===c.modelId; }) && !c.signed) warns.push({t:'本案原本使用的估價模型已刪除，暫以「'+M.name+'」計算', law:'本所模型'});
+  if (c.modelId && !db.models.some(function(m){ return m.id===c.modelId; }) && !c.signed) warns.push({t:'本案原本使用的估價模型已刪除，暫以「'+M.name+'」計算', law:'本所模型'});
   var a=c.appraiser;
   var basicOk = k.isLand ? !!(k.parcels && k.parcels.rows.length && k.parcels.rows.every(function(r){ return r.p.no && Number(r.p.areaM2)>0; })) : !!(b.addr&&b.bldgNo&&Number(b.area)>0);
   var items=[!!b.client, basicOk, !!(b.priceDate&&b.surveyDate), !!b.priceType, !!b.conditions, !!b.purpose,

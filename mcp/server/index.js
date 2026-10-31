@@ -53,15 +53,15 @@ function lvrData(){
   fs.readdirSync(DIRS.lvr).filter(f => f.endsWith('.json')).forEach(f => { const o = readJSON(path.join(DIRS.lvr, f), {}); (o.sales || []).forEach(x => sales.push(x)); (o.rents || []).forEach(x => rents.push(x)); });
   return { sales, rents };
 }
-/* 讓核心程式以本案為「目前案件」運作 */
+/* 組出核心程式需要的資料庫 db（核心不讀全域，資料一律由參數傳入） */
 function stateFor(c){
   const imp = lvrData();
   const hide = imp.sales.concat(imp.rents).some(x => x.county === '新竹縣');
   const st = { v: 5, models: models(), imported: imp, own: readJSON(OWN_FILE, []), hideBuiltin: hide, cases: [c], caseId: c.id, tab: 'report', dataSub: 'subject', paramSub: 'model', pModel: c.modelId, role: 'appraiser', side: true, ui: {} };
-  E.setA(st); return st;
+  return st;
 }
 function MOD(c){ return (c.signed && c.modelSnapshot) ? c.modelSnapshot : modelById(c.modelId); }
-function compute(c){ stateFor(c); const M = MOD(c), k = E.calc(c, M), v = E.validate(c, k); return { M, k, v }; }
+function compute(c){ const db = stateFor(c), M = MOD(c), k = E.calc(c, M, db), v = E.validate(c, k, db); return { M, k, v, db }; }
 function nextId(){
   const roc = new Date().getFullYear() - 1911; let mx = 0;
   listCases().forEach(c => { const m = String(c.id).match(/^(\d+)-(\d+)$/); if (m && Number(m[1]) === roc) mx = Math.max(mx, Number(m[2])); });
@@ -105,7 +105,7 @@ function summary(c, r){
   return res;
 }
 function reportBlocks(c, r){
-  const { k, v, M } = r; let st = null; try { st = E.marketStats(c, M); } catch (e) {}
+  const { k, v, M, db } = r; let st = null; try { st = E.marketStats(c, M, db); } catch (e) {}
   return E.REPORT.build(c, k, v, { kind: E.kindOf(c.kind), cn: E.CALC.cnAmount, inds: E.indsOf(M, c), exp: E.expOf(M, c), selText: c.comp.method === 'reg' ? '' : E.selText(M), marketStats: st, capName: '' });
 }
 function blocksToText(blocks){
@@ -286,8 +286,8 @@ server.registerTool('comps_autopick', {
   title: '自動挑選比較標的', description: '依估價模型的選取條件，從已下載的實價登錄資料挑選分數最高的 n 件作為比較標的（取代現有）。挑選後仍須逐筆查證並調整因素。',
   inputSchema: { id: z.string(), n: z.number().int().min(1).max(6).optional() }
 }, wrap(async ({ id, n }) => {
-  const c = loadCase(id); assertEditable(c); stateFor(c); const M = MOD(c);
-  const rows = E.filteredSales(c, M).slice(0, n || Number(M.select.autoN) || 3);
+  const c = loadCase(id); assertEditable(c); const db = stateFor(c), M = MOD(c);
+  const rows = E.filteredSales(c, M, db).slice(0, n || Number(M.select.autoN) || 3);
   if (!rows.length) throw new Error('沒有符合條件的實價登錄資料。請先 lvr_fetch 下載該縣市資料，或確認案件的縣市、鄉鎮市區、建物型態與價格日期。');
   const each = Math.floor(100 / rows.length);
   c.comps = rows.map((x, i) => { const cp = E.newComp('ABCDEF'[i], x); cp.weight = each + (i === 0 ? 100 - each * rows.length : 0); return cp; });
@@ -351,7 +351,7 @@ server.registerTool('lvr_search', {
   title: '查詢行情與候選比較標的', description: '依案件條件與估價模型的選取規則，從已下載的實價登錄資料篩選類似交易，回傳行情統計與前 limit 筆候選。',
   inputSchema: { id: z.string(), limit: z.number().int().min(1).max(60).optional() }
 }, wrap(async ({ id, limit }) => {
-  const c = loadCase(id); stateFor(c); const M = MOD(c), st = E.marketStats(c, M);
+  const c = loadCase(id); const db = stateFor(c), M = MOD(c), st = E.marketStats(c, M, db);
   return out({ 筆數: st.n, 中位數: round(st.med, 2), 第25百分位: round(st.p25, 2), 第75百分位: round(st.p75, 2), 月變動率估計: st.rate === null ? null : round(st.rate, 3),
     候選: st.rows.slice(0, limit || 15).map(x => ({ 分數: x.score, 位置: x.addr, 年月: x.date, 型態: x.type, 樓層: x.floorNum, 屋齡: x.age, 面積坪: x.areaPing, 單價: x.unitWan, 使用分區: x.zone, 備註: x.note || '' })) });
 }));
