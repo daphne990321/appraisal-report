@@ -108,17 +108,25 @@ function methodStrip(c){
     return '<button data-act="tab" data-v="'+m[0]+'" class="'+(on?'':'off')+'"><span class="k">'+m[2]+(on?'':'・未採用')+'</span><span class="v" data-o="ms_'+m[1]+'"></span></button>'; }).join('')
    +'<button data-act="tab" data-v="final" class="final"><span class="k">決定總價 <span data-o="msSt"></span></span><span class="v" data-o="ms_final"></span></button></div>';
 }
+function cloudWho(){ return CLOUD_ME ? esc(CLOUD_ME.officeName+'・'+(CLOUD_ME.displayName||CLOUD_ME.email)) : ''; }
+function cloudBtn(cls){ return CLOUD_ME ? '<button class="btn ghost '+cls+'" data-act="cloudLogout">登出</button>' : '<button class="btn ghost '+cls+'" data-act="cloudLogin">登入雲端</button>'; }
 function sheetHtml(c){
   var s=A.ui.sheet; if (!s) return '';
   var title='', body='';
   if (s==='report'){ title='估價報告書'; body='<div data-rp="1"></div>'; }
   else if (s==='newcase'){ title='新案件：選擇標的類型'; body=['土地','建物','商用'].map(function(g){ return '<div class="lbl" style="margin:0">'+g+'</div><div class="g3">'+KINDS.filter(function(x){ return x.group===g; }).map(function(x){ return '<button type="button" class="opt" data-act="newKind" data-v="'+x.id+'"><span><b>'+esc(x.name)+'</b><span class="law">'+esc(x.hint)+'</span></span></button>'; }).join('')+'</div>'; }).join('')+'<div class="hint">類型決定預設的估價方法、比較法因素細項、方法權重與報告書格式；建立後仍可在「資料匯入 › 勘估標的」修改。</div>'; }
+  else if (s==='login'){ title='登入雲端'; var lb=A.ui.logging;
+    body='<form data-form="login"><div class="hint">帳號由事務所管理者建立。未登入時資料只存在這台電腦的瀏覽器。</div>'
+      +'<div><label class="lbl" for="loginEmail">Email</label><input class="inp" id="loginEmail" type="email" autocomplete="username" value="'+esc(A.ui.loginEmail||'')+'"></div>'
+      +'<div><label class="lbl" for="loginPw">密碼</label><input class="inp" id="loginPw" type="password" autocomplete="current-password"></div>'
+      +'<button type="submit" class="btn" data-act="cloudDoLogin"'+(lb?' disabled':'')+'>'+(lb?'登入中…':'登入')+'</button></form>'; }
   else if (s==='more'){ title='更多'; body='<div class="menu-list">'+[['params','參數與指標（估價模型）',''],['comp','比較法','comparison'],['income','收益法','income'],['cost','成本法','cost'],['land','土地開發分析法','land']].map(function(x){
       return '<button data-act="tab" data-v="'+x[0]+'"><span>'+x[1]+(x[2]&&!c.methods[x[2]]?' <span class="law">未採用</span>':'')+'</span><span class="num small">'+(x[2]?'<span data-o="ms_'+x[2]+'"></span>':esc(MOD(c).name))+'</span></button>'; }).join('')+'</div>'; }
   else if (s==='menu'){ title='案件'; body='<div><label class="lbl" for="casesel2">切換案件</label><select class="inp" id="casesel2">'+A.cases.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===c.id?' selected':'')+'>'+esc(x.id+'　〔'+kindOf(x.kind).name+'〕'+(x.basic.addr||'新案件'))+(x.signed?'（已交付）':'')+'</option>';}).join('')+'</select></div>'
       +'<div class="g2"><button class="btn ghost" data-act="newCase">新案件</button><button class="btn ghost" data-act="dupCase">複製本案</button><button class="btn ghost" data-act="importCase">匯入案件檔</button></div>'
-      +'<div><div class="lbl">身分</div><div class="g2"><button class="btn'+(A.role==='appraiser'?'':' ghost')+'" data-act="role" data-v="appraiser">估價師</button><button class="btn'+(A.role==='assistant'?'':' ghost')+'" data-act="role" data-v="assistant">助理員</button></div></div>'; }
-  return '<div class="sheet-bg" data-act="closeSheet"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="'+title+'"><div class="sheet-grip"></div><div class="sheet-head"><b>'+title+'</b><button class="btn ghost sm" data-act="closeSheet">關閉</button></div><div class="sheet-body">'+body+'</div></div>';
+      +'<div><div class="lbl">雲端</div>'+(CLOUD_ME?'<div class="hint">'+cloudWho()+'</div>':'')+cloudBtn('')+'</div>'
+      +'<div><div class="lbl">身分</div>'+(CLOUD_ME ? '<div class="hint">已登入，身分固定為「'+(CLOUD_ME.role==='appraiser'?'估價師':'助理員')+'」</div>' : '<div class="g2"><button class="btn'+(A.role==='appraiser'?'':' ghost')+'" data-act="role" data-v="appraiser">估價師</button><button class="btn'+(A.role==='assistant'?'':' ghost')+'" data-act="role" data-v="assistant">助理員</button></div>')+'</div>'; }
+  return '<div class="sheet-bg" data-act="closeSheet"></div><div class="sheet'+(s==='login'?' sheet-center':'')+'" role="dialog" aria-modal="true" aria-label="'+title+'"><div class="sheet-grip"></div><div class="sheet-head"><b>'+title+'</b><button class="btn ghost sm" data-act="closeSheet">關閉</button></div><div class="sheet-body">'+body+'</div></div>';
 }
 function render(){
   var ae=document.activeElement, fid_=ae&&ae.id, selS=null, selE=null; try{ selS=ae.selectionStart; selE=ae.selectionEnd; }catch(e){}
@@ -128,7 +136,8 @@ function render(){
   var html='<header class="top"><div class="top-in"><div class="brand"><span class="seal-mark">估</span><span>估價報告產生器</span></div>'
    +'<label class="sr" for="casesel">案件</label><select id="casesel">'+A.cases.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===c.id?' selected':'')+'>'+esc(x.id+'　〔'+kindOf(x.kind).name+'〕'+(x.basic.addr||'新案件'))+(x.signed?'（已交付）':'')+'</option>';}).join('')+'</select>'
    +'<button class="btn ghost sm" data-act="newCase">新案件</button><button class="btn ghost sm" data-act="dupCase">複製本案</button><button class="btn ghost sm" data-act="importCase">匯入案件檔</button><input type="file" id="casefile" accept=".json,application/json" class="sr">'
-   +'<div class="roles" role="group" aria-label="身分"><button data-act="role" data-v="appraiser" class="'+(A.role==='appraiser'?'on':'')+'">估價師</button><button data-act="role" data-v="assistant" class="'+(A.role==='assistant'?'on':'')+'">助理員</button></div>'
+   +(CLOUD_ME ? '<div class="roles" role="group" aria-label="身分"><button class="on" disabled>'+(CLOUD_ME.role==='appraiser'?'估價師':'助理員')+'</button></div><span class="law">'+cloudWho()+'</span>' : '<div class="roles" role="group" aria-label="身分"><button data-act="role" data-v="appraiser" class="'+(A.role==='appraiser'?'on':'')+'">估價師</button><button data-act="role" data-v="assistant" class="'+(A.role==='assistant'?'on':'')+'">助理員</button></div>')
+   +cloudBtn('sm')
    +'</div></header>'
    +'<div class="mtop"><span class="seal-mark">估</span><div class="t"><b>'+esc(c.id)+'　'+esc(c.basic.addr||'新案件')+'</b><span>'+tabName(A.tab)+'・'+esc(MOD(c).name)+'</span></div><button data-act="sheet" data-v="menu" aria-label="案件選單">案件</button></div>'
    +'<div class="split"><div class="left">'
@@ -204,6 +213,7 @@ document.addEventListener('change', function(e){ var t=e.target;
   if (t.hasAttribute && t.hasAttribute('data-act-var')){ var cs=cur(), v=t.getAttribute('data-act-var'), arr=cs.comp.regVars, i=arr.indexOf(v); if (t.checked && i<0) arr.push(v); if (!t.checked && i>=0) arr.splice(i,1); save(); render(); return; }
   if (t.getAttribute && t.getAttribute('data-b')) onBind(t,true); });
 document.addEventListener('toggle', function(e){ var d=e.target; if (!d.getAttribute || !d.hasAttribute('data-card')) return; var i=Number(d.getAttribute('data-card')); if (d.open) A.ui.open=i; else if (A.ui.open===i) A.ui.open=null; }, true);
+document.addEventListener('submit', function(e){ if (e.target.getAttribute && e.target.getAttribute('data-form')==='login') e.preventDefault(); });
 document.addEventListener('keydown', function(e){ if (e.key==='Escape' && A.ui.sheet){ A.ui.sheet=null; render(); } });
 var lastMob=null; window.addEventListener('resize', function(){ clearTimeout(window._rz); window._rz=setTimeout(function(){ var m=isM(); if (m!==lastMob){ lastMob=m; if (!m) A.ui.sheet=null; render(); } },150); });
 function nextId(){ var m=0; A.cases.forEach(function(c){ var x=parseInt(String(c.id).split('-')[1],10); if(x>m) m=x; }); return '115-'+String(m+1).padStart(4,'0'); }
@@ -219,6 +229,9 @@ document.addEventListener('click', function(e){
   else if (act==='sheet'){ A.ui.sheet=v; render(); }
   else if (act==='closeSheet'){ A.ui.sheet=null; render(); }
   else if (act==='role'){ A.role=v; save(); render(); toast(v==='appraiser'?'已切換為估價師':'已切換為助理員：可編輯，不能簽名'); }
+  else if (act==='cloudLogin'){ A.ui.sheet='login'; render(); }
+  else if (act==='cloudLogout'){ A.ui.sheet=null; cloudSignOut(); }
+  else if (act==='cloudDoLogin'){ e.preventDefault(); cloudDoLogin(); }
   else if (act==='newCase'){ A.ui.sheet='newcase'; render(); }
   else if (act==='newKind'){ var nc=blankCase(nextId(), modelById(c.modelId), c, v); A.cases.unshift(nc); A.caseId=nc.id; A.tab='data'; A.dataSub='subject'; A.ui.sheet=null; save(); render(); toast('已建立'+kindOf(v).name+'案件 '+nc.id+'，模型「'+modelById(nc.modelId).name+'」'); }
   else if (act==='setKind'){ if(L()) return; if (c.kind===v) return; applyKind(c, v); save(); render(); toast('標的類型改為「'+kindOf(v).name+'」，已依模型重設估價方法與權重'); }

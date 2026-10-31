@@ -165,6 +165,11 @@ button.opt{text-align:left;width:100%;font:inherit;color:inherit}button.opt b{di
 .sheet-head{position:sticky;top:0;z-index:2;background:var(--surface);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 14px;border-radius:14px 14px 0 0}
 .sheet-grip{width:40px;height:4px;border-radius:2px;background:var(--line);margin:6px auto 0}
 .sheet .sheet-body{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+/* 置中的小視窗（登入） */
+.sheet.sheet-center{left:50%;right:auto;top:50%;bottom:auto;transform:translate(-50%,-50%);width:min(400px,calc(100vw - 32px));max-height:calc(100vh - 32px);border-radius:14px;padding-bottom:4px}
+.sheet.sheet-center .sheet-head{border-radius:14px 14px 0 0}
+.sheet.sheet-center .sheet-grip{display:none}
+.sheet.sheet-center .sheet-body{padding:16px;gap:12px}
 .menu-list{display:flex;flex-direction:column;gap:6px}
 .menu-list button{display:flex;justify-content:space-between;align-items:center;min-height:48px;padding:0 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:15px;cursor:pointer;text-align:left}
 @media (max-width:760px){
