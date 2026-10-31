@@ -1,4 +1,8 @@
 /* 估價核心：資料與計算邏輯（實價登錄匯入、案件範本、篩選比較標的、計算、檢核）。不可使用 document/window/localStorage，Node 與網頁共用 */
+if (typeof module !== 'undefined' && module.exports){ /* Node：載入相依檔案；網頁版已串接在同一個 script，不需要 */
+  var CALC = require('./calc.js');
+  var _D = require('./data.js'), BTYPES = _D.BTYPES, COUNTIES = _D.COUNTIES, countyByCode = _D.countyByCode, defaultIndicatorSet = _D.defaultIndicatorSet, defaultModel = _D.defaultModel, isLandKind = _D.isLandKind, isPresaleNote = _D.isPresaleNote, kindOf = _D.kindOf, normTai = _D.normTai, noteToSpecial = _D.noteToSpecial, ownCases = _D.ownCases, parseRawJ = _D.parseRawJ, ymDiffYears = _D.ymDiffYears, zoneClass = _D.zoneClass, KINDS = _D.KINDS, FACTOR_SETS = _D.FACTOR_SETS, PURPOSES = _D.PURPOSES;
+}
 function fmt(v,d){ if (v===null||v===undefined||v===''||isNaN(v)) return '—'; return Number(v).toLocaleString('zh-TW',{minimumFractionDigits:d||0,maximumFractionDigits:d||0}); }
 function pct(v,d){ if (v===null||v===undefined||isNaN(v)) return '—'; v=Number(v); var s=Math.abs(v).toFixed(d===undefined?1:d); return (v>0?'+':v<0?'−':'')+s+'%'; }
 
@@ -399,3 +403,4 @@ function selText(M){
   var src=[]; if (M.sources.lvr) src.push('內政部實價登錄'); if (M.sources.own) src.push('本所估價案例');
   return '比較標的依本所估價模型「'+M.name+'」之選取條件，自'+(src.join('及')||'[資料來源]')+'中篩選：'+p.join('、')+'（§12、§21）。';
 }
+if (typeof module !== 'undefined' && module.exports) module.exports = {fmt:fmt, pct:pct, parseCSV:parseCSV, rocToYM:rocToYM, cnToNum:cnToNum, matchType:matchType, cleanZone:cleanZone, guessCounty:guessCounty, importLvr:importLvr, BUILTIN:BUILTIN, adjFrom:adjFrom, newComp:newComp, blankCase:blankCase, draftRegion:draftRegion, draftIndiv:draftIndiv, draftHbu:draftHbu, sampleCase:sampleCase, sampleLand:sampleLand, sampleHotel:sampleHotel, fresh:fresh, findModel:findModel, modelOf:modelOf, purposeRule:purposeRule, setKey:setKey, indAll:indAll, indsOf:indsOf, expOf:expOf, salesLib:salesLib, rentLib:rentLib, allSales:allSales, libFind:libFind, pdOf:pdOf, basePing:basePing, areaOf:areaOf, subj:subj, scoreOf:scoreOf, filteredSales:filteredSales, isWhole:isWhole, filteredRents:filteredRents, quantile:quantile, marketStats:marketStats, rentStats:rentStats, rowVar:rowVar, regression:regression, MNAMES:MNAMES, modelWeights:modelWeights, calc:calc, ITEMS15:ITEMS15, CAPNAMES:CAPNAMES, validate:validate, selText:selText};

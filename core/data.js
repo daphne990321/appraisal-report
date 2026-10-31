@@ -39,6 +39,8 @@ function zoneClass(z){ z=String(z||''); if (!z || z==='-') return ''; if (/住/.
 function normTai(s){ return String(s||'').replace(/台/g,'臺'); }
 /* 內政部實價登錄開放資料：新竹縣（J）本期，買賣 212 筆含建物、租賃 64 筆；2026-10-10 下載 */
 var RAW_J = `__RAW_J__`;
+/* 網頁版：RAW_J 由建置時填入；Node：直接讀 data_j.txt */
+if (RAW_J === '__RAW' + '_J__' && typeof require === 'function') RAW_J = require('fs').readFileSync(require('path').join(__dirname, 'data_j.txt'), 'utf8').replace(/\n$/, '');
 var LVR_META = {county:'新竹縣', code:'J', issued:'2026-10-01 發布之本期資料', fetched:'2026-10-10'};
 function rocYM5(s){ s=String(s||''); if (!/^\d{5}$/.test(s)) return ''; return (Number(s.slice(0,3))+1911)+'-'+s.slice(3,5); }
 function ymDiffYears(a,b){ if (!a||!b) return ''; var p=a.split('-'), q=b.split('-'); return Math.max(0, Math.floor(((Number(q[0])*12+Number(q[1]))-(Number(p[0])*12+Number(p[1])))/12)); }
@@ -155,5 +157,5 @@ function defaultModel(id, name, conservative){
       table:[{name:'加強磚造 1–3 層',unit:7.6},{name:'鋼筋混凝土造 4–5 層',unit:9.8},{name:'鋼筋混凝土造 6–10 層',unit:11.2},{name:'鋼筋混凝土造 11–15 層',unit:12.6},{name:'鋼骨鋼筋混凝土造 16–25 層',unit:15.8},{name:'鋼骨造 26 層以上',unit:19.5}]}
   };
 }
-if (typeof module !== 'undefined' && module.exports) module.exports = {COUNTIES:COUNTIES, BTYPES:BTYPES, PURPOSES:PURPOSES, KINDS:KINDS, FACTOR_SETS:FACTOR_SETS};
+if (typeof module !== 'undefined' && module.exports) module.exports = {COUNTIES:COUNTIES, countyByName:countyByName, countyByCode:countyByCode, districtsOf:districtsOf, BTYPES:BTYPES, PARKTYPES:PARKTYPES, LEASETYPES:LEASETYPES, PURPOSES:PURPOSES, LEVELS:LEVELS, SPECIALS:SPECIALS, REGVARS:REGVARS, zoneClass:zoneClass, normTai:normTai, LVR_META:LVR_META, rocYM5:rocYM5, ymDiffYears:ymDiffYears, noteToSpecial:noteToSpecial, isPresaleNote:isPresaleNote, parseRawJ:parseRawJ, ownCases:ownCases, KINDS:KINDS, kindOf:kindOf, isLandKind:isLandKind, FACTOR_SETS:FACTOR_SETS, defaultIndicatorSet:defaultIndicatorSet, defaultIndicators:defaultIndicators, defaultIndicatorSets:defaultIndicatorSets, defaultExp:defaultExp, defaultPurpose:defaultPurpose, defaultKindWeights:defaultKindWeights, defaultTexts:defaultTexts, defaultModel:defaultModel};
 /*DATA-END*/
