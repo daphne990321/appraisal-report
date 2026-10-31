@@ -1,0 +1,119 @@
+{
+  "manifest_version": "0.3",
+  "name": "appraisal-report",
+  "display_name": "不動產估價報告產生器",
+  "version": "0.5.0",
+  "description": "依不動產估價技術規則計算比較法、收益法、成本法、土地開發分析法，依全聯會敘述式範本產出 Word 估價報告書草稿。",
+  "long_description": "與網頁版「估價報告產生器」共用同一份計算核心。支援土地、工業用地、區分所有建物、透天厝、旅館、商辦、廠房；可下載內政部實價登錄開放資料、讀取謄本 PDF、查詢估價法規原文。案件以 JSON 存在你指定的資料夾，可與網頁版互相匯入。報告一律為草稿，須由估價師本人確認簽名。",
+  "author": {
+    "name": "估價師專案"
+  },
+  "server": {
+    "type": "node",
+    "entry_point": "server/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/server/index.js"
+      ],
+      "env": {
+        "APPRAISAL_DATA_DIR": "${user_config.data_dir}"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "list_options",
+      "description": "查詢可用選項"
+    },
+    {
+      "name": "case_create",
+      "description": "建立案件"
+    },
+    {
+      "name": "case_list",
+      "description": "案件列表"
+    },
+    {
+      "name": "case_get",
+      "description": "讀取案件"
+    },
+    {
+      "name": "case_update",
+      "description": "更新案件"
+    },
+    {
+      "name": "comps_add",
+      "description": "加入比較標的"
+    },
+    {
+      "name": "comps_autopick",
+      "description": "自動挑選比較標的"
+    },
+    {
+      "name": "case_calculate",
+      "description": "計算與檢核"
+    },
+    {
+      "name": "report_preview",
+      "description": "報告書文字預覽"
+    },
+    {
+      "name": "report_docx",
+      "description": "產出 Word 報告書"
+    },
+    {
+      "name": "lvr_fetch",
+      "description": "下載實價登錄"
+    },
+    {
+      "name": "lvr_search",
+      "description": "查詢行情與候選比較標的"
+    },
+    {
+      "name": "transcript_read",
+      "description": "讀取謄本 PDF"
+    },
+    {
+      "name": "law_lookup",
+      "description": "查詢法規條文"
+    },
+    {
+      "name": "model_get",
+      "description": "讀取估價模型"
+    },
+    {
+      "name": "model_update",
+      "description": "更新估價模型"
+    },
+    {
+      "name": "case_import",
+      "description": "匯入網頁版案件檔"
+    }
+  ],
+  "keywords": [
+    "不動產估價",
+    "appraisal",
+    "real estate",
+    "taiwan"
+  ],
+  "license": "UNLICENSED",
+  "compatibility": {
+    "platforms": [
+      "darwin",
+      "win32"
+    ],
+    "runtimes": {
+      "node": ">=20.0.0"
+    }
+  },
+  "user_config": {
+    "data_dir": {
+      "type": "directory",
+      "title": "案件資料夾",
+      "description": "存放案件、實價登錄資料與 Word 報告的資料夾",
+      "required": true,
+      "default": "${HOME}/Documents/估價報告"
+    }
+  }
+}

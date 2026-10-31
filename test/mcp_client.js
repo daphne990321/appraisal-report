@@ -1,0 +1,21 @@
+const { Client } = require('/home/claude/apx/mcp/node_modules/@modelcontextprotocol/sdk/dist/cjs/client/index.js');
+const { StdioClientTransport } = require('/home/claude/apx/mcp/node_modules/@modelcontextprotocol/sdk/dist/cjs/client/stdio.js');
+const DATA='/tmp/claude-0/-home-claude/20ea517e-a864-5895-809c-fd3316cbf2c6/scratchpad/mcpdata';
+(async()=>{
+  const t=new StdioClientTransport({command:'node', args:['/home/claude/apx/mcp/server/index.js'], env:Object.assign({},process.env,{APPRAISAL_DATA_DIR:DATA})});
+  const c=new Client({name:'t',version:'1'}); await c.connect(t);
+  const tools=await c.listTools(); console.log('tools', tools.tools.map(x=>x.name).join(','));
+  const call=async(n,a)=>{ const r=await c.callTool({name:n, arguments:a}); const s=r.content[0].text; console.log('\n##',n, r.isError?'ERROR':'', s.slice(0, 900)); return s; };
+  await call('list_options',{kind:'land'});
+  await call('case_create',{kind:'land', id:'T-001', basic:{county:'新北市', district:'林口區', addr:'林口區○○段 101、102 地號', zone:'第二種住宅區', purpose:'抵押權設定', priceDate:'2026-09-30', surveyDate:'2026-09-30', client:'○○建設', conditions:'以現況空地估價', owner:'○○建設（全部）', encumbrance:'無'}});
+  await call('case_update',{id:'T-001', patch:{parcels:[{section:'○○段',no:'101',zone:'第二種住宅區',areaM2:255.68,share:1,annVal:27400,prevVal:25300,cpi:105,priceMode:'base'},{section:'○○段',no:'102',zone:'第二種住宅區',areaM2:1911.03,share:1,annVal:27400,prevVal:25300,cpi:105,priceMode:'base'}], comp:{subjFar:150}, land:{far:150, baseUnit:43.1, conUnit:13.2, carPrice:195}}});
+  await call('comps_add',{id:'T-001', comps:[{loc:'林口區○○段 1262 地號',date:'2026-05',price:50,area:276.32,far:150,adj:{L_i2:1},weight:47},{loc:'林口區○○段 522 地號',date:'2025-11',price:52,area:304.57,far:150,weight:21},{loc:'林口區○○段 512 地號',date:'2025-11',price:52,area:644.93,far:150,adj:{L_i2:-1,L_i11:-1},weight:32}]});
+  await call('case_calculate',{id:'T-001'});
+  await call('report_docx',{id:'T-001'});
+  await call('law_lookup',{law:'技術規則', article:'25'});
+  await call('law_lookup',{law:'技術規則', query:'容積'});
+  await call('case_list',{});
+  await call('lvr_fetch',{county:'新北市', types:['A']});
+  await call('transcript_read',{path:'/tmp/claude-0/-home-claude/20ea517e-a864-5895-809c-fd3316cbf2c6/scratchpad/r_115-0420.pdf', max_chars:300});
+  await c.close();
+})();

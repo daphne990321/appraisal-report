@@ -1,0 +1,18 @@
+# 套件（可用 npm install 重新安裝，不需存進 git）
+node_modules/
+
+# 建置產物（可用 python3 tools/build.py 重新產生）
+dist/
+
+# 舊的原始碼壓縮備份
+apx-source.tgz
+
+# 打包好的 MCP 擴充檔
+*.mcpb
+
+# Mac 系統檔
+.DS_Store
+
+# 機密設定（之後放 API 金鑰、資料庫密碼用，絕對不能上傳）
+.env
+.env.*
