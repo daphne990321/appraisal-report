@@ -122,18 +122,18 @@ function sheetHtml(c){
       +'<div><label class="lbl" for="loginPw">密碼</label><input class="inp" id="loginPw" type="password" autocomplete="current-password"></div>'
       +'<label style="display:flex;gap:6px;align-items:center;font-size:13px"><input type="checkbox" id="loginRemember"'+(A.ui.loginRemember===false?'':' checked')+'> 記住我的 Email</label>'
       +'<div class="hint">登入狀態會保留在這台電腦，共用電腦請記得登出。</div>'
-      +'<button type="submit" class="btn" data-act="cloudDoLogin"'+(lb?' disabled':'')+'>'+(lb?'登入中…':'登入')+'</button>'
-      +'<button type="button" class="btn ghost sm" data-act="cloudForgot">忘記密碼？</button></form>'; }
+      +'<div class="form-actions"><button type="submit" class="btn" data-act="cloudDoLogin"'+(lb?' disabled':'')+'>'+(lb?'登入中…':'登入')+'</button>'
+      +'<button type="button" class="linkbtn" data-act="cloudForgot">忘記密碼？</button></div></form>'; }
   else if (s==='forgot'){ title='重設密碼'; var sb=A.ui.sending;
     body='<form data-form="forgot"><div class="hint">輸入帳號的 Email，我們會寄一封重設密碼的信給你。</div>'
       +'<div><label class="lbl" for="forgotEmail">Email</label><input class="inp" id="forgotEmail" type="email" autocomplete="username" value="'+esc(A.ui.forgotEmail||'')+'"></div>'
-      +'<button type="submit" class="btn" data-act="cloudSendReset"'+(sb?' disabled':'')+'>'+(sb?'寄送中…':'寄送重設信')+'</button>'
-      +'<button type="button" class="btn ghost sm" data-act="cloudLogin">返回登入</button></form>'; }
+      +'<div class="form-actions"><button type="submit" class="btn" data-act="cloudSendReset"'+(sb?' disabled':'')+'>'+(sb?'寄送中…':'寄送重設信')+'</button>'
+      +'<button type="button" class="linkbtn" data-act="cloudLogin">返回登入</button></div></form>'; }
   else if (s==='newpw'){ title='設定新密碼'; var pb=A.ui.settingPw;
     body='<form data-form="newpw"><div class="hint">請設定新密碼（至少 8 碼）。</div>'
       +'<div><label class="lbl" for="newPw">新密碼</label><input class="inp" id="newPw" type="password" autocomplete="new-password"></div>'
       +'<div><label class="lbl" for="newPw2">再輸入一次</label><input class="inp" id="newPw2" type="password" autocomplete="new-password"></div>'
-      +'<button type="submit" class="btn" data-act="cloudSetPw"'+(pb?' disabled':'')+'>'+(pb?'更新中…':'更新密碼')+'</button></form>'; }
+      +'<div class="form-actions"><button type="submit" class="btn" data-act="cloudSetPw"'+(pb?' disabled':'')+'>'+(pb?'更新中…':'更新密碼')+'</button></div></form>'; }
   else if (s==='more'){ title='更多'; body='<div class="menu-list">'+[['params','參數與指標（估價模型）',''],['comp','比較法','comparison'],['income','收益法','income'],['cost','成本法','cost'],['land','土地開發分析法','land']].map(function(x){
       return '<button data-act="tab" data-v="'+x[0]+'"><span>'+x[1]+(x[2]&&!c.methods[x[2]]?' <span class="law">未採用</span>':'')+'</span><span class="num small">'+(x[2]?'<span data-o="ms_'+x[2]+'"></span>':esc(MOD(c).name))+'</span></button>'; }).join('')+'</div>'; }
   else if (s==='menu'){ title='案件'; body='<div><label class="lbl" for="casesel2">切換案件</label><select class="inp" id="casesel2">'+A.cases.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===c.id?' selected':'')+'>'+esc(x.id+'　〔'+kindOf(x.kind).name+'〕'+(x.basic.addr||'新案件'))+(x.signed?'（已交付）':'')+'</option>';}).join('')+'</select></div>'
