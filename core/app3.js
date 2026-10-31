@@ -22,8 +22,8 @@ function reportPane(c,k,v){
    +'<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn sm" data-act="docx">下載 Word</button><button class="btn ghost sm" data-act="copy">複製全文</button><button class="btn ghost sm" data-act="download">下載 .html</button><button class="btn ghost sm" data-act="exportCase">案件檔 .json</button>'
    +(c.signed?'':'<button class="btn seal sm" data-act="sign"'+(canSign?'':' disabled')+' title="'+(A.role!=='appraiser'?'助理員不能簽名':v.bl.length?'仍有待處理項目':'簽名後鎖定')+'">估價師簽名交付</button>')+'</div></div>'
    +((v.bl.length||v.warns.length)&&!c.signed?'<div style="background:var(--surface);border-inline:1px solid var(--line);padding:4px 12px 10px"><details'+(A.tab==='report'?' open':'')+'><summary style="cursor:pointer;font-size:13.5px;padding:6px 0">簽名前須處理（'+v.bl.length+'）'+(v.warns.length?'與提醒（'+v.warns.length+'）':'')+'</summary><ul style="margin:4px 0 0;padding-left:18px;font-size:13px;display:flex;flex-direction:column;gap:4px">'
-     +v.bl.map(function(x){return '<li><button class="btn ghost xs" style="min-height:0;border:0;padding:0;color:var(--accent);background:transparent;white-space:normal;text-align:left;font-size:13px" data-act="goTab" data-v="'+x.tab+'">'+esc(x.t)+'</button> <span class="law">'+x.law+'</span></li>';}).join('')
-     +v.warns.map(function(x){return '<li style="color:var(--warn)">'+esc(x.t)+' <span class="law">'+x.law+'</span></li>';}).join('')+'</ul></details></div>':'')
+     +v.bl.map(function(x,i){return '<li><button class="btn ghost xs" style="min-height:0;border:0;padding:0;color:var(--accent);background:transparent;white-space:normal;text-align:left;font-size:13px" data-act="goTab" data-v="'+x.tab+'">'+esc(x.t)+'</button> <span class="law">'+x.law+'</span> <button class="btn ghost xs" style="min-height:0;padding:0 8px;font-size:12px" data-act="askAI" data-kind="bl" data-i="'+i+'">詢問 AI</button></li>';}).join('')
+     +v.warns.map(function(x,i){return '<li style="color:var(--warn)">'+esc(x.t)+' <span class="law">'+x.law+'</span> <button class="btn ghost xs" style="min-height:0;padding:0 8px;font-size:12px" data-act="askAI" data-kind="warn" data-i="'+i+'">詢問 AI</button></li>';}).join('')+'</ul></details></div>':'')
    +'<article class="paper">'+reportHtml(c,k,v)+'</article>';
 }
 
@@ -104,7 +104,7 @@ var ICONS={
 function icon(n){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICONS[n]+'</svg>'; }
 function tabName(t){ var x=TABS.find(function(y){ return y[0]===t; }); return x?x[1]:''; }
 function methodStrip(c){
-  return '<div class="mstrip" aria-label="各方法價格">'+[['comp','comparison','比較價格'],['income','income','收益價格'],['cost','cost','成本價格'],['land','land','土地開發分析']].map(function(m){ var on=c.methods[m[1]];
+  return '<div class="mstrip mstrip-fix" aria-label="各方法價格">'+[['comp','comparison','比較價格'],['income','income','收益價格'],['cost','cost','成本價格'],['land','land','土地開發分析']].map(function(m){ var on=c.methods[m[1]];
     return '<button data-act="tab" data-v="'+m[0]+'" class="'+(on?'':'off')+'"><span class="k">'+m[2]+(on?'':'・未採用')+'</span><span class="v" data-o="ms_'+m[1]+'"></span></button>'; }).join('')
    +'<button data-act="tab" data-v="final" class="final"><span class="k">決定總價 <span data-o="msSt"></span></span><span class="v" data-o="ms_final"></span></button></div>';
 }
@@ -129,6 +129,71 @@ function sheetHtml(c){
       +'<div><div class="lbl">身分</div>'+(CLOUD_ME ? '<div class="hint">已登入，身分固定為「'+(CLOUD_ME.role==='appraiser'?'估價師':'助理員')+'」</div>' : '<div class="g2"><button class="btn'+(A.role==='appraiser'?'':' ghost')+'" data-act="role" data-v="appraiser">估價師</button><button class="btn'+(A.role==='assistant'?'':' ghost')+'" data-act="role" data-v="assistant">助理員</button></div>')+'</div>'; }
   return '<div class="sheet-bg" data-act="closeSheet"></div><div class="sheet'+(s==='login'?' sheet-center':'')+'" role="dialog" aria-modal="true" aria-label="'+title+'"><div class="sheet-grip"></div><div class="sheet-head"><b>'+title+'</b><button class="btn ghost sm" data-act="closeSheet">關閉</button></div><div class="sheet-body">'+body+'</div></div>';
 }
+/* ===== 詢問 AI（免費過渡版：整理提問文字，使用者自行貼到 Claude；不含個資、不呼叫 API） ===== */
+function askAIText(c,k,v,kind,i){
+  var x=(kind==='warn'?v.warns:v.bl)[i]; if (!x) return '';
+  var S=k.S, b=c.basic, ud=function(u){ return u!==null&&u!==undefined&&isFinite(u)? fmt(u,S.unitDec)+' 萬元/坪':'—'; };
+  var names={comparison:'比較法', income:'收益法', cost:'成本法', land:'土地開發分析'}, units={comparison:k.comp&&k.comp.unit, income:k.inc&&k.inc.unit, cost:k.cost&&k.cost.unit, land:k.land&&k.land.unit};
+  var res=Object.keys(names).map(function(m){ return names[m]+'：'+(c.methods[m]?ud(units[m]):'未採用'); }).join('；');
+  var wt=(k.fin&&k.fin.methods||[]).map(function(m){ return names[m.key]+' '+fmt(m.w,1)+'%'; }).join('、')||'—';
+  var others=v.bl.filter(function(y,j){ return !(kind==='bl' && j===i); }).map(function(y){ return y.t; }).join('、')||'無';
+  return '我是台灣的不動產估價師，正在用估價報告產生器製作報告。系統檢核出下面這個問題，請依「不動產估價技術規則」等規定，說明可能的原因、可以怎麼處理，以及每種處理方式要注意什麼。請不要直接替我決定數值。\n\n'
+   +'【問題】'+x.t+'（'+x.law+'）\n'
+   +'【類型】'+(kind==='warn'?'提醒':'待處理（必須解決才能簽名）')+'\n'
+   +'【案件概況】標的類型：'+kindOf(c.kind).name+'；價格日期：'+(b.priceDate||'—')+'；估價目的：'+(b.purpose||'—')+'；價格種類：'+(b.priceType||'—')+'\n'
+   +'【各方法結果】'+res+'；決定單價：'+ud(k.fin&&k.fin.unit)+'；方法權重：'+wt+'\n'
+   +'【其他待處理項目】'+others;
+}
+function askAIHtml(c,k,v){
+  var q=A.ui.askAI; if (!q || c.signed) return '';
+  var txt=askAIText(c,k,v,q.kind,q.i); if (!txt){ A.ui.askAI=null; return ''; }
+  return '<aside class="askai" role="complementary" aria-label="詢問 AI"><div class="askai-head"><b>詢問 AI</b><button class="btn ghost sm" data-act="closeAsk">關閉</button></div>'
+   +'<div class="askai-body"><div class="hint">AI 只提供處理建議，不會修改任何數值；最後由估價師判斷。</div>'
+   +'<textarea id="askAIText" class="inp" readonly rows="14" style="width:100%;font-size:13px;line-height:1.5">'+esc(txt)+'</textarea>'
+   +'<button class="btn" data-act="askCopy">複製並開啟 Claude</button>'
+   +'<div class="law">之後會升級成直接在這裡和 Claude 對話。</div></div></aside>';
+}
+/* ===== 加總須為 100% 的比率：改一格後，自動補齊「最久沒被使用者編輯」的那一格（介面便利，只做 100 減其他格） =====
+   cells：[{key,val}]；order：編輯順序（舊→新）；edited：剛改的 key。回傳 {key,val,neg} 或 null */
+function wBalance(cells, order, edited){
+  if (cells.length<2 || !cells.some(function(x){ return x.key===edited; })) return null;
+  var dec=0; cells.forEach(function(x){ var m=String(x.val).match(/\.(\d+)/); if (m) dec=Math.max(dec,Math.min(2,m[1].length)); });
+  var cand=cells.filter(function(x){ return x.key!==edited; }), t=null;
+  var fresh=cand.filter(function(x){ return order.indexOf(x.key)<0; });
+  if (fresh.length) t=fresh[fresh.length-1];
+  else { t=cand.slice().sort(function(a,b){ return order.indexOf(a.key)-order.indexOf(b.key); })[0]; }
+  var others=cells.reduce(function(a,x){ return x.key===t.key ? a : a+(Number(x.val)||0); },0), f=Math.pow(10,dec);
+  var val=Math.round((100-others)*f)/f, neg=val<0; if (neg) val=0;
+  return {key:t.key, val:val, neg:neg};
+}
+/* 找出被編輯的欄位所屬的「加總 100%」組；不適用（模型帶入、已簽名、未採用…）回傳 null */
+function wGroup(path, c, k){
+  var m, keys=null, code, pre=(/^[cm]\./.test(path)?c.id:A.pModel)+'|';
+  if (/^c\./.test(path) && c.signed) return null;
+  if ((m=path.match(/^c\.final\.w\.(\w+)$/))){ if (c.final.useModelWeights) return null; code='final'; keys=['comparison','income','cost','land'].filter(function(x){ return c.methods[x]; }).map(function(x){ return 'c.final.w.'+x; }); }
+  else if ((m=path.match(/^c\.comps\.(\d+)\.weight$/))){ if (k.S.weightMode!=='manual') return null; code='comps'; keys=[]; (k.comp.rows||[]).forEach(function(r,i){ if (r.usable) keys.push('c.comps.'+i+'.weight'); }); }
+  else if (/^c\.special\.w\.(comparison|land)$/.test(path)){ code='special'; keys=['c.special.w.comparison','c.special.w.land']; }
+  else if ((m=path.match(/^p\.purpose\.(.+)\.w\.\w+$/))){ code='pp:'+m[1]; keys=['comparison','income','cost','land'].map(function(x){ return 'p.purpose.'+m[1]+'.w.'+x; }); }
+  else if ((m=path.match(/^p\.kindWeights\.(\w+)\.\w+$/))){ code='pk:'+m[1]; keys=['comparison','income','cost','land'].map(function(x){ return 'p.kindWeights.'+m[1]+'.'+x; }); }
+  if (!keys || keys.indexOf(path)<0 || keys.length<2) return null;
+  return {code:pre+code, pre:pre, cells:keys.map(function(x){ return {key:x, val:getP(x)}; })};
+}
+function wAfterEdit(t){
+  var p=t.getAttribute('data-b'); if (!p || t.disabled || !t.hasAttribute('data-n')) return;
+  var c=cur(), g=wGroup(p, c, calc(c, MOD(c), A)); if (!g) return;
+  var ord=(A.ui.wOrder=A.ui.wOrder||{}), au=(A.ui.wAuto=A.ui.wAuto||{}), o=(ord[g.code]=ord[g.code]||[]);
+  delete au[g.pre+p]; document.querySelectorAll('input.ci[data-b="'+p+'"] + .wauto').forEach(function(el){ el.remove(); }); var i=o.indexOf(p); if (i>=0) o.splice(i,1);
+  var r=wBalance(g.cells, o, p); o.push(p); if (!r) return;
+  setP(r.key, r.val); au[g.pre+r.key]=true;
+  if (r.key.indexOf('p.')===0) modelById(A.pModel).updated=today();
+  save(); render(); if (r.neg) toast('加總超過 100%，請調整其他比率');
+}
+function wMarkAuto(){
+  var au=A.ui.wAuto; if (!au) return; var c=cur();
+  Object.keys(au).forEach(function(kk){ var pre=kk.slice(0,kk.indexOf('|')+1), path=kk.slice(pre.length);
+    if (pre!==(/^[cm]\./.test(path)?c.id:A.pModel)+'|') return;
+    document.querySelectorAll('input.ci[data-b="'+path+'"]').forEach(function(el){ el.title='自動補齊，使合計為 100%'; el.insertAdjacentHTML('afterend','<span class="law wauto" title="自動補齊，使合計為 100%">自動</span>'); }); });
+}
 function render(){
   var ae=document.activeElement, fid_=ae&&ae.id, selS=null, selE=null; try{ selS=ae.selectionStart; selE=ae.selectionEnd; }catch(e){}
   var c=cur(), k=calc(c, MOD(c), A), v=validate(c, k, A), mob=isM();
@@ -145,16 +210,17 @@ function render(){
    +'<div class="tabs-row"><nav class="tabs" aria-label="分頁">'+TABS.map(function(t){ var off = TABKEY[t[0]] && !c.methods[TABKEY[t[0]]]; return '<button data-act="tab" data-v="'+t[0]+'" class="'+(A.tab===t[0]?'on':'')+'">'+t[1]+(off?' <span class="off">未採用</span>':'')+'<span class="dot" data-tabdot="'+t[0]+'" hidden></span></button>';}).join('')+'</nav>'
    +(A.tab!=='report'?'<button class="btn ghost sm side-toggle" data-act="side" aria-pressed="'+(A.side?'true':'false')+'">'+(A.side?'收起對照報告':'對照報告')+'</button>':'')+'</div>'
    +(c.signed?'<div class="box ok">本案已於 '+esc(c.signedAt)+' 簽名交付，資料與估價模型快照已鎖定；保存至 '+(Number(c.signedAt.slice(0,4))+15)+c.signedAt.slice(4)+' 以後（估價師法 §19 III）。要修改請用「複製本案」。</div>':'')
-   +(A.tab!=='report'?methodStrip(c):'')
+   +methodStrip(c)
    + body +'</div>'+(side?'<aside class="right" aria-label="報告書對照"><div data-rp="1"></div></aside>':'')+'</div>'
    +'<nav class="mnav" aria-label="主要分頁">'+[['report','報告','report'],['data','資料','data'],['final','決定','final'],['survey','現勘','survey'],['more','更多','params,comp,income,cost,land']].map(function(x){
       var on = x[0]==='more' ? ['params','comp','income','cost','land'].indexOf(A.tab)>=0 : A.tab===x[0];
       return '<button data-act="'+(x[0]==='more'?'sheet':'tab')+'" data-v="'+x[0]+'" class="'+(on?'on':'')+'"'+(on?' aria-current="page"':'')+'>'+icon(x[0]==='more'?'more':x[0])+'<span>'+x[1]+' <span class="dot" data-tabdot="'+x[2]+'" hidden class="mdot"></span></span></button>'; }).join('')+'</nav>'
    +(A.tab!=='report'?'<button class="fab" data-act="sheet" data-v="report" aria-label="開啟估價報告"><span><span class="lbl2">估價金額・點開看報告</span><br><span class="amt" data-o="fabAmt"></span></span><span data-o="fabSt"></span></button>':'')
-   + sheetHtml(c);
+   + sheetHtml(c) + askAIHtml(c,k,v);
   document.getElementById('app').innerHTML=html;
+  var th=document.querySelector(mob?'.mtop':'.top'); document.documentElement.style.setProperty('--topH', (th?th.offsetHeight:56)+'px');
   document.body.style.overflow = A.ui.sheet ? 'hidden' : '';
-  refresh(); bindDrop();
+  refresh(); bindDrop(); wMarkAuto();
   if (fid_){ var el=document.getElementById(fid_); if (el){ el.focus({preventScroll:true}); try{ if(selS!==null) el.setSelectionRange(selS,selE);}catch(e){} } }
 }
 
@@ -208,11 +274,11 @@ function onBind(t, commit){
 }
 document.addEventListener('input', function(e){ var t=e.target; if (t.getAttribute && t.getAttribute('data-b') && t.type!=='checkbox' && t.type!=='radio' && t.tagName!=='SELECT') onBind(t,false); });
 document.addEventListener('change', function(e){ var t=e.target;
-  if (t.id==='casesel' || t.id==='casesel2'){ A.caseId=t.value; A.ui.sheet=null; A.ui.pickConfirm=false; save(); render(); return; }
+  if (t.id==='casesel' || t.id==='casesel2'){ A.caseId=t.value; A.ui.sheet=null; A.ui.askAI=null; A.ui.pickConfirm=false; save(); render(); return; }
   if (t.id==='casefile'){ if (t.files && t.files[0]) importCaseFile(t.files[0]); t.value=''; return; }
   if (t.hasAttribute && t.hasAttribute('data-act-set')){ var Pm=modelById(A.pModel), e=Pm.exp[Number(t.getAttribute('data-act-set'))], ss=e.sets||['bldg','land','ind']; ss=ss.filter(function(x){ return x!==t.value; }); if (t.checked) ss.push(t.value); e.sets=ss; Pm.updated=today(); save(); render(); return; }
   if (t.hasAttribute && t.hasAttribute('data-act-var')){ var cs=cur(), v=t.getAttribute('data-act-var'), arr=cs.comp.regVars, i=arr.indexOf(v); if (t.checked && i<0) arr.push(v); if (!t.checked && i>=0) arr.splice(i,1); save(); render(); return; }
-  if (t.getAttribute && t.getAttribute('data-b')) onBind(t,true); });
+  if (t.getAttribute && t.getAttribute('data-b')){ onBind(t,true); wAfterEdit(t); } });
 document.addEventListener('toggle', function(e){ var d=e.target; if (!d.getAttribute || !d.hasAttribute('data-card')) return; var i=Number(d.getAttribute('data-card')); if (d.open) A.ui.open=i; else if (A.ui.open===i) A.ui.open=null; }, true);
 document.addEventListener('submit', function(e){ if (e.target.getAttribute && e.target.getAttribute('data-form')==='login') e.preventDefault(); });
 document.addEventListener('keydown', function(e){ if (e.key==='Escape' && A.ui.sheet){ A.ui.sheet=null; render(); } });
@@ -229,6 +295,12 @@ document.addEventListener('click', function(e){
   else if (act==='side'){ A.side=!A.side; save(); render(); }
   else if (act==='sheet'){ A.ui.sheet=v; render(); }
   else if (act==='closeSheet'){ A.ui.sheet=null; render(); }
+  else if (act==='askAI'){ A.ui.askAI={kind:t.getAttribute('data-kind'), i:Number(t.getAttribute('data-i'))}; render(); }
+  else if (act==='closeAsk'){ A.ui.askAI=null; render(); }
+  else if (act==='askCopy'){ var ta=document.getElementById('askAIText'); if(!ta) return; var txt=ta.value;
+    var selA=function(){ ta.focus(); ta.select(); toast('請按 Cmd+C 複製'); };
+    try { navigator.clipboard.writeText(txt).then(function(){ toast('已複製問題，請在 Claude 貼上（Cmd+V）'); }, selA); } catch(err){ selA(); }
+    window.open('https://claude.ai/new', '_blank', 'noopener'); }
   else if (act==='role'){ A.role=v; save(); render(); toast(v==='appraiser'?'已切換為估價師':'已切換為助理員：可編輯，不能簽名'); }
   else if (act==='cloudLogin'){ A.ui.sheet='login'; render(); }
   else if (act==='cloudLogout'){ A.ui.sheet=null; cloudSignOut(); }

@@ -1,7 +1,9 @@
-import os
+import os, sys
 root=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 d=os.path.join(root,'core')+'/'
-os.makedirs(os.path.join(root,'dist'),exist_ok=True)
+# 可選參數：輸出資料夾（預設 dist/）
+out=os.path.abspath(sys.argv[1]) if len(sys.argv)>1 else os.path.join(root,'dist')
+os.makedirs(out,exist_ok=True)
 head=open(d+'head.html',encoding='utf-8').read()
 raw=open(d+'data_j.txt',encoding='utf-8').read().rstrip('\n')
 data=open(d+'data.js',encoding='utf-8').read().replace('__RAW_J__', raw)
@@ -9,6 +11,6 @@ parts=[open(d+'calc.js',encoding='utf-8').read(), data]+[open(d+f,encoding='utf-
 js='\n'.join(parts)
 assert '</script' not in js
 html='<!doctype html>\n<meta charset="utf-8">\n'+head.rstrip()+'\n\n<div id="app"></div>\n<div id="toast" class="toast" hidden role="status" aria-live="polite"></div>\n\n<script>\n'+js+'\n</script>\n'
-open(os.path.join(root,'dist','generator.html'),'w',encoding='utf-8').write(html)
-open(os.path.join(root,'dist','all.js'),'w',encoding='utf-8').write(js)
+open(os.path.join(out,'generator.html'),'w',encoding='utf-8').write(html)
+open(os.path.join(out,'all.js'),'w',encoding='utf-8').write(js)
 print(len(html))
