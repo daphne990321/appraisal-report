@@ -120,14 +120,27 @@ function sheetHtml(c){
     body='<form data-form="login"><div class="hint">帳號由事務所管理者建立。未登入時資料只存在這台電腦的瀏覽器。</div>'
       +'<div><label class="lbl" for="loginEmail">Email</label><input class="inp" id="loginEmail" type="email" autocomplete="username" value="'+esc(A.ui.loginEmail||'')+'"></div>'
       +'<div><label class="lbl" for="loginPw">密碼</label><input class="inp" id="loginPw" type="password" autocomplete="current-password"></div>'
-      +'<button type="submit" class="btn" data-act="cloudDoLogin"'+(lb?' disabled':'')+'>'+(lb?'登入中…':'登入')+'</button></form>'; }
+      +'<label style="display:flex;gap:6px;align-items:center;font-size:13px"><input type="checkbox" id="loginRemember"'+(A.ui.loginRemember===false?'':' checked')+'> 記住我的 Email</label>'
+      +'<div class="hint">登入狀態會保留在這台電腦，共用電腦請記得登出。</div>'
+      +'<button type="submit" class="btn" data-act="cloudDoLogin"'+(lb?' disabled':'')+'>'+(lb?'登入中…':'登入')+'</button>'
+      +'<button type="button" class="btn ghost sm" data-act="cloudForgot">忘記密碼？</button></form>'; }
+  else if (s==='forgot'){ title='重設密碼'; var sb=A.ui.sending;
+    body='<form data-form="forgot"><div class="hint">輸入帳號的 Email，我們會寄一封重設密碼的信給你。</div>'
+      +'<div><label class="lbl" for="forgotEmail">Email</label><input class="inp" id="forgotEmail" type="email" autocomplete="username" value="'+esc(A.ui.forgotEmail||'')+'"></div>'
+      +'<button type="submit" class="btn" data-act="cloudSendReset"'+(sb?' disabled':'')+'>'+(sb?'寄送中…':'寄送重設信')+'</button>'
+      +'<button type="button" class="btn ghost sm" data-act="cloudLogin">返回登入</button></form>'; }
+  else if (s==='newpw'){ title='設定新密碼'; var pb=A.ui.settingPw;
+    body='<form data-form="newpw"><div class="hint">請設定新密碼（至少 8 碼）。</div>'
+      +'<div><label class="lbl" for="newPw">新密碼</label><input class="inp" id="newPw" type="password" autocomplete="new-password"></div>'
+      +'<div><label class="lbl" for="newPw2">再輸入一次</label><input class="inp" id="newPw2" type="password" autocomplete="new-password"></div>'
+      +'<button type="submit" class="btn" data-act="cloudSetPw"'+(pb?' disabled':'')+'>'+(pb?'更新中…':'更新密碼')+'</button></form>'; }
   else if (s==='more'){ title='更多'; body='<div class="menu-list">'+[['params','參數與指標（估價模型）',''],['comp','比較法','comparison'],['income','收益法','income'],['cost','成本法','cost'],['land','土地開發分析法','land']].map(function(x){
       return '<button data-act="tab" data-v="'+x[0]+'"><span>'+x[1]+(x[2]&&!c.methods[x[2]]?' <span class="law">未採用</span>':'')+'</span><span class="num small">'+(x[2]?'<span data-o="ms_'+x[2]+'"></span>':esc(MOD(c).name))+'</span></button>'; }).join('')+'</div>'; }
   else if (s==='menu'){ title='案件'; body='<div><label class="lbl" for="casesel2">切換案件</label><select class="inp" id="casesel2">'+A.cases.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===c.id?' selected':'')+'>'+esc(x.id+'　〔'+kindOf(x.kind).name+'〕'+(x.basic.addr||'新案件'))+(x.signed?'（已交付）':'')+'</option>';}).join('')+'</select></div>'
       +'<div class="g2"><button class="btn ghost" data-act="newCase">新案件</button><button class="btn ghost" data-act="dupCase">複製本案</button><button class="btn ghost" data-act="importCase">匯入案件檔</button></div>'
       +'<div><div class="lbl">雲端</div>'+(CLOUD_ME?'<div class="hint">'+cloudWho()+'　'+cloudStatusHtml(false)+'</div>':'')+cloudBtn('')+'</div>'
       +'<div><div class="lbl">身分</div>'+(CLOUD_ME ? '<div class="hint">已登入，身分固定為「'+(CLOUD_ME.role==='appraiser'?'估價師':'助理員')+'」</div>' : '<div class="g2"><button class="btn'+(A.role==='appraiser'?'':' ghost')+'" data-act="role" data-v="appraiser">估價師</button><button class="btn'+(A.role==='assistant'?'':' ghost')+'" data-act="role" data-v="assistant">助理員</button></div>')+'</div>'; }
-  return '<div class="sheet-bg" data-act="closeSheet"></div><div class="sheet'+(s==='login'?' sheet-center':'')+'" role="dialog" aria-modal="true" aria-label="'+title+'"><div class="sheet-grip"></div><div class="sheet-head"><b>'+title+'</b><button class="btn ghost sm" data-act="closeSheet">關閉</button></div><div class="sheet-body">'+body+'</div></div>';
+  return '<div class="sheet-bg" data-act="closeSheet"></div><div class="sheet'+(s==='login'||s==='forgot'||s==='newpw'?' sheet-center':'')+'" role="dialog" aria-modal="true" aria-label="'+title+'"><div class="sheet-grip"></div><div class="sheet-head"><b>'+title+'</b><button class="btn ghost sm" data-act="closeSheet">關閉</button></div><div class="sheet-body">'+body+'</div></div>';
 }
 /* ===== 詢問 AI（免費過渡版：整理提問文字，使用者自行貼到 Claude；不含個資、不呼叫 API） ===== */
 function askAIText(c,k,v,kind,i){
@@ -280,7 +293,7 @@ document.addEventListener('change', function(e){ var t=e.target;
   if (t.hasAttribute && t.hasAttribute('data-act-var')){ var cs=cur(), v=t.getAttribute('data-act-var'), arr=cs.comp.regVars, i=arr.indexOf(v); if (t.checked && i<0) arr.push(v); if (!t.checked && i>=0) arr.splice(i,1); save(); render(); return; }
   if (t.getAttribute && t.getAttribute('data-b')){ onBind(t,true); wAfterEdit(t); } });
 document.addEventListener('toggle', function(e){ var d=e.target; if (!d.getAttribute || !d.hasAttribute('data-card')) return; var i=Number(d.getAttribute('data-card')); if (d.open) A.ui.open=i; else if (A.ui.open===i) A.ui.open=null; }, true);
-document.addEventListener('submit', function(e){ if (e.target.getAttribute && e.target.getAttribute('data-form')==='login') e.preventDefault(); });
+document.addEventListener('submit', function(e){ if (e.target.getAttribute && /^(login|forgot|newpw)$/.test(e.target.getAttribute('data-form'))) e.preventDefault(); });
 document.addEventListener('keydown', function(e){ if (e.key==='Escape' && A.ui.sheet){ A.ui.sheet=null; render(); } });
 var lastMob=null; window.addEventListener('resize', function(){ clearTimeout(window._rz); window._rz=setTimeout(function(){ var m=isM(); if (m!==lastMob){ lastMob=m; if (!m) A.ui.sheet=null; render(); } },150); });
 function nextId(){ var m=0; A.cases.forEach(function(c){ var x=parseInt(String(c.id).split('-')[1],10); if(x>m) m=x; }); return '115-'+String(m+1).padStart(4,'0'); }
@@ -302,7 +315,10 @@ document.addEventListener('click', function(e){
     try { navigator.clipboard.writeText(txt).then(function(){ toast('已複製問題，請在 Claude 貼上（Cmd+V）'); }, selA); } catch(err){ selA(); }
     window.open('https://claude.ai/new', '_blank', 'noopener'); }
   else if (act==='role'){ A.role=v; save(); render(); toast(v==='appraiser'?'已切換為估價師':'已切換為助理員：可編輯，不能簽名'); }
-  else if (act==='cloudLogin'){ A.ui.sheet='login'; render(); }
+  else if (act==='cloudLogin'){ var se=cloudSavedEmail(); if (!A.ui.loginEmail && se) A.ui.loginEmail=se; A.ui.sheet='login'; render(); cloudFocus(A.ui.loginEmail?'loginPw':'loginEmail'); }
+  else if (act==='cloudForgot'){ e.preventDefault(); cloudForgot(); }
+  else if (act==='cloudSendReset'){ e.preventDefault(); cloudSendReset(); }
+  else if (act==='cloudSetPw'){ e.preventDefault(); cloudSetPw(); }
   else if (act==='cloudLogout'){ A.ui.sheet=null; cloudSignOut(); }
   else if (act==='cloudDoLogin'){ e.preventDefault(); cloudDoLogin(); }
   else if (act==='newCase'){ A.ui.sheet='newcase'; render(); }

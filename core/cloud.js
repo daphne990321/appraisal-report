@@ -14,11 +14,64 @@ function loadSupabase(){
   if (loadSupabase._p) return loadSupabase._p;
   loadSupabase._p = new Promise(function(res, rej){
     var fail=function(){ loadSupabase._p=null; rej(new Error('無法連線到雲端，請確認網路')); };
-    var done=function(){ try { CLOUD_CLIENT = window.supabase.createClient(CLOUD.url, CLOUD.key); res(CLOUD_CLIENT); } catch(e){ fail(); } };
+    var done=function(){ try { CLOUD_CLIENT = window.supabase.createClient(CLOUD.url, CLOUD.key); cloudWatchAuth(CLOUD_CLIENT); res(CLOUD_CLIENT); } catch(e){ fail(); } };
     if (window.supabase && window.supabase.createClient) { done(); return; }
     var s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js'; s.onload=done; s.onerror=fail; document.head.appendChild(s);
   });
   return loadSupabase._p;
+}
+/* 從「重設密碼」信件連結回來時，supabase-js 預設（flowType 'implicit'、detectSessionInUrl true）會自動讀網址 #access_token=…&type=recovery 並發出 PASSWORD_RECOVERY */
+function cloudWatchAuth(cl){
+  cl.auth.onAuthStateChange(function(ev){
+    if (ev==='PASSWORD_RECOVERY'){ A.ui.sheet='newpw'; render(); cloudFocus('newPw'); }
+  });
+}
+function cloudFocus(id){ setTimeout(function(){ var el=document.getElementById(id); if (el) el.focus(); }, 0); }
+/* ===== 記住我的 Email（只存 Email，不存密碼） ===== */
+var CLOUD_EMAIL_KEY = 'appraisal-login-email';
+function cloudSavedEmail(){ try { return localStorage.getItem(CLOUD_EMAIL_KEY) || ''; } catch(e){ return ''; } }
+function cloudRememberEmail(email, on){
+  try { if (on) localStorage.setItem(CLOUD_EMAIL_KEY, email); else localStorage.removeItem(CLOUD_EMAIL_KEY); } catch(e){}
+}
+/* 忘記密碼寄信結果 → 顯示訊息；成功與「找不到使用者」同一句，避免洩漏哪些 Email 有帳號 */
+var CLOUD_RESET_OK = '如果這個 Email 有帳號，重設信已寄出，請到信箱點連結（可能在垃圾郵件匣）。';
+function cloudResetMsg(err){
+  if (!err) return CLOUD_RESET_OK;
+  var m = (err && err.message) || String(err), code = (err && (err.code || err.status)) || '';
+  if (/rate limit|429|over_email_send_rate_limit/i.test(m + ' ' + code)) return '寄信次數太多，請稍後再試';
+  if (/user not found|user_not_found/i.test(m + ' ' + code)) return CLOUD_RESET_OK;
+  return '寄送失敗：' + m;
+}
+function cloudForgot(){
+  var em=document.getElementById('loginEmail');
+  if (em) A.ui.loginEmail=em.value.trim();
+  A.ui.forgotEmail=A.ui.loginEmail||''; A.ui.sheet='forgot'; render(); cloudFocus('forgotEmail');
+}
+function cloudSendReset(){
+  if (A.ui.sending) return;
+  var em=document.getElementById('forgotEmail'), email=em?em.value.trim():'';
+  if (!email){ toast('請輸入 Email'); return; }
+  A.ui.forgotEmail=email; A.ui.sending=true; render();
+  var fin=function(msg){ A.ui.sending=false; render(); toast(msg); };
+  loadSupabase().then(function(cl){
+    return cl.auth.resetPasswordForEmail(email, {redirectTo: location.origin + location.pathname});
+  }).then(function(r){ fin(cloudResetMsg(r && r.error)); }, function(err){ fin(cloudResetMsg(err)); });
+}
+function cloudSetPw(){
+  if (A.ui.settingPw) return;
+  var a=document.getElementById('newPw'), b=document.getElementById('newPw2');
+  var pw=a?a.value:'', pw2=b?b.value:'';
+  if (pw.length<8){ toast('新密碼至少 8 碼'); return; }
+  if (pw!==pw2){ toast('兩次輸入的密碼不一致'); return; }
+  A.ui.settingPw=true; render();
+  loadSupabase().then(function(cl){
+    return cl.auth.updateUser({password:pw}).then(function(r){
+      if (r && r.error) throw new Error(r.error.message);
+      try { history.replaceState(null, '', location.pathname); } catch(e){}
+      A.ui.settingPw=false; A.ui.sheet=null; render();
+      return cloudRefresh().then(function(){ toast('密碼已更新，已登入'); });
+    });
+  }).catch(function(err){ A.ui.settingPw=false; render(); toast('更新失敗：'+((err&&err.message)||err)); });
 }
 function cloudRefresh(){
   return loadSupabase().then(function(cl){
@@ -54,8 +107,9 @@ function cloudDoLogin(){
   var em=document.getElementById('loginEmail'), pw=document.getElementById('loginPw');
   var email=em?em.value.trim():'', password=pw?pw.value:'';
   if (!email || !password){ toast('請輸入 Email 與密碼'); return; }
+  var rm=document.getElementById('loginRemember'); A.ui.loginRemember = rm ? rm.checked : true;
   A.ui.loginEmail=email; A.ui.logging=true; render();
-  cloudSignIn(email, password).then(function(){ A.ui.logging=false; if (A.ui.sheet==='login') render(); }, function(err){ A.ui.logging=false; render(); toast((err&&err.message)||'登入失敗'); });
+  cloudSignIn(email, password).then(function(){ if (CLOUD_ME) cloudRememberEmail(email, A.ui.loginRemember); A.ui.logging=false; if (A.ui.sheet==='login') render(); }, function(err){ A.ui.logging=false; render(); toast((err&&err.message)||'登入失敗'); });
 }
 function cloudSignOut(){
   var done=function(){
@@ -193,6 +247,12 @@ function cloudPush(){
 function cloudBoot(){
   var has=false;
   try { for (var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if (k && k.indexOf('sb-')===0 && k.slice(-11)==='-auth-token') { has=true; break; } } } catch(e){}
+  var h=location.hash||'', q=location.search||'';
+  if (/[#&]error(_description)?=/.test(h)){
+    /* 恢復連結過期或無效：先清掉網址參數，避免 supabase-js 因網址帶錯誤而清掉既有登入 */
+    try { history.replaceState(null, '', location.pathname); } catch(e){}
+    setTimeout(function(){ toast('重設連結已失效，請重新申請'); }, 300);
+  } else if (h.indexOf('type=recovery')>=0 || h.indexOf('access_token=')>=0 || q.indexOf('code=')>=0) has=true;
   if (!has) return;
   cloudRefresh().catch(function(e){ console.warn('雲端連線失敗', e && e.message); });
 }
