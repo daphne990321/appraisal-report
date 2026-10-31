@@ -1,8 +1,8 @@
-const { Client } = require('/home/claude/apx/mcp/node_modules/@modelcontextprotocol/sdk/dist/cjs/client/index.js');
-const { StdioClientTransport } = require('/home/claude/apx/mcp/node_modules/@modelcontextprotocol/sdk/dist/cjs/client/stdio.js');
-const DATA='/tmp/claude-0/-home-claude/20ea517e-a864-5895-809c-fd3316cbf2c6/scratchpad/mcpdata';
+const { Client } = require('@modelcontextprotocol/sdk/client/index.js');
+const { StdioClientTransport } = require('@modelcontextprotocol/sdk/client/stdio.js');
+const path=require('path'), DATA=path.join(__dirname,'out','mcpdata');
 (async()=>{
-  const t=new StdioClientTransport({command:'node', args:['/home/claude/apx/mcp/server/index.js'], env:Object.assign({},process.env,{APPRAISAL_DATA_DIR:DATA})});
+  const t=new StdioClientTransport({command:'node', args:[path.join(__dirname,'..','mcp','server','index.js')], env:Object.assign({},process.env,{APPRAISAL_DATA_DIR:DATA})});
   const c=new Client({name:'t',version:'1'}); await c.connect(t);
   const tools=await c.listTools(); console.log('tools', tools.tools.map(x=>x.name).join(','));
   const call=async(n,a)=>{ const r=await c.callTool({name:n, arguments:a}); const s=r.content[0].text; console.log('\n##',n, r.isError?'ERROR':'', s.slice(0, 900)); return s; };
@@ -16,6 +16,6 @@ const DATA='/tmp/claude-0/-home-claude/20ea517e-a864-5895-809c-fd3316cbf2c6/scra
   await call('law_lookup',{law:'技術規則', query:'容積'});
   await call('case_list',{});
   await call('lvr_fetch',{county:'新北市', types:['A']});
-  await call('transcript_read',{path:'/tmp/claude-0/-home-claude/20ea517e-a864-5895-809c-fd3316cbf2c6/scratchpad/r_115-0420.pdf', max_chars:300});
+  await call('transcript_read',{path:process.argv[2]||path.join(__dirname,'out','sample.pdf'), max_chars:300});
   await c.close();
 })();

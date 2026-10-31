@@ -1,5 +1,5 @@
 const { chromium } = require('playwright');
-const path='/home/claude/apx/dist/generator.html', SH='/tmp/claude-0/-home-claude/20ea517e-a864-5895-809c-fd3316cbf2c6/scratchpad/shots/';
+const P=require('path'), path=P.join(__dirname,'..','dist','generator.html'), SH=P.join(__dirname,'out','shots')+'/'; require('fs').mkdirSync(SH,{recursive:true});
 (async()=>{
   const b=await chromium.launch(); 
   for (const vp of [{w:1360,h:900,n:'d'},{w:390,h:844,n:'m'}]){

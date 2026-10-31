@@ -1,12 +1,14 @@
 {
-  "name": "apx",
+  "name": "appraisal-report",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "不動產估價報告產生器",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "python3 tools/build.py",
+    "test": "node test/snapshot.js && node test/docx.js",
+    "test:update": "node test/snapshot.js --update",
+    "mcp:sync": "node tools/sync-mcp.js",
+    "mcp:pack": "node tools/sync-mcp.js && cd mcp && npx @anthropic-ai/mcpb pack"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -14,5 +16,6 @@
     "docx": "^9.5.1",
     "pdfjs-dist": "^6.3.289",
     "zod": "^4.6.5"
-  }
+  },
+  "private": true
 }

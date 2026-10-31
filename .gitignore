@@ -16,3 +16,10 @@ apx-source.tgz
 # 機密設定（之後放 API 金鑰、資料庫密碼用，絕對不能上傳）
 .env
 .env.*
+
+# 測試輸出
+test/out/
+
+# 由 tools/sync-mcp.js 從 core/、lib/ 複製產生
+mcp/core/
+mcp/server/engine.js
