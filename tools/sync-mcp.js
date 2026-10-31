@@ -7,10 +7,11 @@ const files = [
   ['core/calc.js', 'mcp/core/calc.js'],
   ['core/data.js', 'mcp/core/data.js'],
   ['core/data_j.txt', 'mcp/core/data_j.txt'],
-  ['core/app1.js', 'mcp/core/app1.js'],
+  ['core/model.js', 'mcp/core/model.js'],
   ['core/report.js', 'mcp/core/report.js'],
   ['lib/engine.js', 'mcp/server/engine.js'],
 ];
 fs.mkdirSync(path.join(root, 'mcp/core'), { recursive: true });
+fs.rmSync(path.join(root, 'mcp/core/app1.js'), { force: true });
 for (const [from, to] of files) fs.copyFileSync(path.join(root, from), path.join(root, to));
 console.log('已同步 ' + files.length + ' 個核心檔案到 mcp/');

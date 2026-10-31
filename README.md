@@ -1,6 +1,6 @@
 # 估價報告產生器 原始碼
 
-- core/      共用核心（calc.js 計算、data.js 資料、app1~3.js 介面、report.js 報告與 Word）
+- core/      共用核心（calc.js 計算、data.js 資料、model.js 資料與計算邏輯、app1~3.js 介面、report.js 報告與 Word）
 - lib/       engine.js：讓核心在 Node 執行
 - mcp/       MCP 伺服器（server/index.js）、manifest.json、laws/
 - tools/     build.py 組裝網頁版 dist/generator.html；sync-mcp.js 把核心複製到 mcp/
