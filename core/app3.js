@@ -275,7 +275,7 @@ function onBind(t, commit){
 document.addEventListener('input', function(e){ var t=e.target; if (t.getAttribute && t.getAttribute('data-b') && t.type!=='checkbox' && t.type!=='radio' && t.tagName!=='SELECT') onBind(t,false); });
 document.addEventListener('change', function(e){ var t=e.target;
   if (t.id==='casesel' || t.id==='casesel2'){ A.caseId=t.value; A.ui.sheet=null; A.ui.askAI=null; A.ui.pickConfirm=false; save(); render(); return; }
-  if (t.id==='casefile'){ if (t.files && t.files[0]) importCaseFile(t.files[0]); t.value=''; return; }
+  if (t.id==='casefile'){ if (t.files && t.files[0]) readCaseFile(t.files[0]); t.value=''; return; }
   if (t.hasAttribute && t.hasAttribute('data-act-set')){ var Pm=modelById(A.pModel), e=Pm.exp[Number(t.getAttribute('data-act-set'))], ss=e.sets||['bldg','land','ind']; ss=ss.filter(function(x){ return x!==t.value; }); if (t.checked) ss.push(t.value); e.sets=ss; Pm.updated=today(); save(); render(); return; }
   if (t.hasAttribute && t.hasAttribute('data-act-var')){ var cs=cur(), v=t.getAttribute('data-act-var'), arr=cs.comp.regVars, i=arr.indexOf(v); if (t.checked && i<0) arr.push(v); if (!t.checked && i>=0) arr.splice(i,1); save(); render(); return; }
   if (t.getAttribute && t.getAttribute('data-b')){ onBind(t,true); wAfterEdit(t); } });
@@ -409,14 +409,10 @@ function exportDocx(c){
 }
 function exportCase(c){ getDL().then(function(DL){ if (!DL){ toast('這個檢視無法下載檔案'); return; }
   DL.save({filename:'案件_'+c.id+'.json', data:JSON.stringify({format:'appraisal-case', v:5, case:c, model:MOD(c)}, null, 2)}).then(function(){ toast('已下載案件檔，可交給 Claude（MCP）或其他電腦匯入'); }, function(err){ if (err && err.code==='declined') return; toast('無法下載'); }); }); }
-function importCaseFile(file){
+function readCaseFile(file){
   var fr=new FileReader(); fr.onload=function(){ try {
-    var o=JSON.parse(String(fr.result)), c=o.case||o; if (!c || !c.basic || !c.id) throw new Error('不是案件檔');
-    if (o.model && o.model.id && !A.models.some(function(m){ return m.id===o.model.id; })) A.models.push(o.model);
-    if (!A.models.some(function(m){ return m.id===c.modelId; })) c.modelId=A.models[0].id;
-    var base=blankCase(c.id, modelById(c.modelId), null, c.kind||'unit'); c=deepMerge(base, c);
-    if (A.cases.some(function(x){ return x.id===c.id; })) c.id=nextId();
-    A.cases.unshift(c); A.caseId=c.id; A.tab='report'; A.ui.sheet=null; save(); render(); toast('已匯入案件 '+c.id);
+    var r=importCaseFile(JSON.parse(String(fr.result)), A.models, {caseExists:function(id){ return A.cases.some(function(x){ return x.id===id; }); }, nextId:nextId});
+    A.models=r.models; A.cases.unshift(r.case); A.caseId=r.case.id; A.tab='report'; A.ui.sheet=null; save(); render();
+    toast('已匯入案件 '+r.case.id+(r.notes.length?'；'+r.notes.join('；'):''));
   } catch(e){ toast('匯入失敗：'+e.message); } }; fr.readAsText(file,'utf-8');
 }
-function deepMerge(a, b){ if (Array.isArray(b) || b===null || typeof b!=='object') return b; var o=Object.assign({}, a); Object.keys(b).forEach(function(key){ o[key] = (a && typeof a[key]==='object' && !Array.isArray(a[key]) && a[key]!==null) ? deepMerge(a[key], b[key]) : b[key]; }); return o; }

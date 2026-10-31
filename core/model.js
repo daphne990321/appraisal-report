@@ -403,4 +403,38 @@ function selText(M){
   var src=[]; if (M.sources.lvr) src.push('內政部實價登錄'); if (M.sources.own) src.push('本所估價案例');
   return '比較標的依本所估價模型「'+M.name+'」之選取條件，自'+(src.join('及')||'[資料來源]')+'中篩選：'+p.join('、')+'（§12、§21）。';
 }
-if (typeof module !== 'undefined' && module.exports) module.exports = {fmt:fmt, pct:pct, parseCSV:parseCSV, rocToYM:rocToYM, cnToNum:cnToNum, matchType:matchType, cleanZone:cleanZone, guessCounty:guessCounty, importLvr:importLvr, BUILTIN:BUILTIN, adjFrom:adjFrom, newComp:newComp, blankCase:blankCase, draftRegion:draftRegion, draftIndiv:draftIndiv, draftHbu:draftHbu, sampleCase:sampleCase, sampleLand:sampleLand, sampleHotel:sampleHotel, fresh:fresh, findModel:findModel, modelOf:modelOf, purposeRule:purposeRule, setKey:setKey, indAll:indAll, indsOf:indsOf, expOf:expOf, salesLib:salesLib, rentLib:rentLib, allSales:allSales, libFind:libFind, pdOf:pdOf, basePing:basePing, areaOf:areaOf, subj:subj, scoreOf:scoreOf, filteredSales:filteredSales, isWhole:isWhole, filteredRents:filteredRents, quantile:quantile, marketStats:marketStats, rentStats:rentStats, rowVar:rowVar, regression:regression, MNAMES:MNAMES, modelWeights:modelWeights, calc:calc, ITEMS15:ITEMS15, CAPNAMES:CAPNAMES, validate:validate, selText:selText};
+/* ---- 案件檔匯入（網頁版與 MCP 共用）---- */
+function deepMerge(a, b){ if (Array.isArray(b) || b===null || typeof b!=='object') return b; var o=Object.assign({}, a); Object.keys(b).forEach(function(key){ o[key] = (a && typeof a[key]==='object' && !Array.isArray(a[key]) && a[key]!==null) ? deepMerge(a[key], b[key]) : b[key]; }); return o; }
+function stableStringify(v){
+  if (v===null || typeof v!=='object') return JSON.stringify(v);
+  if (Array.isArray(v)) return '['+v.map(stableStringify).join(',')+']';
+  return '{'+Object.keys(v).sort().filter(function(k){ return v[k]!==undefined; }).map(function(k){ return JSON.stringify(k)+':'+stableStringify(v[k]); }).join(',')+'}';
+}
+function modelSig(m){ var x=Object.assign({}, m); delete x.updated; return stableStringify(x); }
+/* o＝解析後的案件檔；models＝目前模型陣列（不修改，回傳新陣列）；opts＝{caseExists(id)→bool, nextId()→新案號} */
+function importCaseFile(o, models, opts){
+  var c0=o && (o.case||o); if (!c0 || !c0.basic || !c0.id) throw new Error('不是案件檔');
+  var c=JSON.parse(JSON.stringify(c0)), om=(o.model && o.model.id) ? JSON.parse(JSON.stringify(o.model)) : null;
+  var ms=JSON.parse(JSON.stringify(models||[])), notes=[], modelAdded=null, idChanged=null;
+  if (om){
+    var same=ms.filter(function(m){ return m.id===om.id; })[0];
+    if (!same){ ms.push(om); modelAdded={id:om.id, name:om.name, reason:'new'}; }
+    else if (modelSig(same)!==modelSig(om)){
+      var nid=om.id+'-imp-'+Date.now().toString(36), n=0;
+      while (ms.some(function(m){ return m.id===nid; })) nid=om.id+'-imp-'+Date.now().toString(36)+(++n);
+      var oldName=om.name; om.id=nid; om.name=oldName+'（匯入自案件 '+c.id+'）'; ms.push(om);
+      if (c.modelId===o.model.id) c.modelId=nid;
+      modelAdded={id:nid, name:om.name, reason:'conflict'};
+      notes.push('模型「'+oldName+'」與本機同代號但內容不同，已另存為「'+om.name+'」');
+    }
+  }
+  if (!ms.some(function(m){ return m.id===c.modelId; })){
+    if (!ms.length) throw new Error('沒有可用的估價模型');
+    notes.push('找不到模型 '+c.modelId+'，改用「'+ms[0].name+'」'); c.modelId=ms[0].id;
+  }
+  var M=ms.filter(function(m){ return m.id===c.modelId; })[0];
+  c=deepMerge(blankCase(c.id, M, null, c.kind||'unit'), c);
+  if (opts && opts.caseExists && opts.caseExists(c.id)){ var from=c.id; c.id=opts.nextId(); idChanged={from:from, to:c.id}; notes.push('案號 '+from+' 已存在，改為 '+c.id); }
+  return {case:c, models:ms, modelAdded:modelAdded, idChanged:idChanged, notes:notes};
+}
+if (typeof module !== 'undefined' && module.exports) module.exports = {fmt:fmt, pct:pct, parseCSV:parseCSV, rocToYM:rocToYM, cnToNum:cnToNum, matchType:matchType, cleanZone:cleanZone, guessCounty:guessCounty, importLvr:importLvr, BUILTIN:BUILTIN, adjFrom:adjFrom, newComp:newComp, blankCase:blankCase, draftRegion:draftRegion, draftIndiv:draftIndiv, draftHbu:draftHbu, sampleCase:sampleCase, sampleLand:sampleLand, sampleHotel:sampleHotel, fresh:fresh, findModel:findModel, modelOf:modelOf, purposeRule:purposeRule, setKey:setKey, indAll:indAll, indsOf:indsOf, expOf:expOf, salesLib:salesLib, rentLib:rentLib, allSales:allSales, libFind:libFind, pdOf:pdOf, basePing:basePing, areaOf:areaOf, subj:subj, scoreOf:scoreOf, filteredSales:filteredSales, isWhole:isWhole, filteredRents:filteredRents, quantile:quantile, marketStats:marketStats, rentStats:rentStats, rowVar:rowVar, regression:regression, MNAMES:MNAMES, modelWeights:modelWeights, calc:calc, ITEMS15:ITEMS15, CAPNAMES:CAPNAMES, validate:validate, selText:selText, deepMerge:deepMerge, importCaseFile:importCaseFile};

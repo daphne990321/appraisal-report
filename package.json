@@ -4,7 +4,7 @@
   "description": "不動產估價報告產生器",
   "scripts": {
     "build": "python3 tools/build.py",
-    "test": "node test/snapshot.js && node test/docx.js",
+    "test": "node test/snapshot.js && node test/docx.js && node test/interop.js",
     "test:update": "node test/snapshot.js --update",
     "mcp:sync": "node tools/sync-mcp.js",
     "mcp:pack": "node tools/sync-mcp.js && cd mcp && npx @anthropic-ai/mcpb pack"

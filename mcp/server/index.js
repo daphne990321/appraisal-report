@@ -398,12 +398,10 @@ server.registerTool('case_import', {
   title: '匯入網頁版案件檔', description: '匯入網頁版「案件檔 .json」到資料夾（同案號會改用新案號）。網頁版也能直接匯入本資料夾 cases/ 內的檔案。',
   inputSchema: { path: z.string() }
 }, wrap(async ({ path: p }) => {
-  const o = JSON.parse(fs.readFileSync(expandHome(p), 'utf8')); let c = o.case || o; if (!c || !c.basic) throw new Error('不是案件檔');
-  const ms = models(); if (o.model && o.model.id && !ms.some(m => m.id === o.model.id)){ ms.push(o.model); saveModels(ms); }
-  if (!modelById(c.modelId) || modelById(c.modelId).id !== c.modelId) c.modelId = models()[0].id;
-  c = deepMerge(E.blankCase(c.id, modelById(c.modelId), null, c.kind || 'unit'), c);
-  if (fs.existsSync(caseFile(c.id))) c.id = nextId();
-  saveCase(c); return out({ 已匯入: c.id, 檔案: caseFile(c.id) });
+  const o = JSON.parse(fs.readFileSync(expandHome(p), 'utf8')), ms = models();
+  const r = E.importCaseFile(o, ms, { caseExists: id => fs.existsSync(caseFile(id)), nextId });
+  if (r.modelAdded) saveModels(r.models);
+  saveCase(r.case); return out({ 已匯入: r.case.id, 檔案: caseFile(r.case.id), 說明: r.notes });
 }));
 
 async function main(){
