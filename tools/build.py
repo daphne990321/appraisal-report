@@ -12,5 +12,6 @@ js='\n'.join(parts)
 assert '</script' not in js
 html='<!doctype html>\n<meta charset="utf-8">\n'+head.rstrip()+'\n\n<div id="app"></div>\n<div id="toast" class="toast" hidden role="status" aria-live="polite"></div>\n\n<script>\n'+js+'\n</script>\n'
 open(os.path.join(out,'generator.html'),'w',encoding='utf-8').write(html)
+open(os.path.join(out,'index.html'),'w',encoding='utf-8').write(html)  # 網站首頁（Render 等靜態網站預設開 index.html）
 open(os.path.join(out,'all.js'),'w',encoding='utf-8').write(js)
 print(len(html))
