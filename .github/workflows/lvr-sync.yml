@@ -1,0 +1,42 @@
+# 每月同步內政部實價登錄到 Supabase（public.lvr_records）
+# 需要 secret：由使用者在 GitHub → Settings → Secrets and variables → Actions → New repository secret
+#   新增名稱 SUPABASE_SECRET_KEY（值為 Supabase 的 sb_secret_ 開頭金鑰），不要寫進程式或貼在聊天裡
+name: 實價登錄同步
+
+on:
+  schedule:
+    - cron: '0 2 5 * *'      # 每月 5 日 02:00 UTC（台灣時間 10:00）
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'recent＝最近 2 個已結束的季；backfill＝補最近 12 個已結束的季'
+        type: choice
+        options: [recent, backfill]
+        default: recent
+      seasons:
+        description: '指定季別（選填，優先於上面的模式），例如 115S1,115S2'
+        type: string
+        required: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # 同步程式只用 Node 內建功能與 core/，不需要 dependencies（docx、pdfjs 等），略過以加快
+      - run: npm ci --omit=dev --ignore-scripts
+      - name: 同步實價登錄
+        env:
+          SUPABASE_URL: https://ucqcwxawntocqkwlanbp.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          INPUT_MODE: ${{ inputs.mode }}
+          INPUT_SEASONS: ${{ inputs.seasons }}
+        run: |
+          args=""
+          if [ -n "$INPUT_SEASONS" ]; then args="--seasons $INPUT_SEASONS"
+          elif [ "$INPUT_MODE" = "backfill" ]; then args="--backfill"; fi
+          node tools/lvr-sync.js $args

@@ -47,7 +47,7 @@ function importLvr(text, fname, fbCounty){
       if (target === '土地'){
         var tl=nm(['總價元']), la=nm(['土地移轉總面積平方公尺']); if (tl<=0 || la<=0){ skipped++; continue; }
         var lp=la/3.30579;
-        sales.push({id:'IL'+base+'-'+r, kind:'landsale', src:'實價登錄', imported:fname, county:county, district:dist, type:'土地', zone:zone, date:ym, floorNum:0, totalFloors:0, completed:'', age:'',
+        sales.push({id:'IL'+base+'-'+r, kind:'landsale', src:'實價登錄', serial:g(['編號']), imported:fname, county:county, district:dist, type:'土地', zone:zone, date:ym, floorNum:0, totalFloors:0, completed:'', age:'',
           areaPing:Math.round(lp*100)/100, unitWan:Math.round(tl/lp/10000*100)/100, totalWan:Math.round(tl/10000), park:false, note:note, special:noteToSpecial(note), presale:false, addr:addr, road:road});
         continue;
       }
@@ -55,7 +55,7 @@ function importLvr(text, fname, fbCounty){
       var total=nm(['總價元']), park=nm(['車位總價元']), bA=nm(['建物移轉總面積平方公尺']), pA=nm(['車位移轉總面積(平方公尺)','車位移轉總面積平方公尺']);
       var areaM=bA-pA; if (total<=0 || areaM<=0){ skipped++; continue; }
       var ping=areaM/3.30579;
-      sales.push({id:'I'+base+'-'+r, kind:'sale', src:'實價登錄', imported:fname, county:county, district:dist, type:matchType(g(['建物型態'])), zone:zone, date:ym, floorNum:floorNum, totalFloors:tf,
+      sales.push({id:'I'+base+'-'+r, kind:'sale', src:'實價登錄', serial:g(['編號']), imported:fname, county:county, district:dist, type:matchType(g(['建物型態'])), zone:zone, date:ym, floorNum:floorNum, totalFloors:tf,
         completed:comp, age: comp ? ymDiffYears(comp, ym) : '', areaPing:Math.round(ping*100)/100, unitWan:Math.round((total-park)/ping/10000*100)/100, totalWan:Math.round(total/10000), park:park>0||pA>0,
         note:note, special:noteToSpecial(note), presale: kind==='b' || isPresaleNote(note), addr:addr, road:road, elevator:g(['電梯'])==='有', mgmt:g(['有無管理組織'])==='有'});
     } else {
@@ -64,7 +64,7 @@ function importLvr(text, fname, fbCounty){
       var rent=nm(['總額元'])-nm(['車位總額元']), a2=nm(['建物總面積平方公尺'])-nm(['車位面積平方公尺']);
       if (rent<=0 || a2<=0){ skipped++; continue; }
       var p2=a2/3.30579;
-      rents.push({id:'IR'+base+'-'+r, kind:'rent', src:'實價登錄', imported:fname, county:county, district:dist, type:matchType(g(['建物型態'])), zone:zone, date:ym2, floorNum:floorNum, completed:comp, age: comp ? ymDiffYears(comp, ym2) : '',
+      rents.push({id:'IR'+base+'-'+r, kind:'rent', src:'實價登錄', serial:g(['編號']), imported:fname, county:county, district:dist, type:matchType(g(['建物型態'])), zone:zone, date:ym2, floorNum:floorNum, completed:comp, age: comp ? ymDiffYears(comp, ym2) : '',
         areaPing:Math.round(p2*100)/100, rentTotal:Math.round(rent), rentPerPing:Math.round(rent/p2), furnished:g(['有無附傢俱'])==='有', lease:g(['出租型態']), note:note, addr:addr, road:road});
     }
   }
