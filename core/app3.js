@@ -109,6 +109,7 @@ function methodStrip(c){
    +'<button data-act="tab" data-v="final" class="final"><span class="k">決定總價 <span data-o="msSt"></span></span><span class="v" data-o="ms_final"></span></button></div>';
 }
 function cloudWho(){ return CLOUD_ME ? esc(CLOUD_ME.officeName+'・'+(CLOUD_ME.displayName||CLOUD_ME.email)) : ''; }
+function cloudStatusHtml(id){ var t=cloudStatusText(); return '<span'+(id?' id="cloudStatus"':'')+' class="law cloud-st"'+(CLOUD_STATUS==='error'?' style="color:var(--fail);font-weight:700"':'')+'>'+t+'</span>'; }
 function cloudBtn(cls){ return CLOUD_ME ? '<button class="btn ghost '+cls+'" data-act="cloudLogout">登出</button>' : '<button class="btn ghost '+cls+'" data-act="cloudLogin">登入雲端</button>'; }
 function sheetHtml(c){
   var s=A.ui.sheet; if (!s) return '';
@@ -124,7 +125,7 @@ function sheetHtml(c){
       return '<button data-act="tab" data-v="'+x[0]+'"><span>'+x[1]+(x[2]&&!c.methods[x[2]]?' <span class="law">未採用</span>':'')+'</span><span class="num small">'+(x[2]?'<span data-o="ms_'+x[2]+'"></span>':esc(MOD(c).name))+'</span></button>'; }).join('')+'</div>'; }
   else if (s==='menu'){ title='案件'; body='<div><label class="lbl" for="casesel2">切換案件</label><select class="inp" id="casesel2">'+A.cases.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===c.id?' selected':'')+'>'+esc(x.id+'　〔'+kindOf(x.kind).name+'〕'+(x.basic.addr||'新案件'))+(x.signed?'（已交付）':'')+'</option>';}).join('')+'</select></div>'
       +'<div class="g2"><button class="btn ghost" data-act="newCase">新案件</button><button class="btn ghost" data-act="dupCase">複製本案</button><button class="btn ghost" data-act="importCase">匯入案件檔</button></div>'
-      +'<div><div class="lbl">雲端</div>'+(CLOUD_ME?'<div class="hint">'+cloudWho()+'</div>':'')+cloudBtn('')+'</div>'
+      +'<div><div class="lbl">雲端</div>'+(CLOUD_ME?'<div class="hint">'+cloudWho()+'　'+cloudStatusHtml(false)+'</div>':'')+cloudBtn('')+'</div>'
       +'<div><div class="lbl">身分</div>'+(CLOUD_ME ? '<div class="hint">已登入，身分固定為「'+(CLOUD_ME.role==='appraiser'?'估價師':'助理員')+'」</div>' : '<div class="g2"><button class="btn'+(A.role==='appraiser'?'':' ghost')+'" data-act="role" data-v="appraiser">估價師</button><button class="btn'+(A.role==='assistant'?'':' ghost')+'" data-act="role" data-v="assistant">助理員</button></div>')+'</div>'; }
   return '<div class="sheet-bg" data-act="closeSheet"></div><div class="sheet'+(s==='login'?' sheet-center':'')+'" role="dialog" aria-modal="true" aria-label="'+title+'"><div class="sheet-grip"></div><div class="sheet-head"><b>'+title+'</b><button class="btn ghost sm" data-act="closeSheet">關閉</button></div><div class="sheet-body">'+body+'</div></div>';
 }
@@ -136,7 +137,7 @@ function render(){
   var html='<header class="top"><div class="top-in"><div class="brand"><span class="seal-mark">估</span><span>估價報告產生器</span></div>'
    +'<label class="sr" for="casesel">案件</label><select id="casesel">'+A.cases.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===c.id?' selected':'')+'>'+esc(x.id+'　〔'+kindOf(x.kind).name+'〕'+(x.basic.addr||'新案件'))+(x.signed?'（已交付）':'')+'</option>';}).join('')+'</select>'
    +'<button class="btn ghost sm" data-act="newCase">新案件</button><button class="btn ghost sm" data-act="dupCase">複製本案</button><button class="btn ghost sm" data-act="importCase">匯入案件檔</button><input type="file" id="casefile" accept=".json,application/json" class="sr">'
-   +(CLOUD_ME ? '<div class="roles" role="group" aria-label="身分"><button class="on" disabled>'+(CLOUD_ME.role==='appraiser'?'估價師':'助理員')+'</button></div><span class="law">'+cloudWho()+'</span>' : '<div class="roles" role="group" aria-label="身分"><button data-act="role" data-v="appraiser" class="'+(A.role==='appraiser'?'on':'')+'">估價師</button><button data-act="role" data-v="assistant" class="'+(A.role==='assistant'?'on':'')+'">助理員</button></div>')
+   +(CLOUD_ME ? '<div class="roles" role="group" aria-label="身分"><button class="on" disabled>'+(CLOUD_ME.role==='appraiser'?'估價師':'助理員')+'</button></div><span class="law">'+cloudWho()+'</span>'+cloudStatusHtml(true) : '<div class="roles" role="group" aria-label="身分"><button data-act="role" data-v="appraiser" class="'+(A.role==='appraiser'?'on':'')+'">估價師</button><button data-act="role" data-v="assistant" class="'+(A.role==='assistant'?'on':'')+'">助理員</button></div>')
    +cloudBtn('sm')
    +'</div></header>'
    +'<div class="mtop"><span class="seal-mark">估</span><div class="t"><b>'+esc(c.id)+'　'+esc(c.basic.addr||'新案件')+'</b><span>'+tabName(A.tab)+'・'+esc(MOD(c).name)+'</span></div><button data-act="sheet" data-v="menu" aria-label="案件選單">案件</button></div>'

@@ -3,7 +3,7 @@ var A; /* 整個 app 狀態；同時當作計算核心的 db 傳入（核心程�
 var KEY = 'appraisal-generator-v5';
 function load(){ try { var raw = localStorage.getItem(KEY); if (raw){ var o = JSON.parse(raw); if (o && o.v===5 && o.cases && o.cases.length && o.models && o.models.length){ o.ui={}; return o; } } } catch(e){} return fresh(); }
 var saveT = null;
-function save(){ clearTimeout(saveT); saveT = setTimeout(function(){ try { localStorage.setItem(KEY, JSON.stringify(A, function(k,v){ return k==='ui' ? undefined : v; })); } catch(e){} }, 300); }
+function save(){ clearTimeout(saveT); saveT = setTimeout(function(){ try { localStorage.setItem(KEY, JSON.stringify(A, function(k,v){ return k==='ui' ? undefined : v; })); } catch(e){} }, 300); if (typeof cloudScheduleSync === 'function') cloudScheduleSync(); }
 
 /* ===== 工具 ===== */
 function esc(x){ return String(x==null?'':x).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];}); }
