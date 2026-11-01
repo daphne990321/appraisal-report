@@ -252,14 +252,14 @@ function render(){
   else { k=calc(c, MOD(c), A); v=validate(c, k, A); body={report:tabReport,data:tabData,survey:tabSurvey,comp:tabComp,income:tabIncome,cost:tabCost,land:tabLand,final:tabFinal,params:tabParams}[A.tab](c,k,v); }
   if (lst) A.view='list';
   var side = !lst && !mob && A.side && A.tab!=='report';
-  var html='<header class="top"><div class="top-in"><div class="brand"><span class="seal-mark">估</span><span>估價報告產生器</span></div>'
-   +'<button class="btn ghost sm'+(lst?' on':'')+'" data-act="view" data-v="list">案件總覽</button>'
+  var html='<header class="top"><div class="top-in"><button type="button" class="brand" data-act="view" data-v="list" title="回到案件總覽"><span class="seal-mark">估</span><span>估價報告產生器</span></button>'
+   +'<div class="top-mid"><button class="btn ghost sm'+(lst?' on':'')+'" data-act="view" data-v="list">案件總覽</button>'
    +(lst?'':'<label class="sr" for="casesel">案件</label><select id="casesel">'+A.cases.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===c.id?' selected':'')+'>'+esc(x.id+'　〔'+kindOf(x.kind).name+'〕'+(x.basic.addr||'新案件'))+(x.signed?'（已交付）':'')+'</option>';}).join('')+'</select>')
-   +(isManager()?'':'<button class="btn ghost sm" data-act="newCase">新案件</button>'+(lst?'':'<button class="btn ghost sm" data-act="dupCase">複製本案</button>')+'<button class="btn ghost sm" data-act="importCase">匯入案件檔</button>')+'<input type="file" id="casefile" accept=".json,application/json" class="sr">'
+   +(isManager()?'':'<button class="btn ghost sm" data-act="newCase">新案件</button>'+(lst?'':'<button class="btn ghost sm" data-act="dupCase">複製本案</button>')+'<button class="btn ghost sm" data-act="importCase">匯入案件檔</button>')+'<input type="file" id="casefile" accept=".json,application/json" class="sr"></div><div class="top-end">'
    +(CLOUD_ME ? '<div class="roles" role="group" aria-label="身分"><button class="on" disabled>'+roleName(CLOUD_ME.role)+'</button></div><span class="law">'+cloudWho()+'</span>'+cloudStatusHtml(true) : '<div class="roles" role="group" aria-label="身分"><button data-act="role" data-v="appraiser" class="'+(A.role==='appraiser'?'on':'')+'">估價師</button><button data-act="role" data-v="assistant" class="'+(A.role==='assistant'?'on':'')+'">助理員</button></div>')
    +cloudBtn('sm')
-   +'</div></header>'
-   +'<div class="mtop">'+(lst?'':'<button data-act="view" data-v="list" aria-label="案件總覽">←</button>')+'<span class="seal-mark">估</span>'
+   +'</div></div></header>'
+   +'<div class="mtop">'+(lst?'':'<button data-act="view" data-v="list" aria-label="案件總覽">←</button>')+'<button type="button" class="mseal" data-act="view" data-v="list" aria-label="回到案件總覽"><span class="seal-mark">估</span></button>'
    +(lst?'<div class="t"><b>案件總覽</b><span>'+esc(CLOUD_ME&&CLOUD_ME.officeName?CLOUD_ME.officeName:'本機')+'</span></div>':'<div class="t"><b>'+esc(c.id)+'　'+esc(c.basic.addr||'新案件')+'</b><span>'+tabName(A.tab)+'・'+esc(MOD(c).name)+'</span></div>'+(dataHub()?'<button data-act="sheet" data-v="sources" aria-label="資料來源">資料</button>':''))
    +'<button data-act="sheet" data-v="menu" aria-label="案件選單">案件</button></div>'
    +'<div class="split"><div class="left">'
