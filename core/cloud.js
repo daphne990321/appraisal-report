@@ -319,9 +319,11 @@ function cloudLvrLastSync(){
   var gen=CLOUD_GEN, cl=CLOUD_CLIENT;
   CLOUD_LVR_LAST={loading:true};
   var done=function(v){ if (gen!==CLOUD_GEN) return; CLOUD_LVR_LAST=v; if (A.ui.sheet==='sources') render(); };
-  cl.from('lvr_sync_log').select('season,at').eq('ok',true).order('at',{ascending:false}).limit(1).then(function(r){
-    var row = r && !r.error && r.data && r.data[0];
-    done(row ? {at:String(row.at).slice(0,10), season:row.season} : {err:true});
+  /* 最近一次成功同步的日期，與資料庫裡最新的一季（補資料時處理順序不固定，所以分開查） */
+  var q=function(col){ return cl.from('lvr_sync_log').select('season,at').eq('ok',true).order(col,{ascending:false}).limit(1); };
+  Promise.all([q('at'), q('season')]).then(function(rs){
+    var a=rs[0] && !rs[0].error && rs[0].data && rs[0].data[0], b=rs[1] && !rs[1].error && rs[1].data && rs[1].data[0];
+    done(a && b ? {at:String(a.at).slice(0,10), season:b.season} : {err:true});
   }, function(){ done({err:true}); });
 }
 function cloudBoot(){

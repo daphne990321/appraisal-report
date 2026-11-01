@@ -115,10 +115,11 @@ function methodStrip(c){
 function cloudWho(){ return CLOUD_ME ? esc(CLOUD_ME.officeName+'・'+(CLOUD_ME.displayName||CLOUD_ME.email)) : ''; }
 function cloudStatusHtml(id){ var t=cloudStatusText(); return '<span'+(id?' id="cloudStatus"':'')+' class="law cloud-st"'+(CLOUD_STATUS==='error'?' style="color:var(--fail);font-weight:700"':'')+'>'+t+'</span>'; }
 function cloudBtn(cls){ return CLOUD_ME ? '<button class="btn ghost '+cls+'" data-act="cloudLogout">登出</button>' : '<button class="btn ghost '+cls+'" data-act="cloudLogin">登入雲端</button>'; }
+function seasonText(x){ var m=String(x||'').match(/^(\d+)S(\d)$/); return m ? m[1]+' 年第 '+m[2]+' 季' : String(x||''); }
 function srcItem(name, chip, rows){ return '<div class="src-item"><div class="src-h"><b>'+name+'</b>'+chip+'</div>'+rows+'</div>'; }
 function sourcesBody(c){
   var is=A.imported.sales.length, ir=A.imported.rents.length, cl=CLOUD_ME && A.cloudLvr && A.cloudLvr.info, L=CLOUD_LVR_LAST, last;
-  if (L && L.at) last=esc(L.at)+'（'+esc(L.season)+' 季）'; else if (L && L.err) last='無法取得'; else last='查詢中…';
+  if (L && L.at) last=esc(L.at)+'・最新資料：'+esc(seasonText(L.season)); else if (L && L.err) last='無法取得'; else last='查詢中…';
   var h='';
   h+= CLOUD_ME
     ? srcItem('實價登錄','<span class="chip ok">自動更新</span>',
