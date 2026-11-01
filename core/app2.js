@@ -5,11 +5,33 @@ function tabReport(c,k,v){
 }
 /* ===== 分頁：資料匯入（勘估標的與委託／實價登錄買賣／租賃／營造單價） ===== */
 function tabData(c,k){
+  if (dataHub()) return tabDataHub(c,k);
   var M=MOD(c), sub=A.dataSub, body;
   if (sub==='sales') body=dataSales(c,k,M); else if (sub==='rents') body=dataRents(c,k,M); else if (sub==='cost') body=dataCost(c,k,M); else body=dataSubject(c,k,M);
-  return SUB('dataSub',[['subject','勘估標的與委託'],['sales','實價登錄：買賣'],['rents','實價登錄：租賃'],['cost','營造單價']]) + body;
+  return '<div class="rowb">'+SUB('dataSub',[['subject','勘估標的與委託'],['sales','實價登錄：買賣'],['rents','實價登錄：租賃'],['cost','營造單價']])+'<button class="btn ghost sm" data-act="layout" data-v="hub">試用新版畫面</button></div>' + body;
 }
-function dataSubject(c,k,M){
+/* 新版「資料中心」：分頁只放本案要用的資料，來源與匯入集中在「資料來源」面板 */
+function tabDataHub(c,k){
+  var M=MOD(c), sub=A.dataSub, body;
+  if (sub!=='sales' && sub!=='rents') sub='subject';
+  if (sub==='sales') body=dataSales(c,k,M,true); else if (sub==='rents') body=dataRents(c,k,M,true); else body=dataSubject(c,k,M,true);
+  return SUB('dataSub',[['subject','標的與委託'],['sales','挑選比較標的'],['rents','租金行情']]) + body;
+}
+/* 雲端實價登錄的一行文字（純文字，已 esc；數字用 <b>） */
+function cloudLvrText(){
+  var cl = CLOUD_ME && A.cloudLvr && A.cloudLvr.info;
+  if (cl) return '雲端實價登錄 '+esc(cl.county+cl.district)+' 近 <b class="num">'+esc(cl.months)+'</b> 個月 共 <b class="num">'+(A.cloudLvr.sales.length+A.cloudLvr.rents.length)+'</b> 筆';
+  if (CLOUD_ME && CLOUD_LVR_LOADING) return '雲端實價登錄載入中…';
+  return CLOUD_ME ? '雲端實價登錄（本案條件下尚無資料）' : '';
+}
+function srcBar(c){
+  var t=cloudLvrText(), is=A.imported.sales.length, ir=A.imported.rents.length;
+  if (!t && !CLOUD_ME) t='內建 '+esc(LVR_META.county)+' 樣本'+(A.hideBuiltin?'（已停用）':'');
+  if (is+ir>0) t+='・手動匯入 <b class="num">'+(is+ir)+'</b> 筆';
+  t+='・本所案例 <b class="num">'+A.own.length+'</b> 筆';
+  return '<div class="srcbar"><span class="small">資料來源：'+t+'</span><button class="btn ghost sm" data-act="sheet" data-v="sources">資料來源 ▸</button></div>';
+}
+function dataSubject(c,k,M,hub){
   var b='c.basic.', pt=c.basic.priceType, dl=districtsOf(c.basic.county), land=isLandKind(c.kind), kd=kindOf(c.kind), R='c.report.';
   return kindCard(c)
    +'<section class="card"><h2>本案使用的估價模型 <span class="law">事務所設定，在「參數與指標」維護</span></h2>'
@@ -33,10 +55,10 @@ function dataSubject(c,k,M){
    +'<section class="card"><h2>委託 <span class="law">估價師法 §15</span></h2><div class="g3">'+F('委託人',b+'client')+F('酬金（元）',b+'fee',{num:true})+F('簽約日',b+'contractDate',{type:'date'})+'</div>'+F('工作範圍',b+'scope')+'</section>'
    +'<section class="card"><h2>估價師 <span class="law">§16 II(15)</span></h2><div class="g2">'+F('姓名','c.appraiser.name')+F('事務所','c.appraiser.office')+F('估價師證書字號','c.appraiser.certNo')+F('開業證書字號','c.appraiser.licenseNo')+F('開業證書有效期限','c.appraiser.licenseExp',{type:'date'})+F('所屬公會','c.appraiser.guild')+F('公會會員證書字號','c.appraiser.guildNo')+'</div></section>'
    +'<section class="card"><h2>報告書資料來源與其他負擔</h2>'+F('其他資料來源（寫入「估價資料來源說明」）',R+'dataSources',{ph:'例：委託人提供之營業報表、租約'})+F('其他負擔',R+'otherBurden')+'</section>'
-   +'<section class="card"><h2>勘估標的資料從哪裡取得</h2><div class="small" style="color:var(--ink2);line-height:1.8">'
+   +(hub?'':'<section class="card"><h2>勘估標的資料從哪裡取得</h2><div class="small" style="color:var(--ink2);line-height:1.8">'
    +'<b>登記謄本</b>：全國地政電子謄本系統（需帳號，每張 20 元，費用併入 HiNet 帳單）；下載的 PDF 可交給 Claude 擷取地號、面積、權利範圍、公告現值與他項權利。<br>'
    +'<b>實價登錄</b>：內政部不動產交易實價查詢服務網開放資料，免費，每月 1、11、21 日更新。<br>'
-   +'<b>使用分區、公告土地現值</b>：各縣市都市計畫查詢系統及地籍圖資服務。</div></section>';
+   +'<b>使用分區、公告土地現值</b>：各縣市都市計畫查詢系統及地籍圖資服務。</div></section>');
 }
 function libSummary(){
   var bs=BUILTIN.sales.length, br=BUILTIN.rents.length, is=A.imported.sales.length, ir=A.imported.rents.length;
@@ -52,12 +74,12 @@ function dropZone(){
 function subjLine(c){ var b=c.basic, s=subj(c);
   if (s.land) return '<div class="box info">勘估標的：'+esc(b.county)+esc(b.district)+'・土地・'+esc(b.zone||'使用分區未填')+'・'+fmt(s.area,2)+' 坪・價格日期 '+esc(b.priceDate||'未填')+'（僅比對土地交易；屋齡、樓層條件不適用）</div>';
   return '<div class="box info">勘估標的：'+esc(b.county)+esc(b.district)+'・'+esc(b.btype)+'・'+esc(b.zone||'使用分區未填')+'・屋齡 '+fmt(s.age,1)+' 年・'+fmt(s.area,2)+' 坪・'+(s.floor||'—')+' 樓・價格日期 '+esc(b.priceDate||'未填')+'</div>'; }
-function dataSales(c,k,M){
+function dataSales(c,k,M,hub){
   var st=marketStats(c, M, A), R='m.select.', used=c.comps.map(function(x){return x.libId;});
   var shown=st.rows.slice(0,80), pend=A.ui.pickConfirm;
-  return '<section class="card"><h2>實價登錄資料 <span class="law">§4、§12</span></h2>'
+  return (hub ? srcBar(c) : '<section class="card"><h2>實價登錄資料 <span class="law">§4、§12</span></h2>'
    +'<div class="box info">已內建內政部實價登錄開放資料：'+esc(LVR_META.county)+'（'+esc(LVR_META.issued)+'，'+esc(LVR_META.fetched)+' 下載）。其他縣市請到「不動產交易實價查詢服務網」下載開放資料 CSV 後拖進下方；正式版會由系統直接介接內政部。</div>'
-   + dropZone() + libSummary() +'</section>'
+   + dropZone() + libSummary() +'</section>')
    +'<section class="card"><h2>比較標的選取條件 <span class="law">模型「'+esc(M.name)+'」・§12</span></h2>'
    + subjLine(c)
    +'<div class="g4">'+CB('同縣市',R+'sameCounty')+CB('同鄉鎮市區',R+'sameDistrict')+CB('同建物型態',R+'sameType')+CB('同使用分區類別',R+'sameZone')+'</div>'
@@ -79,9 +101,9 @@ function dataSales(c,k,M){
      : '<tr><td colspan="10" class="law">沒有符合條件的案例。請放寬選取條件、確認勘估標的縣市與鄉鎮市區，或匯入該縣市的實價登錄資料。</td></tr>')
    +'</tbody></table></div></section>';
 }
-function dataRents(c,k,M){
+function dataRents(c,k,M,hub){
   var R='m.rentSelect.', rs=rentStats(c, M, A), area=Number(c.basic.area)||0, sug=rs.med!==null&&area?Math.round(rs.med*area/100)*100:null;
-  return '<section class="card"><h2>租賃實例選取條件 <span class="law">模型「'+esc(M.name)+'」・§35</span></h2>'
+  return (hub ? srcBar(c) : '')+'<section class="card"><h2>租賃實例選取條件 <span class="law">模型「'+esc(M.name)+'」・§35</span></h2>'
    + subjLine(c)
    +'<div class="g3">'+CB('同縣市',R+'sameCounty')+CB('同鄉鎮市區',R+'sameDistrict')+CB('同建物型態',R+'sameType')+'</div>'
    +'<div class="g2">'+SL('租賃日期（價格日期前）',R+'months',1,36,1,'個月',{rr:true})+SL('面積差距',R+'areaTolPct',5,200,5,'%內',{rr:true})+'</div>'
@@ -94,7 +116,7 @@ function dataRents(c,k,M){
    +'<section class="card"><h2>符合條件的租賃案例</h2><div class="tw"><table class="t" style="min-width:860px"><thead><tr><th>租賃年月</th><th>位置</th><th>型態</th><th>出租型態</th><th class="r">樓層</th><th class="r">面積（坪）</th><th class="r">月租金</th><th class="r">元/坪</th><th>備註</th></tr></thead><tbody>'
    +(rs.rows.length? rs.rows.slice(0,80).map(function(x){ return '<tr><td class="num">'+x.date+'</td><td>'+esc(x.addr)+'</td><td class="law">'+esc(x.type)+'</td><td class="law">'+esc(x.lease||'—')+(x.furnished?'・附傢俱':'')+'</td><td class="r num">'+(x.floorNum||'—')+'</td><td class="r num">'+fmt(x.areaPing,2)+'</td><td class="r num">'+fmt(x.rentTotal)+'</td><td class="r num">'+fmt(x.rentPerPing)+'</td><td class="law">'+esc(x.note)+'</td></tr>'; }).join('')
      :'<tr><td colspan="9" class="law">沒有符合條件的租賃案例。請放寬條件或匯入該縣市的租賃 CSV（_C 檔）。</td></tr>')
-   +'</tbody></table></div>'+libSummary()+'</section>';
+   +'</tbody></table></div>'+(hub?'':libSummary())+'</section>';
 }
 function suggestRow(table, tf){
   tf=Number(tf)||0; if (!tf) return -1;

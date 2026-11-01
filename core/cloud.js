@@ -116,7 +116,7 @@ function cloudSignOut(){
   var done=function(){
     CLOUD_GEN++; clearTimeout(cloudSyncT); clearTimeout(saveT); /* 避免舊資料晚一步寫回 localStorage */
     CLOUD_ME=null; CLOUD_SYNCED=null; CLOUD_STATUS=''; cloudPushAgain=false;
-    CLOUD_LVR_CACHE={}; CLOUD_LVR_KEY=''; CLOUD_LVR_LOADING=false; CLOUD_LVR_REQ++; delete A.cloudLvr; /* 登出：清掉雲端實價登錄與快取 */
+    CLOUD_LVR_CACHE={}; CLOUD_LVR_KEY=''; CLOUD_LVR_LOADING=false; CLOUD_LVR_REQ++; CLOUD_LVR_LAST=null; delete A.cloudLvr; /* 登出：清掉雲端實價登錄與快取 */
     var bak=null;
     try { bak=localStorage.getItem(CLOUD_BACKUP_KEY); if (bak!==null){ localStorage.setItem(KEY, bak); localStorage.removeItem(CLOUD_BACKUP_KEY); } } catch(e){}
     A = (bak!==null) ? load() : fresh();
@@ -309,6 +309,20 @@ function cloudLvrRefresh(sp, key){
     if (gen!==CLOUD_GEN || req!==CLOUD_LVR_REQ) return;
     CLOUD_LVR_LOADING=false; cloudSetStatus(CLOUD_STATUS); render(); toast('實價登錄讀取失敗：'+cloudErrMsg(e));
   });
+}
+/* 資料來源面板：實價登錄資料庫最近一次更新（null＝未查；{loading:true}；{at,season}；{err:true}） */
+var CLOUD_LVR_COUNTIES='新北市、臺中市、新竹縣'; /* 與 GitHub 排程同步的縣市一致 */
+var CLOUD_LVR_LAST=null;
+function cloudLvrLastSync(){
+  if (!CLOUD_ME || !CLOUD_CLIENT) return;
+  if (CLOUD_LVR_LAST && (CLOUD_LVR_LAST.at || CLOUD_LVR_LAST.loading)) return;
+  var gen=CLOUD_GEN, cl=CLOUD_CLIENT;
+  CLOUD_LVR_LAST={loading:true};
+  var done=function(v){ if (gen!==CLOUD_GEN) return; CLOUD_LVR_LAST=v; if (A.ui.sheet==='sources') render(); };
+  cl.from('lvr_sync_log').select('season,at').eq('ok',true).order('at',{ascending:false}).limit(1).then(function(r){
+    var row = r && !r.error && r.data && r.data[0];
+    done(row ? {at:String(row.at).slice(0,10), season:row.season} : {err:true});
+  }, function(){ done({err:true}); });
 }
 function cloudBoot(){
   var has=false;

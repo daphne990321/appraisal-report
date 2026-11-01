@@ -93,6 +93,10 @@ function refresh(){
 
 /* ===== 繪製 ===== */
 var TABS=[['report','估價報告'],['data','資料匯入'],['final','價格決定'],['survey','現勘與訪談'],['params','參數與指標'],['comp','比較法'],['income','收益法'],['cost','成本法'],['land','土地開發分析']];
+/* 資料匯入畫面版面：預設新版「資料中心」，可切回舊版（存在這台電腦的瀏覽器） */
+var DATA_LAYOUT_KEY='appraisal-ui-data-layout';
+function dataHub(){ try{ return localStorage.getItem(DATA_LAYOUT_KEY)!=='classic'; }catch(e){ return true; } }
+function tabLabel(id,name){ return id==='data'&&dataHub()?'勘估標的':name; }
 var TABKEY={comp:'comparison',income:'income',cost:'cost',land:'land'};
 var ICONS={
   report:'<path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/>',
@@ -102,7 +106,7 @@ var ICONS={
   more:'<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>'
 };
 function icon(n){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICONS[n]+'</svg>'; }
-function tabName(t){ var x=TABS.find(function(y){ return y[0]===t; }); return x?x[1]:''; }
+function tabName(t){ var x=TABS.find(function(y){ return y[0]===t; }); return x?tabLabel(x[0],x[1]):''; }
 function methodStrip(c){
   return '<div class="mstrip mstrip-fix" aria-label="各方法價格">'+[['comp','comparison','比較價格'],['income','income','收益價格'],['cost','cost','成本價格'],['land','land','土地開發分析']].map(function(m){ var on=c.methods[m[1]];
     return '<button data-act="tab" data-v="'+m[0]+'" class="'+(on?'':'off')+'"><span class="k">'+m[2]+(on?'':'・未採用')+'</span><span class="v" data-o="ms_'+m[1]+'"></span></button>'; }).join('')
@@ -111,10 +115,40 @@ function methodStrip(c){
 function cloudWho(){ return CLOUD_ME ? esc(CLOUD_ME.officeName+'・'+(CLOUD_ME.displayName||CLOUD_ME.email)) : ''; }
 function cloudStatusHtml(id){ var t=cloudStatusText(); return '<span'+(id?' id="cloudStatus"':'')+' class="law cloud-st"'+(CLOUD_STATUS==='error'?' style="color:var(--fail);font-weight:700"':'')+'>'+t+'</span>'; }
 function cloudBtn(cls){ return CLOUD_ME ? '<button class="btn ghost '+cls+'" data-act="cloudLogout">登出</button>' : '<button class="btn ghost '+cls+'" data-act="cloudLogin">登入雲端</button>'; }
+function srcItem(name, chip, rows){ return '<div class="src-item"><div class="src-h"><b>'+name+'</b>'+chip+'</div>'+rows+'</div>'; }
+function sourcesBody(c){
+  var is=A.imported.sales.length, ir=A.imported.rents.length, cl=CLOUD_ME && A.cloudLvr && A.cloudLvr.info, L=CLOUD_LVR_LAST, last;
+  if (L && L.at) last=esc(L.at)+'（'+esc(L.season)+' 季）'; else if (L && L.err) last='無法取得'; else last='查詢中…';
+  var h='';
+  h+= CLOUD_ME
+    ? srcItem('實價登錄','<span class="chip ok">自動更新</span>',
+        '<div class="small">'+esc(CLOUD_LVR_COUNTIES)+'・近 3 年・每月 5 日自動更新</div>'
+        +'<div class="small">本案目前載入：'+cloudLvrText()+(cl?'（買賣 <b class="num">'+A.cloudLvr.sales.length+'</b> 筆、租賃 <b class="num">'+A.cloudLvr.rents.length+'</b> 筆）':'')+'</div>'
+        +'<div class="small">資料庫最近一次更新：'+last+'</div>')
+    : srcItem('實價登錄','<span class="chip mute">未登入</span>',
+        '<div class="small">登入雲端後自動使用內政部實價登錄（'+esc(CLOUD_LVR_COUNTIES)+'）</div><div>'+cloudBtn('sm')+'</div>');
+  if (!CLOUD_ME) h+=srcItem('內建樣本', A.hideBuiltin?'<span class="chip mute">已停用</span>':'<span class="chip info">示範</span>',
+        '<div class="small">內建 '+esc(LVR_META.county)+' 買賣 <b class="num">'+BUILTIN.sales.length+'</b> 筆、租賃 <b class="num">'+BUILTIN.rents.length+'</b> 筆（'+esc(LVR_META.issued)+'）</div>');
+  h+=srcItem('本所案例','<span class="chip info">'+A.own.length+' 筆</span>',
+        '<div class="small">事務所自己經手的成交案例，會和實價登錄一起參加比較標的評分</div><div><button class="btn ghost sm" data-act="goTab" data-v="params:sources">編輯本所案例</button></div>');
+  h+=srcItem('營造單價表','<span class="chip warn">示範值</span>',
+        '<div class="small">模型「'+esc(MOD(c).name)+'」・成本法用（§56）</div><div><button class="btn ghost sm" data-act="sheet" data-v="sources:cost">查看與套用</button></div>');
+  h+=srcItem('手動匯入實價登錄 CSV','<span class="chip mute">進階</span>',
+        '<div class="small">雲端沒有的縣市才需要</div>'+dropZone()
+        +(is||ir?'<div class="small">已匯入 買賣 <b class="num">'+is+'</b> 筆、租賃 <b class="num">'+ir+'</b> 筆</div><div><button class="btn ghost sm" data-act="clearImported">清除匯入資料</button></div>':''));
+  h+=srcItem('土地／建物謄本','<span class="chip mute">規劃中</span>',
+        '<div class="small">目前：自行到全國地政電子謄本系統申請（需帳號，每張 20 元）。之後：上傳謄本 PDF，自動擷取地號、面積、權利範圍與他項權利，由估價師確認。</div>');
+  h+=srcItem('公告現值、使用分區','<span class="chip mute">規劃中</span>',
+        '<div class="small">目前：各縣市都市計畫查詢系統及地籍圖資服務。之後：依地號自動查詢政府開放資料。</div>');
+  h+='<div class="src-foot"><span class="hint">想用原本的「資料匯入」畫面？</span><button class="btn ghost sm" data-act="layout" data-v="classic">改回舊版畫面</button></div>';
+  return h;
+}
 function sheetHtml(c){
   var s=A.ui.sheet; if (!s) return '';
   var title='', body='';
   if (s==='report'){ title='估價報告書'; body='<div data-rp="1"></div>'; }
+  else if (s==='sources'){ title='資料來源'; body=sourcesBody(c); }
+  else if (s==='sources:cost'){ title='營造單價表'; body='<div><button class="btn ghost sm" data-act="sheet" data-v="sources">← 返回資料來源</button></div>'+dataCost(c,null,MOD(c)); }
   else if (s==='newcase'){ title='新案件：選擇標的類型'; body=['土地','建物','商用'].map(function(g){ return '<div class="lbl" style="margin:0">'+g+'</div><div class="g3">'+KINDS.filter(function(x){ return x.group===g; }).map(function(x){ return '<button type="button" class="opt" data-act="newKind" data-v="'+x.id+'"><span><b>'+esc(x.name)+'</b><span class="law">'+esc(x.hint)+'</span></span></button>'; }).join('')+'</div>'; }).join('')+'<div class="hint">類型決定預設的估價方法、比較法因素細項、方法權重與報告書格式；建立後仍可在「資料匯入 › 勘估標的」修改。</div>'; }
   else if (s==='login'){ title='登入雲端'; var lb=A.ui.logging;
     body='<form data-form="login"><div class="hint">帳號由事務所管理者建立。未登入時資料只存在這台電腦的瀏覽器。</div>'
@@ -140,7 +174,7 @@ function sheetHtml(c){
       +'<div class="g2"><button class="btn ghost" data-act="newCase">新案件</button><button class="btn ghost" data-act="dupCase">複製本案</button><button class="btn ghost" data-act="importCase">匯入案件檔</button></div>'
       +'<div><div class="lbl">雲端</div>'+(CLOUD_ME?'<div class="hint">'+cloudWho()+'　'+cloudStatusHtml(false)+'</div>':'')+cloudBtn('')+'</div>'
       +'<div><div class="lbl">身分</div>'+(CLOUD_ME ? '<div class="hint">已登入，身分固定為「'+(CLOUD_ME.role==='appraiser'?'估價師':'助理員')+'」</div>' : '<div class="g2"><button class="btn'+(A.role==='appraiser'?'':' ghost')+'" data-act="role" data-v="appraiser">估價師</button><button class="btn'+(A.role==='assistant'?'':' ghost')+'" data-act="role" data-v="assistant">助理員</button></div>')+'</div>'; }
-  return '<div class="sheet-bg" data-act="closeSheet"></div><div class="sheet'+(s==='login'||s==='forgot'||s==='newpw'?' sheet-center':'')+'" role="dialog" aria-modal="true" aria-label="'+title+'"><div class="sheet-grip"></div><div class="sheet-head"><b>'+title+'</b><button class="btn ghost sm" data-act="closeSheet">關閉</button></div><div class="sheet-body">'+body+'</div></div>';
+  return '<div class="sheet-bg" data-act="closeSheet"></div><div class="sheet'+(s==='login'||s==='forgot'||s==='newpw'?' sheet-center':'')+(s==='sources'||s==='sources:cost'?' sheet-side':'')+'" role="dialog" aria-modal="true" aria-label="'+title+'"><div class="sheet-grip"></div><div class="sheet-head"><b>'+title+'</b><button class="btn ghost sm" data-act="closeSheet">關閉</button></div><div class="sheet-body">'+body+'</div></div>';
 }
 /* ===== 詢問 AI（免費過渡版：整理提問文字，使用者自行貼到 Claude；不含個資、不呼叫 API） ===== */
 function askAIText(c,k,v,kind,i){
@@ -219,16 +253,16 @@ function render(){
    +(CLOUD_ME ? '<div class="roles" role="group" aria-label="身分"><button class="on" disabled>'+(CLOUD_ME.role==='appraiser'?'估價師':'助理員')+'</button></div><span class="law">'+cloudWho()+'</span>'+cloudStatusHtml(true) : '<div class="roles" role="group" aria-label="身分"><button data-act="role" data-v="appraiser" class="'+(A.role==='appraiser'?'on':'')+'">估價師</button><button data-act="role" data-v="assistant" class="'+(A.role==='assistant'?'on':'')+'">助理員</button></div>')
    +cloudBtn('sm')
    +'</div></header>'
-   +'<div class="mtop"><span class="seal-mark">估</span><div class="t"><b>'+esc(c.id)+'　'+esc(c.basic.addr||'新案件')+'</b><span>'+tabName(A.tab)+'・'+esc(MOD(c).name)+'</span></div><button data-act="sheet" data-v="menu" aria-label="案件選單">案件</button></div>'
+   +'<div class="mtop"><span class="seal-mark">估</span><div class="t"><b>'+esc(c.id)+'　'+esc(c.basic.addr||'新案件')+'</b><span>'+tabName(A.tab)+'・'+esc(MOD(c).name)+'</span></div>'+(dataHub()?'<button data-act="sheet" data-v="sources" aria-label="資料來源">資料</button>':'')+'<button data-act="sheet" data-v="menu" aria-label="案件選單">案件</button></div>'
    +'<div class="split"><div class="left">'
-   +'<div class="tabs-row"><nav class="tabs" aria-label="分頁">'+TABS.map(function(t){ var off = TABKEY[t[0]] && !c.methods[TABKEY[t[0]]]; return '<button data-act="tab" data-v="'+t[0]+'" class="'+(A.tab===t[0]?'on':'')+'">'+t[1]+(off?' <span class="off">未採用</span>':'')+'<span class="dot" data-tabdot="'+t[0]+'" hidden></span></button>';}).join('')+'</nav>'
-   +(A.tab!=='report'?'<button class="btn ghost sm side-toggle" data-act="side" aria-pressed="'+(A.side?'true':'false')+'">'+(A.side?'收起對照報告':'對照報告')+'</button>':'')+'</div>'
+   +'<div class="tabs-row"><nav class="tabs" aria-label="分頁">'+TABS.map(function(t){ var off = TABKEY[t[0]] && !c.methods[TABKEY[t[0]]]; return '<button data-act="tab" data-v="'+t[0]+'" class="'+(A.tab===t[0]?'on':'')+'">'+tabLabel(t[0],t[1])+(off?' <span class="off">未採用</span>':'')+'<span class="dot" data-tabdot="'+t[0]+'" hidden></span></button>';}).join('')+'</nav>'
+   +(dataHub()?'<button class="btn ghost sm" data-act="sheet" data-v="sources">資料來源</button>':'')+(A.tab!=='report'?'<button class="btn ghost sm side-toggle" data-act="side" aria-pressed="'+(A.side?'true':'false')+'">'+(A.side?'收起對照報告':'對照報告')+'</button>':'')+'</div>'
    +(c.signed?'<div class="box ok">本案已於 '+esc(c.signedAt)+' 簽名交付，資料與估價模型快照已鎖定；保存至 '+(Number(c.signedAt.slice(0,4))+15)+c.signedAt.slice(4)+' 以後（估價師法 §19 III）。要修改請用「複製本案」。</div>':'')
    +methodStrip(c)
    + body +'</div>'+(side?'<aside class="right" aria-label="報告書對照"><div data-rp="1"></div></aside>':'')+'</div>'
    +'<nav class="mnav" aria-label="主要分頁">'+[['report','報告','report'],['data','資料','data'],['final','決定','final'],['survey','現勘','survey'],['more','更多','params,comp,income,cost,land']].map(function(x){
       var on = x[0]==='more' ? ['params','comp','income','cost','land'].indexOf(A.tab)>=0 : A.tab===x[0];
-      return '<button data-act="'+(x[0]==='more'?'sheet':'tab')+'" data-v="'+x[0]+'" class="'+(on?'on':'')+'"'+(on?' aria-current="page"':'')+'>'+icon(x[0]==='more'?'more':x[0])+'<span>'+x[1]+' <span class="dot" data-tabdot="'+x[2]+'" hidden class="mdot"></span></span></button>'; }).join('')+'</nav>'
+      return '<button data-act="'+(x[0]==='more'?'sheet':'tab')+'" data-v="'+x[0]+'" class="'+(on?'on':'')+'"'+(on?' aria-current="page"':'')+'>'+icon(x[0]==='more'?'more':x[0])+'<span>'+(x[0]==='data'&&dataHub()?'標的':x[1])+' <span class="dot" data-tabdot="'+x[2]+'" hidden class="mdot"></span></span></button>'; }).join('')+'</nav>'
    +(A.tab!=='report'?'<button class="fab" data-act="sheet" data-v="report" aria-label="開啟估價報告"><span><span class="lbl2">估價金額・點開看報告</span><br><span class="amt" data-o="fabAmt"></span></span><span data-o="fabSt"></span></button>':'')
    + sheetHtml(c) + askAIHtml(c,k,v);
   document.getElementById('app').innerHTML=html;
@@ -299,7 +333,7 @@ document.addEventListener('keydown', function(e){ if (e.key==='Escape' && A.ui.s
 var lastMob=null; window.addEventListener('resize', function(){ clearTimeout(window._rz); window._rz=setTimeout(function(){ var m=isM(); if (m!==lastMob){ lastMob=m; if (!m) A.ui.sheet=null; render(); } },150); });
 function nextId(){ var m=0; A.cases.forEach(function(c){ var x=parseInt(String(c.id).split('-')[1],10); if(x>m) m=x; }); return '115-'+String(m+1).padStart(4,'0'); }
 function nextLabel(c){ var used=c.comps.map(function(x){return x.label;}); return 'ABCDEFGH'.split('').find(function(l){return used.indexOf(l)<0;}); }
-function go(v){ var p=String(v).split(':'); A.tab=p[0]; if (p[1]){ if (p[0]==='data') A.dataSub=p[1]; if (p[0]==='params') A.paramSub=p[1]; } A.ui.sheet=null; }
+function go(v){ if (v==='data:cost' && dataHub()){ A.ui.sheet='sources:cost'; return; } var p=String(v).split(':'); A.tab=p[0]; if (p[1]){ if (p[0]==='data') A.dataSub=p[1]; if (p[0]==='params') A.paramSub=p[1]; } A.ui.sheet=null; }
 document.addEventListener('click', function(e){
   var t=e.target.closest('[data-act]'); if(!t || t.disabled || t.tagName==='SELECT' || t.tagName==='INPUT') return;
   if (t.tagName==='A') e.preventDefault();
@@ -307,7 +341,8 @@ document.addEventListener('click', function(e){
   if (act==='tab' || act==='goTab'){ go(v); if (v==='params') A.pModel=c.modelId; save(); render(); window.scrollTo(0,0); }
   else if (act==='sub'){ A[t.getAttribute('data-k')]=v; A.ui.pickConfirm=false; save(); render(); }
   else if (act==='side'){ A.side=!A.side; save(); render(); }
-  else if (act==='sheet'){ A.ui.sheet=v; render(); }
+  else if (act==='sheet'){ A.ui.sheet=v; if (v==='sources' && typeof cloudLvrLastSync==='function') cloudLvrLastSync(); render(); }
+  else if (act==='layout'){ try{ localStorage.setItem(DATA_LAYOUT_KEY, v==='classic'?'classic':'hub'); }catch(e){} A.ui.sheet=null; if (dataHub() && A.dataSub==='cost') A.dataSub='subject'; render(); toast('已切換到'+(dataHub()?'新版「資料中心」':'舊版')+'畫面，隨時可以再切換'); }
   else if (act==='closeSheet'){ A.ui.sheet=null; render(); }
   else if (act==='askAI'){ A.ui.askAI={kind:t.getAttribute('data-kind'), i:Number(t.getAttribute('data-i'))}; render(); }
   else if (act==='closeAsk'){ A.ui.askAI=null; render(); }

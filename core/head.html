@@ -47,6 +47,7 @@ select.ci{width:96px;text-align:left;font-family:var(--f-body)}
 .law{font-size:12px;font-weight:400;color:var(--muted)}
 .hint{font-size:12px;color:var(--muted);margin-top:4px}
 .chip{display:inline-flex;align-items:center;min-height:22px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap}
+.chip.mute{background:var(--surface2);color:var(--ink2)}
 .chip.ok{background:var(--ok-bg);color:var(--ok)}.chip.warn{background:var(--warn-bg);color:var(--warn)}.chip.fail{background:var(--fail-bg);color:var(--fail)}.chip.info{background:var(--accent-soft);color:var(--accent)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .card>h2{margin:0;font-size:15.5px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;align-items:baseline}
@@ -181,6 +182,14 @@ button.opt{text-align:left;width:100%;font:inherit;color:inherit}button.opt b{di
 .linkbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 .menu-list{display:flex;flex-direction:column;gap:6px}
 .menu-list button{display:flex;justify-content:space-between;align-items:center;min-height:48px;padding:0 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:15px;cursor:pointer;text-align:left}
+.srcbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.src-item{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.src-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.src-item .small,.src-item .hint{color:var(--ink2)}
+.src-item .drop{padding:12px}
+.src-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:4px 2px}
+.tabs-row>.btn{white-space:nowrap;flex:none}
+@media (min-width:761px){.sheet.sheet-side{left:auto;right:0;top:0;bottom:0;width:min(460px,100vw);max-height:none;border-radius:0}.sheet.sheet-side .sheet-head{border-radius:0}.sheet.sheet-side .sheet-grip{display:none}}
 @media (max-width:760px){
   .top{display:none}
   .mtop{display:flex;position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--band);color:var(--band-ink);align-items:center;gap:8px;padding:10px 12px}
