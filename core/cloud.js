@@ -117,6 +117,7 @@ function cloudSignOut(){
     CLOUD_GEN++; clearTimeout(cloudSyncT); clearTimeout(saveT); /* 避免舊資料晚一步寫回 localStorage */
     CLOUD_ME=null; CLOUD_SYNCED=null; CLOUD_STATUS=''; cloudPushAgain=false;
     CLOUD_LVR_CACHE={}; CLOUD_LVR_KEY=''; CLOUD_LVR_LOADING=false; CLOUD_LVR_REQ++; CLOUD_LVR_LAST=null; delete A.cloudLvr; /* 登出：清掉雲端實價登錄與快取 */
+    CLOUD_MEMBERS=[]; CLOUD_VER={}; /* 階段 A：成員名單與版本號 */
     var bak=null;
     try { bak=localStorage.getItem(CLOUD_BACKUP_KEY); if (bak!==null){ localStorage.setItem(KEY, bak); localStorage.removeItem(CLOUD_BACKUP_KEY); } } catch(e){}
     A = (bak!==null) ? load() : fresh();
@@ -135,15 +136,56 @@ function cloudSetStatus(st){
     for (var i=0;i<els.length;i++){ els[i].textContent=cloudStatusText(); els[i].style.color = st==='error' ? 'var(--fail)' : ''; els[i].style.fontWeight = st==='error' ? '700' : ''; }
   } catch(e){}
 }
+/* ===== 多人協作（階段 A）=====
+   案件內容（data）存檔時比對版本號 version：雲端版本 ≠ 我拿到的版本，代表別人改過 → 載入最新版、我的修改另存備份。
+   工作流程欄位（負責人、簽證估價師、步驟、狀態、期限）獨立存，不檢查版本（類似 JIRA，最後一次修改為準），且不會動到案件內容。
+   新案件用 insert（不覆蓋）；案號被別人先用走時自動換號。每 60 秒與切回視窗時，自動載入別人的修改。 */
+var CLOUD_MEMBERS = [];   /* 本事務所成員 [{userId, name, role, active}] */
+var CLOUD_VER = {};       /* 案號 → 雲端版本號 */
+var CLOUD_CONFLICT_KEY = 'appraisal-conflict-backup';
+var CLOUD_CASE_COLS = 'case_no, signed, data, assignee, appraiser, stage, status, due_date, version, updated_at, updated_by';
+var CLOUD_META_COLS = 'case_no, signed, assignee, appraiser, stage, status, due_date, version, updated_at, updated_by';
 function cloudCaseRow(c){ return {office_id:CLOUD_ME.officeId, case_no:c.id, kind:c.kind||null, signed:!!c.signed, data:c}; }
+function cloudMetaRow(id){ var m=metaPure(metaOf(id)); return {assignee:m.assignee, appraiser:m.appraiser, stage:m.stage, status:m.status, due_date:m.due||null}; }
+function cloudMetaFromRow(row){ return {assignee:row.assignee||null, appraiser:row.appraiser||null, stage:row.stage||'intake', status:row.status||'active', due:row.due_date||'', updatedAt:row.updated_at||'', updatedBy:row.updated_by||null}; }
 function cloudModelRow(m){ return {office_id:CLOUD_ME.officeId, model_key:m.id, name:m.name||m.id, data:m}; }
 function cloudSettingsOf(){ return {own:A.own, imported:A.imported, hideBuiltin:!!A.hideBuiltin}; }
 function cloudSnapshot(){
-  var o={cases:{}, models:{}, settings:JSON.stringify(cloudSettingsOf())};
-  A.cases.forEach(function(c){ o.cases[c.id]=JSON.stringify(c); });
+  var o={cases:{}, meta:{}, models:{}, settings:JSON.stringify(cloudSettingsOf())};
+  A.cases.forEach(function(c){ o.cases[c.id]=JSON.stringify(c); o.meta[c.id]=JSON.stringify(metaPure(metaOf(c.id))); });
   A.models.forEach(function(m){ o.models[m.id]=JSON.stringify(m); });
   return o;
 }
+function memberName(uid){ if (!uid) return '未指派'; var m=CLOUD_MEMBERS.find(function(x){ return x.userId===uid; }); return m ? m.name : (CLOUD_ME && uid===CLOUD_ME.userId ? (CLOUD_ME.displayName||CLOUD_ME.email) : '已移除的成員'); }
+function cloudMembersLoad(cl, office){
+  return cl.from('members').select('user_id, display_name, role, active').eq('office_id', office).then(function(r){
+    cloudChk(r); CLOUD_MEMBERS=(r.data||[]).map(function(m){ return {userId:m.user_id, name:m.display_name||'（未命名）', role:m.role, active:m.active!==false}; })
+      .sort(function(a,b){ return a.name<b.name?-1:a.name>b.name?1:0; });
+  });
+}
+/* 把雲端的一列案件套進畫面與「已同步」快照 */
+function cloudApplyRow(row){
+  var no=row.case_no, c=row.data, S=CLOUD_SYNCED; c.signed=!!row.signed;
+  var i=A.cases.findIndex(function(x){ return x.id===no; });
+  if (i>=0) A.cases[i]=c; else A.cases.push(c);
+  A.caseMeta=A.caseMeta||{}; A.caseMeta[no]=cloudMetaFromRow(row);
+  CLOUD_VER[no]=row.version;
+  if (S){ S.cases[no]=JSON.stringify(c); S.meta[no]=JSON.stringify(metaPure(A.caseMeta[no])); }
+}
+function cloudRemoveLocal(no){
+  if (A.cases.length<=1) return false;
+  A.cases=A.cases.filter(function(x){ return x.id!==no; });
+  if (A.caseMeta) delete A.caseMeta[no];
+  if (A.caseId===no) A.caseId=A.cases[0].id;
+  if (CLOUD_SYNCED){ delete CLOUD_SYNCED.cases[no]; delete CLOUD_SYNCED.meta[no]; }
+  delete CLOUD_VER[no];
+  return true;
+}
+/* 衝突備份：存檔被拒時，把自己的版本留在這台電腦（最多 20 份） */
+function cloudConflicts(){ try { var a=JSON.parse(localStorage.getItem(CLOUD_CONFLICT_KEY)||'[]'); return Array.isArray(a)?a:[]; } catch(e){ return []; } }
+function cloudConflictSave(list){ try { localStorage.setItem(CLOUD_CONFLICT_KEY, JSON.stringify(list.slice(-20))); } catch(e){} }
+function cloudConflictAdd(c){ var l=cloudConflicts(); l.push({at:new Date().toISOString(), caseNo:c.id, office:CLOUD_ME&&CLOUD_ME.officeId, data:c}); cloudConflictSave(l); }
+function cloudConflictDrop(i){ var l=cloudConflicts(); l.splice(i,1); cloudConflictSave(l); }
 function cloudBackupLocal(){
   try { if (localStorage.getItem(CLOUD_BACKUP_KEY)===null){ var raw=localStorage.getItem(KEY); if (raw!==null) localStorage.setItem(CLOUD_BACKUP_KEY, raw); } } catch(e){}
 }
@@ -153,9 +195,10 @@ function cloudPull(){
   var gen=++CLOUD_GEN, office=CLOUD_ME.officeId, cl=CLOUD_CLIENT;
   CLOUD_SYNCED=null; clearTimeout(cloudSyncT); cloudSetStatus('syncing');
   return Promise.all([
-    cl.from('cases').select('case_no, signed, data').eq('office_id', office),
+    cl.from('cases').select(CLOUD_CASE_COLS).eq('office_id', office),
     cl.from('models').select('model_key, data').eq('office_id', office),
-    cl.from('office_settings').select('data').eq('office_id', office).maybeSingle()
+    cl.from('office_settings').select('data').eq('office_id', office).maybeSingle(),
+    cloudMembersLoad(cl, office)
   ]).then(function(rs){
     if (gen!==CLOUD_GEN) return;
     var rc=cloudChk(rs[0]), rm=cloudChk(rs[1]), rst=cloudChk(rs[2]);
@@ -164,22 +207,28 @@ function cloudPull(){
     var st=rst.data && rst.data.data;
     cloudBackupLocal();
     if (!cs.length && !ms.length){
-      /* 第一次使用：把這台電腦的資料整批上傳 */
+      /* 第一次使用：把這台電腦的資料整批上傳，再重新讀一次（取得版本號與負責人） */
       var ups=[
-        cl.from('cases').upsert(A.cases.map(cloudCaseRow), {onConflict:'office_id,case_no'}),
+        cl.from('cases').upsert(A.cases.map(function(c){ return Object.assign(cloudCaseRow(c), cloudMetaRow(c.id)); }), {onConflict:'office_id,case_no'}),
         cl.from('models').upsert(A.models.map(cloudModelRow), {onConflict:'office_id,model_key'}),
         cl.from('office_settings').upsert({office_id:office, data:cloudSettingsOf()}, {onConflict:'office_id'})
       ];
+      var n=A.cases.length;
       return Promise.all(ups).then(function(us){
         us.forEach(cloudChk);
         if (gen!==CLOUD_GEN) return;
-        CLOUD_SYNCED=cloudSnapshot(); cloudSetStatus('ok'); save(); render();
-        toast('已把這台電腦的 '+A.cases.length+' 件案件上傳到雲端');
+        toast('已把這台電腦的 '+n+' 件案件上傳到雲端');
+        return cloudPull();
       });
     }
-    var needUpModels=false, needUpCases=false;
-    if (cs.length) A.cases=cs.map(function(r){ var c=r.data; c.signed=!!r.signed; return c; }); else needUpCases=true;
-    if (ms.length) A.models=ms.map(function(r){ return r.data; }); else needUpModels=true;
+    /* 雲端只有其中一種資料時，把本機缺的那一種補傳上去，再重新讀一次 */
+    var ups2=[];
+    if (!ms.length) ups2.push(cl.from('models').upsert(A.models.map(cloudModelRow), {onConflict:'office_id,model_key'}));
+    if (!cs.length) ups2.push(cl.from('cases').upsert(A.cases.map(function(c){ return Object.assign(cloudCaseRow(c), cloudMetaRow(c.id)); }), {onConflict:'office_id,case_no'}));
+    if (ups2.length) return Promise.all(ups2).then(function(us){ us.forEach(cloudChk); if (gen!==CLOUD_GEN) return; return cloudPull(); });
+    A.cases=[]; A.caseMeta={}; CLOUD_VER={};
+    cs.forEach(function(r){ var c=r.data; c.signed=!!r.signed; A.cases.push(c); A.caseMeta[r.case_no]=cloudMetaFromRow(r); CLOUD_VER[r.case_no]=r.version; });
+    A.models=ms.map(function(r){ return r.data; });
     if (st){
       if (st.own) A.own=st.own;
       if (st.imported) A.imported=st.imported;
@@ -187,16 +236,7 @@ function cloudPull(){
     }
     if (!A.cases.some(function(c){ return c.id===A.caseId; })) A.caseId=A.cases[0].id;
     if (!A.models.some(function(m){ return m.id===A.pModel; })) A.pModel=A.models[0].id;
-    var fin=function(){
-      if (gen!==CLOUD_GEN) return;
-      CLOUD_SYNCED=cloudSnapshot(); cloudSetStatus('ok'); save(); render();
-    };
-    /* 雲端只有其中一種資料時，把本機缺的那一種補傳上去，避免顯示「已同步」卻沒上傳 */
-    var ups2=[];
-    if (needUpModels) ups2.push(cl.from('models').upsert(A.models.map(cloudModelRow), {onConflict:'office_id,model_key'}));
-    if (needUpCases) ups2.push(cl.from('cases').upsert(A.cases.map(cloudCaseRow), {onConflict:'office_id,case_no'}));
-    if (ups2.length) return Promise.all(ups2).then(function(us){ us.forEach(cloudChk); fin(); });
-    fin();
+    CLOUD_SYNCED=cloudSnapshot(); cloudSetStatus('ok'); save(); render(); cloudPollStart();
   }).catch(function(e){
     if (gen!==CLOUD_GEN) return;
     cloudSetStatus('error'); toast('雲端讀取失敗：'+cloudErrMsg(e));
@@ -206,38 +246,89 @@ function cloudScheduleSync(){
   if (!CLOUD_ME || !CLOUD_SYNCED) return;
   clearTimeout(cloudSyncT); cloudSyncT=setTimeout(cloudPush, 2000);
 }
+/* 下一個沒人用的案號（本機與雲端都要避開） */
+function cloudFreeNo(serverNos){
+  var m=0; A.cases.map(function(c){ return c.id; }).concat(serverNos).forEach(function(id){ var x=parseInt(String(id).split('-')[1],10); if (x>m) m=x; });
+  return '115-'+String(m+1).padStart(4,'0');
+}
+function cloudRenameCase(oldId, newId){
+  var c=A.cases.find(function(x){ return x.id===oldId; }); if (!c) return;
+  c.id=newId; A.caseMeta=A.caseMeta||{};
+  if (A.caseMeta[oldId]){ A.caseMeta[newId]=A.caseMeta[oldId]; delete A.caseMeta[oldId]; }
+  if (A.caseId===oldId) A.caseId=newId;
+}
 function cloudPush(){
   if (!CLOUD_ME || !CLOUD_SYNCED) return Promise.resolve();
   if (cloudPushing){ cloudPushAgain=true; return Promise.resolve(); }
   var gen=CLOUD_GEN, cl=CLOUD_CLIENT, office=CLOUD_ME.officeId, S=CLOUD_SYNCED, now=cloudSnapshot();
   var wasSigned=function(js){ try { return !!JSON.parse(js).signed; } catch(e){ return false; } };
-  var jobs=[]; /* {run:function→Promise, ok:function} */
+  var jobs=[]; /* 每項是一個回傳 Promise 的函式；自己處理結果並更新快照 S */
+  var q=function(){ return cl.from('cases'); };
   A.cases.forEach(function(c){
-    var js=now.cases[c.id];
-    if (S.cases[c.id]===js) return;
-    if (c.id in S.cases && wasSigned(S.cases[c.id])) return; /* 已簽名：資料庫不允許改 */
-    jobs.push({run:function(){ return cl.from('cases').upsert(cloudCaseRow(JSON.parse(js)), {onConflict:'office_id,case_no'}); }, ok:function(){ S.cases[c.id]=js; }});
+    var id=c.id, js=now.cases[id], mj=now.meta[id], known=(id in S.cases);
+    var dataChanged=S.cases[id]!==js, metaChanged=S.meta[id]!==mj;
+    if (!dataChanged && !metaChanged) return;
+    if (known && wasSigned(S.cases[id])) return; /* 已簽名：資料庫不允許改 */
+    if (!known){
+      /* 新案件：insert，不覆蓋別人的案件；案號被用走就換號，下一輪再存 */
+      jobs.push(function(){
+        return q().insert(Object.assign(cloudCaseRow(JSON.parse(js)), cloudMetaRow(id))).select('version, assignee').then(function(r){
+          if (r.error && (r.error.code==='23505' || /duplicate key/i.test(r.error.message||''))){
+            return q().select('case_no').eq('office_id', office).then(function(r2){
+              cloudChk(r2); if (gen!==CLOUD_GEN) return;
+              var nid=cloudFreeNo((r2.data||[]).map(function(x){ return x.case_no; }));
+              cloudRenameCase(id, nid); cloudPushAgain=true; save(); render();
+              toast('案號 '+id+' 已被其他人使用，這件改為 '+nid);
+            });
+          }
+          cloudChk(r); if (gen!==CLOUD_GEN) return;
+          var row=r.data && r.data[0]; CLOUD_VER[id]=row ? row.version : 1;
+          if (row && row.assignee && !metaOf(id).assignee){ metaOf(id).assignee=row.assignee; mj=JSON.stringify(metaPure(metaOf(id))); }
+          S.cases[id]=js; S.meta[id]=mj;
+        });
+      });
+      return;
+    }
+    /* 先存工作流程欄位（簽名後就不能改，所以排在案件內容前面） */
+    if (metaChanged) jobs.push(function(){
+      return q().update(cloudMetaRow(id)).eq('office_id', office).eq('case_no', id).select('case_no').then(function(r){
+        cloudChk(r); if (gen!==CLOUD_GEN) return; S.meta[id]=mj;
+      });
+    });
+    if (dataChanged) jobs.push(function(){
+      var obj=JSON.parse(js);
+      return q().update({kind:obj.kind||null, signed:!!obj.signed, data:obj}).eq('office_id', office).eq('case_no', id).eq('version', CLOUD_VER[id]).select('version').then(function(r){
+        cloudChk(r); if (gen!==CLOUD_GEN) return;
+        if (r.data && r.data.length){ CLOUD_VER[id]=r.data[0].version; S.cases[id]=js; return; }
+        return cloudConflict(id, obj);
+      });
+    });
   });
   Object.keys(S.cases).forEach(function(id){
     if (id in now.cases || wasSigned(S.cases[id])) return;
-    jobs.push({run:function(){ return cl.from('cases').delete().eq('office_id', office).eq('case_no', id); }, ok:function(){ delete S.cases[id]; }});
+    jobs.push(function(){
+      return q().delete().eq('office_id', office).eq('case_no', id).eq('version', CLOUD_VER[id]).select('case_no').then(function(r){
+        cloudChk(r); if (gen!==CLOUD_GEN) return;
+        delete S.cases[id]; delete S.meta[id];
+        if (!(r.data && r.data.length)){ delete CLOUD_VER[id]; toast('案件 '+id+' 在你刪除前已被別人修改，沒有刪除，已重新載入'); setTimeout(cloudPoll, 0); }
+        else delete CLOUD_VER[id];
+      });
+    });
   });
   A.models.forEach(function(m){
     var js=now.models[m.id];
     if (S.models[m.id]===js) return;
-    jobs.push({run:function(){ return cl.from('models').upsert(cloudModelRow(JSON.parse(js)), {onConflict:'office_id,model_key'}); }, ok:function(){ S.models[m.id]=js; }});
+    jobs.push(function(){ return cl.from('models').upsert(cloudModelRow(JSON.parse(js)), {onConflict:'office_id,model_key'}).then(function(r){ cloudChk(r); if (gen===CLOUD_GEN) S.models[m.id]=js; }); });
   });
   Object.keys(S.models).forEach(function(id){
     if (id in now.models) return;
-    jobs.push({run:function(){ return cl.from('models').delete().eq('office_id', office).eq('model_key', id); }, ok:function(){ delete S.models[id]; }});
+    jobs.push(function(){ return cl.from('models').delete().eq('office_id', office).eq('model_key', id).then(function(r){ cloudChk(r); if (gen===CLOUD_GEN) delete S.models[id]; }); });
   });
-  if (S.settings!==now.settings) jobs.push({run:function(){ return cl.from('office_settings').upsert({office_id:office, data:JSON.parse(now.settings)}, {onConflict:'office_id'}); }, ok:function(){ S.settings=now.settings; }});
+  if (S.settings!==now.settings) jobs.push(function(){ return cl.from('office_settings').upsert({office_id:office, data:JSON.parse(now.settings)}, {onConflict:'office_id'}).then(function(r){ cloudChk(r); if (gen===CLOUD_GEN) S.settings=now.settings; }); });
   if (!jobs.length) return Promise.resolve();
   cloudPushing=true; cloudSetStatus('syncing');
   var firstErr=null, chain=Promise.resolve();
-  jobs.forEach(function(j){
-    chain=chain.then(function(){ return j.run(); }).then(function(r){ cloudChk(r); if (gen===CLOUD_GEN) j.ok(); }).catch(function(e){ if (!firstErr) firstErr=e; });
-  });
+  jobs.forEach(function(j){ chain=chain.then(j).catch(function(e){ if (!firstErr) firstErr=e; }); });
   return chain.then(function(){
     cloudPushing=false;
     if (gen!==CLOUD_GEN) return;
@@ -245,6 +336,62 @@ function cloudPush(){
     else cloudSetStatus('ok');
     if (cloudPushAgain){ cloudPushAgain=false; if (!firstErr) cloudScheduleSync(); }
   });
+}
+/* 存檔被拒（別人先改過或已刪除）：我的版本存成備份，畫面改成雲端最新版 */
+function cloudConflict(id, mine){
+  var gen=CLOUD_GEN, office=CLOUD_ME.officeId;
+  cloudConflictAdd(mine);
+  return CLOUD_CLIENT.from('cases').select(CLOUD_CASE_COLS).eq('office_id', office).eq('case_no', id).maybeSingle().then(function(r){
+    cloudChk(r); if (gen!==CLOUD_GEN) return;
+    var row=r.data;
+    if (!row){ cloudRemoveLocal(id); toast('案件 '+id+' 已被別人刪除；你的版本已備份，可在案件總覽的「未存成功的版本」找回'); }
+    else { cloudApplyRow(row); toast('案件 '+id+' 已被 '+memberName(row.updated_by)+' 修改，已載入最新版本；你這次的修改已另外備份'); }
+    save(); render();
+  });
+}
+/* ===== 自動載入別人的修改：每 60 秒、切回視窗時 ===== */
+var CLOUD_POLL_T = null, CLOUD_POLLING = false;
+function cloudPollStart(){
+  if (CLOUD_POLL_T) return;
+  CLOUD_POLL_T = setInterval(cloudPoll, 60000);
+  window.addEventListener('focus', function(){ cloudPoll(); });
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden) cloudPoll(); });
+}
+function cloudPoll(){
+  if (!CLOUD_ME || !CLOUD_SYNCED || cloudPushing || CLOUD_POLLING || document.hidden) return;
+  var gen=CLOUD_GEN, cl=CLOUD_CLIENT, office=CLOUD_ME.officeId, S=CLOUD_SYNCED;
+  var dirty=function(now, no){ return (no in now.cases) && S.cases[no]!==now.cases[no]; };
+  CLOUD_POLLING=true;
+  return Promise.all([cl.from('cases').select(CLOUD_META_COLS).eq('office_id', office), cloudMembersLoad(cl, office)]).then(function(rs){
+    var r=rs[0]; cloudChk(r); if (gen!==CLOUD_GEN || cloudPushing) return;
+    var now=cloudSnapshot(), rows=r.data||[], seen={}, need=[], changed=false;
+    rows.forEach(function(row){
+      var no=row.case_no; seen[no]=1;
+      if (!(no in S.cases)){ if (!(no in now.cases)) need.push(no); return; } /* 別人新建的案件 */
+      if (row.version!==CLOUD_VER[no]){ if (!dirty(now, no)) need.push(no); return; } /* 內容被別人改過 */
+      if (now.meta[no]===S.meta[no]){ /* 我沒改工作流程欄位：套用雲端的 */
+        var m=cloudMetaFromRow(row), mj=JSON.stringify(metaPure(m));
+        A.caseMeta=A.caseMeta||{}; var old=A.caseMeta[no];
+        if (mj!==S.meta[no] || !old || old.updatedAt!==m.updatedAt){ A.caseMeta[no]=m; S.meta[no]=mj; changed=true; }
+      }
+    });
+    Object.keys(S.cases).forEach(function(no){ if (!seen[no] && !dirty(now, no) && cloudRemoveLocal(no)) changed=true; }); /* 別人刪除的 */
+    if (!need.length) return changed;
+    return cl.from('cases').select(CLOUD_CASE_COLS).eq('office_id', office).in('case_no', need).then(function(r2){
+      cloudChk(r2); if (gen!==CLOUD_GEN || cloudPushing) return false;
+      var now2=cloudSnapshot();
+      (r2.data||[]).forEach(function(row){ if (!dirty(now2, row.case_no)){ cloudApplyRow(row); changed=true; } });
+      return changed;
+    });
+  }).then(function(changed){
+    CLOUD_POLLING=false;
+    if (changed && gen===CLOUD_GEN){ save(); render(); }
+  }, function(e){ CLOUD_POLLING=false; console.warn('更新案件清單失敗', cloudErrMsg(e)); });
+}
+/* 歷程：這件案子的操作紀錄（新到舊，最多 50 筆） */
+function cloudHistory(no){
+  if (!CLOUD_ME || !CLOUD_CLIENT) return Promise.resolve([]);
+  return CLOUD_CLIENT.from('audit_log').select('user_id, action, detail, at').eq('office_id', CLOUD_ME.officeId).eq('detail->>case_no', no).order('at', {ascending:false}).limit(50).then(function(r){ cloudChk(r); return r.data||[]; });
 }
 /* ===== 雲端實價登錄（P3-5）：登入後挑比較標的、租金行情直接查 public.lvr_records ===== */
 var CLOUD_LVR_COLS = 'serial,kind,county,district,type,zone,ym,floor_num,total_floors,completed,age,area_ping,unit_wan,total_wan,rent_total,rent_per_ping,park,presale,elevator,mgmt,furnished,lease,special,note,addr,road';

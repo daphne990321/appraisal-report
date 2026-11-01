@@ -82,6 +82,7 @@ function outs(){
   return {o:o, c:c, k:k};
 }
 function refresh(){
+  if (A.view==='list') return; /* 案件總覽沒有計算欄位 */
   var r=outs(), o=r.o, v=validate(r.c, r.k, A);
   o.fabSt = r.c.signed?'<span class="chip ok">已交付</span>':v.bl.length?'<span class="chip warn">待處理 '+v.bl.length+'</span>':'<span class="chip ok">可簽名</span>';
   o.msSt = o.fabSt;
@@ -171,11 +172,12 @@ function sheetHtml(c){
       +'<div class="form-actions"><button type="submit" class="btn" data-act="cloudSetPw"'+(pb?' disabled':'')+'>'+(pb?'更新中…':'更新密碼')+'</button></div></form>'; }
   else if (s==='more'){ title='更多'; body='<div class="menu-list">'+[['params','參數與指標（估價模型）',''],['comp','比較法','comparison'],['income','收益法','income'],['cost','成本法','cost'],['land','土地開發分析法','land']].map(function(x){
       return '<button data-act="tab" data-v="'+x[0]+'"><span>'+x[1]+(x[2]&&!c.methods[x[2]]?' <span class="law">未採用</span>':'')+'</span><span class="num small">'+(x[2]?'<span data-o="ms_'+x[2]+'"></span>':esc(MOD(c).name))+'</span></button>'; }).join('')+'</div>'; }
-  else if (s==='menu'){ title='案件'; body='<div><label class="lbl" for="casesel2">切換案件</label><select class="inp" id="casesel2">'+A.cases.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===c.id?' selected':'')+'>'+esc(x.id+'　〔'+kindOf(x.kind).name+'〕'+(x.basic.addr||'新案件'))+(x.signed?'（已交付）':'')+'</option>';}).join('')+'</select></div>'
-      +'<div class="g2"><button class="btn ghost" data-act="newCase">新案件</button><button class="btn ghost" data-act="dupCase">複製本案</button><button class="btn ghost" data-act="importCase">匯入案件檔</button></div>'
+  else if (s==='history'){ title='歷程'; body=historyBody(); }
+  else if (s==='menu'){ title='案件'; body='<div><button class="btn ghost" style="width:100%" data-act="view" data-v="list">案件總覽</button></div><div><label class="lbl" for="casesel2">切換案件</label><select class="inp" id="casesel2">'+A.cases.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===c.id?' selected':'')+'>'+esc(x.id+'　〔'+kindOf(x.kind).name+'〕'+(x.basic.addr||'新案件'))+(x.signed?'（已交付）':'')+'</option>';}).join('')+'</select></div>'
+      +(isManager()?'':'<div class="g2"><button class="btn ghost" data-act="newCase">新案件</button>'+(A.view==='list'?'':'<button class="btn ghost" data-act="dupCase">複製本案</button>')+'<button class="btn ghost" data-act="importCase">匯入案件檔</button></div>')
       +'<div><div class="lbl">雲端</div>'+(CLOUD_ME?'<div class="hint">'+cloudWho()+'　'+cloudStatusHtml(false)+'</div>':'')+cloudBtn('')+'</div>'
-      +'<div><div class="lbl">身分</div>'+(CLOUD_ME ? '<div class="hint">已登入，身分固定為「'+(CLOUD_ME.role==='appraiser'?'估價師':'助理員')+'」</div>' : '<div class="g2"><button class="btn'+(A.role==='appraiser'?'':' ghost')+'" data-act="role" data-v="appraiser">估價師</button><button class="btn'+(A.role==='assistant'?'':' ghost')+'" data-act="role" data-v="assistant">助理員</button></div>')+'</div>'; }
-  return '<div class="sheet-bg" data-act="closeSheet"></div><div class="sheet'+(s==='login'||s==='forgot'||s==='newpw'?' sheet-center':'')+(s==='sources'||s==='sources:cost'?' sheet-side':'')+'" role="dialog" aria-modal="true" aria-label="'+title+'"><div class="sheet-grip"></div><div class="sheet-head"><b>'+title+'</b><button class="btn ghost sm" data-act="closeSheet">關閉</button></div><div class="sheet-body">'+body+'</div></div>';
+      +'<div><div class="lbl">身分</div>'+(CLOUD_ME ? '<div class="hint">已登入，身分固定為「'+roleName(CLOUD_ME.role)+'」</div>' : '<div class="g2"><button class="btn'+(A.role==='appraiser'?'':' ghost')+'" data-act="role" data-v="appraiser">估價師</button><button class="btn'+(A.role==='assistant'?'':' ghost')+'" data-act="role" data-v="assistant">助理員</button></div>')+'</div>'; }
+  return '<div class="sheet-bg" data-act="closeSheet"></div><div class="sheet'+(s==='login'||s==='forgot'||s==='newpw'?' sheet-center':'')+(s==='sources'||s==='sources:cost'||s==='history'?' sheet-side':'')+'" role="dialog" aria-modal="true" aria-label="'+title+'"><div class="sheet-grip"></div><div class="sheet-head"><b>'+title+'</b><button class="btn ghost sm" data-act="closeSheet">關閉</button></div><div class="sheet-body">'+body+'</div></div>';
 }
 /* ===== 詢問 AI（免費過渡版：整理提問文字，使用者自行貼到 Claude；不含個資、不呼叫 API） ===== */
 function askAIText(c,k,v,kind,i){
@@ -245,27 +247,33 @@ function wMarkAuto(){
 function render(){
   if (typeof cloudLvrCheck === 'function') cloudLvrCheck(); /* 登入後依案件條件載入雲端實價登錄（條件不變就不查） */
   var ae=document.activeElement, fid_=ae&&ae.id, selS=null, selE=null; try{ selS=ae.selectionStart; selE=ae.selectionEnd; }catch(e){}
-  var c=cur(), k=calc(c, MOD(c), A), v=validate(c, k, A), mob=isM();
-  var body={report:tabReport,data:tabData,survey:tabSurvey,comp:tabComp,income:tabIncome,cost:tabCost,land:tabLand,final:tabFinal,params:tabParams}[A.tab](c,k,v);
-  var side = !mob && A.side && A.tab!=='report';
+  var lst=A.view!=='case', c=cur(), mob=isM(), k=null, v=null, body;
+  if (lst) body=tabCases();
+  else { k=calc(c, MOD(c), A); v=validate(c, k, A); body={report:tabReport,data:tabData,survey:tabSurvey,comp:tabComp,income:tabIncome,cost:tabCost,land:tabLand,final:tabFinal,params:tabParams}[A.tab](c,k,v); }
+  if (lst) A.view='list';
+  var side = !lst && !mob && A.side && A.tab!=='report';
   var html='<header class="top"><div class="top-in"><div class="brand"><span class="seal-mark">估</span><span>估價報告產生器</span></div>'
-   +'<label class="sr" for="casesel">案件</label><select id="casesel">'+A.cases.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===c.id?' selected':'')+'>'+esc(x.id+'　〔'+kindOf(x.kind).name+'〕'+(x.basic.addr||'新案件'))+(x.signed?'（已交付）':'')+'</option>';}).join('')+'</select>'
-   +'<button class="btn ghost sm" data-act="newCase">新案件</button><button class="btn ghost sm" data-act="dupCase">複製本案</button><button class="btn ghost sm" data-act="importCase">匯入案件檔</button><input type="file" id="casefile" accept=".json,application/json" class="sr">'
-   +(CLOUD_ME ? '<div class="roles" role="group" aria-label="身分"><button class="on" disabled>'+(CLOUD_ME.role==='appraiser'?'估價師':'助理員')+'</button></div><span class="law">'+cloudWho()+'</span>'+cloudStatusHtml(true) : '<div class="roles" role="group" aria-label="身分"><button data-act="role" data-v="appraiser" class="'+(A.role==='appraiser'?'on':'')+'">估價師</button><button data-act="role" data-v="assistant" class="'+(A.role==='assistant'?'on':'')+'">助理員</button></div>')
+   +'<button class="btn ghost sm'+(lst?' on':'')+'" data-act="view" data-v="list">案件總覽</button>'
+   +(lst?'':'<label class="sr" for="casesel">案件</label><select id="casesel">'+A.cases.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===c.id?' selected':'')+'>'+esc(x.id+'　〔'+kindOf(x.kind).name+'〕'+(x.basic.addr||'新案件'))+(x.signed?'（已交付）':'')+'</option>';}).join('')+'</select>')
+   +(isManager()?'':'<button class="btn ghost sm" data-act="newCase">新案件</button>'+(lst?'':'<button class="btn ghost sm" data-act="dupCase">複製本案</button>')+'<button class="btn ghost sm" data-act="importCase">匯入案件檔</button>')+'<input type="file" id="casefile" accept=".json,application/json" class="sr">'
+   +(CLOUD_ME ? '<div class="roles" role="group" aria-label="身分"><button class="on" disabled>'+roleName(CLOUD_ME.role)+'</button></div><span class="law">'+cloudWho()+'</span>'+cloudStatusHtml(true) : '<div class="roles" role="group" aria-label="身分"><button data-act="role" data-v="appraiser" class="'+(A.role==='appraiser'?'on':'')+'">估價師</button><button data-act="role" data-v="assistant" class="'+(A.role==='assistant'?'on':'')+'">助理員</button></div>')
    +cloudBtn('sm')
    +'</div></header>'
-   +'<div class="mtop"><span class="seal-mark">估</span><div class="t"><b>'+esc(c.id)+'　'+esc(c.basic.addr||'新案件')+'</b><span>'+tabName(A.tab)+'・'+esc(MOD(c).name)+'</span></div>'+(dataHub()?'<button data-act="sheet" data-v="sources" aria-label="資料來源">資料</button>':'')+'<button data-act="sheet" data-v="menu" aria-label="案件選單">案件</button></div>'
+   +'<div class="mtop">'+(lst?'':'<button data-act="view" data-v="list" aria-label="案件總覽">←</button>')+'<span class="seal-mark">估</span>'
+   +(lst?'<div class="t"><b>案件總覽</b><span>'+esc(CLOUD_ME&&CLOUD_ME.officeName?CLOUD_ME.officeName:'本機')+'</span></div>':'<div class="t"><b>'+esc(c.id)+'　'+esc(c.basic.addr||'新案件')+'</b><span>'+tabName(A.tab)+'・'+esc(MOD(c).name)+'</span></div>'+(dataHub()?'<button data-act="sheet" data-v="sources" aria-label="資料來源">資料</button>':''))
+   +'<button data-act="sheet" data-v="menu" aria-label="案件選單">案件</button></div>'
    +'<div class="split"><div class="left">'
-   +'<div class="tabs-row"><nav class="tabs" aria-label="分頁">'+TABS.map(function(t){ var off = TABKEY[t[0]] && !c.methods[TABKEY[t[0]]]; return '<button data-act="tab" data-v="'+t[0]+'" class="'+(A.tab===t[0]?'on':'')+'">'+tabLabel(t[0],t[1])+(off?' <span class="off">未採用</span>':'')+'<span class="dot" data-tabdot="'+t[0]+'" hidden></span></button>';}).join('')+'</nav>'
+   +(lst ? body : '<div class="tabs-row"><nav class="tabs" aria-label="分頁">'+TABS.map(function(t){ var off = TABKEY[t[0]] && !c.methods[TABKEY[t[0]]]; return '<button data-act="tab" data-v="'+t[0]+'" class="'+(A.tab===t[0]?'on':'')+'">'+tabLabel(t[0],t[1])+(off?' <span class="off">未採用</span>':'')+'<span class="dot" data-tabdot="'+t[0]+'" hidden></span></button>';}).join('')+'</nav>'
    +(dataHub()?'<button class="btn ghost sm" data-act="sheet" data-v="sources">資料來源</button>':'')+(A.tab!=='report'?'<button class="btn ghost sm side-toggle" data-act="side" aria-pressed="'+(A.side?'true':'false')+'">'+(A.side?'收起對照報告':'對照報告')+'</button>':'')+'</div>'
+   +metabar(c)
    +(c.signed?'<div class="box ok">本案已於 '+esc(c.signedAt)+' 簽名交付，資料與估價模型快照已鎖定；保存至 '+(Number(c.signedAt.slice(0,4))+15)+c.signedAt.slice(4)+' 以後（估價師法 §19 III）。要修改請用「複製本案」。</div>':'')
    +methodStrip(c)
-   + body +'</div>'+(side?'<aside class="right" aria-label="報告書對照"><div data-rp="1"></div></aside>':'')+'</div>'
-   +'<nav class="mnav" aria-label="主要分頁">'+[['report','報告','report'],['data','資料','data'],['final','決定','final'],['survey','現勘','survey'],['more','更多','params,comp,income,cost,land']].map(function(x){
+   + body)+'</div>'+(side?'<aside class="right" aria-label="報告書對照"><div data-rp="1"></div></aside>':'')+'</div>'
+   +(lst?'':'<nav class="mnav" aria-label="主要分頁">'+[['report','報告','report'],['data','資料','data'],['final','決定','final'],['survey','現勘','survey'],['more','更多','params,comp,income,cost,land']].map(function(x){
       var on = x[0]==='more' ? ['params','comp','income','cost','land'].indexOf(A.tab)>=0 : A.tab===x[0];
-      return '<button data-act="'+(x[0]==='more'?'sheet':'tab')+'" data-v="'+x[0]+'" class="'+(on?'on':'')+'"'+(on?' aria-current="page"':'')+'>'+icon(x[0]==='more'?'more':x[0])+'<span>'+(x[0]==='data'&&dataHub()?'標的':x[1])+' <span class="dot" data-tabdot="'+x[2]+'" hidden class="mdot"></span></span></button>'; }).join('')+'</nav>'
-   +(A.tab!=='report'?'<button class="fab" data-act="sheet" data-v="report" aria-label="開啟估價報告"><span><span class="lbl2">估價金額・點開看報告</span><br><span class="amt" data-o="fabAmt"></span></span><span data-o="fabSt"></span></button>':'')
-   + sheetHtml(c) + askAIHtml(c,k,v);
+      return '<button data-act="'+(x[0]==='more'?'sheet':'tab')+'" data-v="'+x[0]+'" class="'+(on?'on':'')+'"'+(on?' aria-current="page"':'')+'>'+icon(x[0]==='more'?'more':x[0])+'<span>'+(x[0]==='data'&&dataHub()?'標的':x[1])+' <span class="dot" data-tabdot="'+x[2]+'" hidden class="mdot"></span></span></button>'; }).join('')+'</nav>')
+   +(!lst && A.tab!=='report'?'<button class="fab" data-act="sheet" data-v="report" aria-label="開啟估價報告"><span><span class="lbl2">估價金額・點開看報告</span><br><span class="amt" data-o="fabAmt"></span></span><span data-o="fabSt"></span></button>':'')
+   + sheetHtml(c) + (lst?'':askAIHtml(c,k,v));
   document.getElementById('app').innerHTML=html;
   var th=document.querySelector(mob?'.mtop':'.top'); document.documentElement.style.setProperty('--topH', (th?th.offsetHeight:56)+'px');
   document.body.style.overflow = A.ui.sheet ? 'hidden' : '';
@@ -321,9 +329,15 @@ function onBind(t, commit){
   var structural = t.type==='checkbox' || t.type==='radio' || (t.tagName==='SELECT' && (t.hasAttribute('data-rr') || /^[pm]\./.test(p)));
   if (structural || (commit && t.hasAttribute('data-rr'))) render(); else refresh();
 }
-document.addEventListener('input', function(e){ var t=e.target; if (t.getAttribute && t.getAttribute('data-b') && t.type!=='checkbox' && t.type!=='radio' && t.tagName!=='SELECT') onBind(t,false); });
+document.addEventListener('input', function(e){ var t=e.target;
+  if (t.id==='caseSearch'){ A.ui.caseQ=t.value; render(); return; }
+  if (t.getAttribute && t.getAttribute('data-b') && t.type!=='checkbox' && t.type!=='radio' && t.tagName!=='SELECT') onBind(t,false); });
 document.addEventListener('change', function(e){ var t=e.target;
-  if (t.id==='casesel' || t.id==='casesel2'){ A.caseId=t.value; A.ui.sheet=null; A.ui.askAI=null; A.ui.pickConfirm=false; save(); render(); return; }
+  if (t.getAttribute && t.getAttribute('data-meta')){ var mk=t.getAttribute('data-meta'), mv=t.value, patch={};
+    patch[mk] = mv==='' ? ((mk==='assignee'||mk==='appraiser') ? null : '') : mv;
+    setMeta(cur().id, patch); render(); return; }
+  if (t.hasAttribute && t.hasAttribute('data-act-list-filter')){ if (t.getAttribute('data-act-list-filter')==='kind') A.ui.fKind=t.value; else A.ui.fWho=t.value; render(); return; }
+  if (t.id==='casesel' || t.id==='casesel2'){ A.view='case'; A.caseId=t.value; A.ui.sheet=null; A.ui.askAI=null; A.ui.pickConfirm=false; save(); render(); return; }
   if (t.id==='casefile'){ if (t.files && t.files[0]) readCaseFile(t.files[0]); t.value=''; return; }
   if (t.hasAttribute && t.hasAttribute('data-act-set')){ var Pm=modelById(A.pModel), e=Pm.exp[Number(t.getAttribute('data-act-set'))], ss=e.sets||['bldg','land','ind']; ss=ss.filter(function(x){ return x!==t.value; }); if (t.checked) ss.push(t.value); e.sets=ss; Pm.updated=today(); save(); render(); return; }
   if (t.hasAttribute && t.hasAttribute('data-act-var')){ var cs=cur(), v=t.getAttribute('data-act-var'), arr=cs.comp.regVars, i=arr.indexOf(v); if (t.checked && i<0) arr.push(v); if (!t.checked && i>=0) arr.splice(i,1); save(); render(); return; }
@@ -342,7 +356,13 @@ document.addEventListener('click', function(e){
   if (act==='tab' || act==='goTab'){ go(v); if (v==='params') A.pModel=c.modelId; save(); render(); window.scrollTo(0,0); }
   else if (act==='sub'){ A[t.getAttribute('data-k')]=v; A.ui.pickConfirm=false; save(); render(); }
   else if (act==='side'){ A.side=!A.side; save(); render(); }
-  else if (act==='sheet'){ A.ui.sheet=v; if (v==='sources' && typeof cloudLvrLastSync==='function') cloudLvrLastSync(); render(); }
+  else if (act==='view'){ A.view=v==='case'?'case':'list'; A.ui.sheet=null; A.ui.askAI=null; save(); render(); window.scrollTo(0,0); }
+  else if (act==='openCase'){ A.caseId=v; A.view='case'; A.ui.sheet=null; A.ui.pickConfirm=false; save(); render(); window.scrollTo(0,0); }
+  else if (act==='listFilter'){ A.listFilter=v; save(); render(); }
+  else if (act==='listMode'){ A.listMode=v==='board'?'board':'table'; save(); render(); }
+  else if (act==='conflictRestore'){ conflictRestore(Number(t.getAttribute('data-i'))); }
+  else if (act==='conflictDrop'){ cloudConflictDrop(Number(t.getAttribute('data-i'))); render(); }
+  else if (act==='sheet'){ A.ui.sheet=v; if (v==='history') openHistory(); if (v==='sources' && typeof cloudLvrLastSync==='function') cloudLvrLastSync(); render(); }
   else if (act==='layout'){ try{ localStorage.setItem(DATA_LAYOUT_KEY, v==='classic'?'classic':'hub'); }catch(e){} A.ui.sheet=null; if (dataHub() && A.dataSub==='cost') A.dataSub='subject'; render(); toast('已切換到'+(dataHub()?'新版「資料中心」':'舊版')+'畫面，隨時可以再切換'); }
   else if (act==='closeSheet'){ A.ui.sheet=null; render(); }
   else if (act==='askAI'){ A.ui.askAI={kind:t.getAttribute('data-kind'), i:Number(t.getAttribute('data-i'))}; render(); }
@@ -359,7 +379,7 @@ document.addEventListener('click', function(e){
   else if (act==='cloudLogout'){ A.ui.sheet=null; cloudSignOut(); }
   else if (act==='cloudDoLogin'){ e.preventDefault(); cloudDoLogin(); }
   else if (act==='newCase'){ A.ui.sheet='newcase'; render(); }
-  else if (act==='newKind'){ var nc=blankCase(nextId(), modelById(c.modelId), c, v); A.cases.unshift(nc); A.caseId=nc.id; A.tab='data'; A.dataSub='subject'; A.ui.sheet=null; save(); render(); toast('已建立'+kindOf(v).name+'案件 '+nc.id+'，模型「'+modelById(nc.modelId).name+'」'); }
+  else if (act==='newKind'){ var nc=blankCase(nextId(), modelById(c.modelId), c, v); A.cases.unshift(nc); newCaseMeta(nc.id); A.view='case'; A.caseId=nc.id; A.tab='data'; A.dataSub='subject'; A.ui.sheet=null; save(); render(); toast('已建立'+kindOf(v).name+'案件 '+nc.id+'，模型「'+modelById(nc.modelId).name+'」'); }
   else if (act==='setKind'){ if(L()) return; if (c.kind===v) return; applyKind(c, v); save(); render(); toast('標的類型改為「'+kindOf(v).name+'」，已依模型重設估價方法與權重'); }
   else if (act==='pSet'){ A.pSet=v; render(); }
   else if (act==='kwOn'){ P.kindWeights=P.kindWeights||{}; P.kindWeights[v]=JSON.parse(JSON.stringify((P.purpose['買賣參考']||{w:{comparison:80,income:20,cost:0,land:0}}).w)); P.updated=today(); save(); render(); }
@@ -368,7 +388,7 @@ document.addEventListener('click', function(e){
   else if (act==='docx'){ exportDocx(c); }
   else if (act==='exportCase'){ exportCase(c); }
   else if (act==='importCase'){ var fi=document.getElementById('casefile'); if (fi) fi.click(); }
-  else if (act==='dupCase'){ var d=JSON.parse(JSON.stringify(c)); d.id=nextId(); d.signed=false; d.signedAt=''; d.modelSnapshot=null; if (!A.models.some(function(m){ return m.id===d.modelId; })) d.modelId=A.models[0].id; A.cases.unshift(d); A.caseId=d.id; A.ui.sheet=null; save(); render(); toast('已複製為 '+d.id); }
+  else if (act==='dupCase'){ var d=JSON.parse(JSON.stringify(c)); d.id=nextId(); d.signed=false; d.signedAt=''; d.modelSnapshot=null; if (!A.models.some(function(m){ return m.id===d.modelId; })) d.modelId=A.models[0].id; A.cases.unshift(d); newCaseMeta(d.id); A.view='case'; A.caseId=d.id; A.ui.sheet=null; save(); render(); toast('已複製為 '+d.id); }
   else if (act==='addLib'){ if(L()) return; var lib=libFind(A, t.getAttribute('data-id')); if(!lib) return; var lab=nextLabel(c); c.comps.push(newComp(lab, lib)); save(); render(); toast('已加入比較標的 '+lab+(lib.special?'：屬特殊交易，須做情況調整':'')); }
   else if (act==='autoPick'){ if(L()) return;
     if (c.comps.length && !A.ui.pickConfirm){ A.ui.pickConfirm=true; render(); return; }
@@ -407,7 +427,7 @@ document.addEventListener('click', function(e){
   else if (act==='addOwn'){ var b=c.basic; A.own.push({id:'OWN'+Date.now().toString(36), kind:'sale', src:'本所案例', county:b.county, district:b.district||districtsOf(b.county)[0]||'', type:b.btype, zone:b.zone, date:(b.priceDate||today()).slice(0,7), floorNum:0, totalFloors:0, completed:'', age:'', areaPing:0, unitWan:0, park:false, note:'', special:'', presale:false, addr:'', road:'', elevator:false, mgmt:false}); save(); render(); }
   else if (act==='rmOwn'){ A.own.splice(Number(t.getAttribute('data-i')),1); save(); render(); }
   else if (act==='resetAll'){ A=fresh(); A.tab='params'; A.paramSub='check'; save(); render(); toast('已重設為範例資料'); }
-  else if (act==='sign'){ var k2=calc(c, MOD(c), A); if (validate(c, k2, A).bl.length || A.role!=='appraiser') return; c.modelSnapshot=JSON.parse(JSON.stringify(modelById(c.modelId))); c.signed=true; c.signedAt=today(); save(); render(); toast('已簽名交付，資料與模型快照已鎖定'); }
+  else if (act==='sign'){ var k2=calc(c, MOD(c), A); if (validate(c, k2, A).bl.length || A.role!=='appraiser') return; setMeta(c.id,{stage:'deliver'}); c.modelSnapshot=JSON.parse(JSON.stringify(modelById(c.modelId))); c.signed=true; c.signedAt=today(); save(); render(); toast('已簽名交付，資料與模型快照已鎖定'); }
   else if (act==='copy'){ var el=visibleReport(); if(!el) return;
     var sel=function(){ var r=document.createRange(); r.selectNodeContents(el); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r); toast('已選取全文，請按複製'); };
     try { navigator.clipboard.writeText(el.innerText).then(function(){ toast('已複製報告書全文'); }, sel); } catch(err){ sel(); } }
@@ -465,7 +485,7 @@ function exportCase(c){ getDL().then(function(DL){ if (!DL){ toast('這個檢視
 function readCaseFile(file){
   var fr=new FileReader(); fr.onload=function(){ try {
     var r=importCaseFile(JSON.parse(String(fr.result)), A.models, {caseExists:function(id){ return A.cases.some(function(x){ return x.id===id; }); }, nextId:nextId});
-    A.models=r.models; A.cases.unshift(r.case); A.caseId=r.case.id; A.tab='report'; A.ui.sheet=null; save(); render();
+    A.models=r.models; A.cases.unshift(r.case); newCaseMeta(r.case.id); A.view='case'; A.caseId=r.case.id; A.tab='report'; A.ui.sheet=null; save(); render();
     toast('已匯入案件 '+r.case.id+(r.notes.length?'；'+r.notes.join('；'):''));
   } catch(e){ toast('匯入失敗：'+e.message); } }; fr.readAsText(file,'utf-8');
 }

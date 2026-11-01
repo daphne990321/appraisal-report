@@ -5,6 +5,17 @@ function load(){ try { var raw = localStorage.getItem(KEY); if (raw){ var o = JS
 var saveT = null;
 function save(){ clearTimeout(saveT); saveT = setTimeout(function(){ try { localStorage.setItem(KEY, JSON.stringify(A, function(k,v){ return (k==='ui' || k==='cloudLvr') ? undefined : v; })); } catch(e){} }, 300); if (typeof cloudScheduleSync === 'function') cloudScheduleSync(); }
 
+/* ===== 案件工作流程（階段 A）：負責人、簽證估價師、步驟、狀態、期限 =====
+   存在 A.caseMeta[案號]，不放進案件內容（案件檔匯出不含這些）；登入後與雲端案件的獨立欄位同步 */
+var STAGES=[['intake','接案'],['docs','調資料'],['survey','現勘'],['comps','比較標的'],['calc','試算'],['decide','決定價格'],['deliver','簽名交付']];
+var STATUSES=[['active','進行中'],['review','待確認'],['returned','退回修改'],['hold','暫停'],['cancelled','已取消']];
+function metaOf(id){ A.caseMeta=A.caseMeta||{}; return A.caseMeta[id] || (A.caseMeta[id]={assignee:null, appraiser:null, stage:'intake', status:'active', due:''}); }
+function metaPure(m){ return {assignee:m.assignee||null, appraiser:m.appraiser||null, stage:m.stage||'intake', status:m.status||'active', due:m.due||''}; }
+function setMeta(id, patch){ var m=metaOf(id); Object.keys(patch).forEach(function(k){ m[k]=patch[k]; }); save(); }
+/* 新案件的預設：負責人＝自己；自己是估價師時也當簽證估價師 */
+function newCaseMeta(id){ var me=(typeof CLOUD_ME!=='undefined' && CLOUD_ME) ? CLOUD_ME : null; A.caseMeta=A.caseMeta||{};
+  A.caseMeta[id]={assignee:me?me.userId:null, appraiser:me&&me.role==='appraiser'?me.userId:null, stage:'intake', status:'active', due:''}; }
+
 /* ===== 工具 ===== */
 function esc(x){ return String(x==null?'':x).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];}); }
 function sgn(v,d){ v=Number(v)||0; return (v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(d===undefined?2:d); }
@@ -12,7 +23,9 @@ function cls(v){ return v>0?'pos':v<0?'neg':''; }
 function cur(){ return A.cases.find(function(c){return c.id===A.caseId;}) || A.cases[0]; }
 function modelById(id){ return findModel(A, id); }
 function MOD(c){ return modelOf(A, c || cur()); }
-function L(){ return cur().signed; }
+/* 經營管理身分：案件內容唯讀（資料庫也會擋） */
+function isManager(){ return typeof CLOUD_ME!=='undefined' && !!CLOUD_ME && CLOUD_ME.role==='manager'; }
+function L(){ return cur().signed || isManager(); }
 function D(){ return L() ? ' disabled' : ''; }
 function ph(t){ return '<span class="ph">'+esc(t)+'</span>'; }
 function isM(){ return window.matchMedia && window.matchMedia('(max-width:760px)').matches; }

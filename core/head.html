@@ -163,6 +163,37 @@ button.opt{text-align:left;width:100%;font:inherit;color:inherit}button.opt b{di
 .ccard .cbody{padding:0 14px 14px;display:flex;flex-direction:column;gap:8px}
 .frow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;font-size:14px;padding:6px 0;border-top:1px solid var(--line2)}
 .frow:first-child{border-top:0}
+/* 案件總覽、工作流程列 */
+.top .btn.ghost.on{background:var(--band-line);font-weight:700}
+.fchips{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;min-height:32px;padding:0 12px;font-size:13px;cursor:pointer;white-space:nowrap;flex:none}
+.fchip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.cfilters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cfilters .inp{width:auto;min-width:140px}
+.cfilters #caseSearch{flex:1 1 220px}
+.clist td,.clist th{white-space:nowrap}
+.clist td:nth-child(2){white-space:normal;min-width:160px}
+.crow{cursor:pointer}.crow:hover{background:var(--surface2)}
+.dots{display:inline-flex;gap:3px;vertical-align:middle}
+.dots i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line);box-sizing:border-box}
+.dots i.done{background:var(--ok);border-color:var(--ok)}
+.dots i.cur{background:var(--accent);border-color:var(--accent)}
+.board{display:flex;gap:8px;padding:8px;align-items:flex-start}
+.bcol{min-width:160px;flex:1 0 160px;background:var(--surface2);border-radius:8px;padding:6px;display:flex;flex-direction:column;gap:6px}
+.bh{display:flex;justify-content:space-between;align-items:center;padding:2px 4px;font-size:13px}
+.bcard{display:flex;flex-direction:column;gap:3px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px;cursor:pointer;font:inherit;font-size:13px;color:var(--ink)}
+.bcard .ba{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink2)}
+.bcard .bm{display:flex;justify-content:space-between;align-items:center;gap:4px;min-height:22px}
+.ccards{display:flex;flex-direction:column;gap:8px}
+.ccard{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer;font:inherit;color:var(--ink)}
+.ccard .r1{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ccard .r2{font-size:14px}
+.ccard .r3{font-size:12.5px;color:var(--ink2)}
+.metabar{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.metabar .lbl{margin-bottom:3px}
+.metabar .inp{min-height:34px;width:auto;min-width:130px}
+.hist{display:flex;flex-direction:column;gap:8px}
+.hrow{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:13.5px}
 /* 手機：底部導覽、浮動估價金額、底部面板 */
 .mnav,.fab,.mtop{display:none}
 .sheet-bg{position:fixed;inset:0;background:rgba(10,17,20,.45);z-index:70}
@@ -198,6 +229,10 @@ button.opt{text-align:left;width:100%;font:inherit;color:inherit}button.opt b{di
   .mtop .t span{font-size:12px;color:var(--band-muted)}
   .mtop button{min-height:40px;min-width:40px;border-radius:8px;border:1px solid var(--band-line);background:transparent;color:var(--band-ink);font-size:14px;padding:0 10px;cursor:pointer}
   .tabs-row{display:none}
+  .metabar{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .metabar .inp{width:100%;min-width:0}
+  .fchips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}
+  .cfilters .inp{flex:1 1 140px}
   .split{padding:12px 12px calc(150px + env(safe-area-inset-bottom,0px));gap:12px}
   .right{display:none}
   .mnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom,0px))}
