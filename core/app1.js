@@ -10,7 +10,8 @@ function save(){ clearTimeout(saveT); saveT = setTimeout(function(){ try { local
 var STAGES=[['intake','接案'],['docs','調資料'],['survey','現勘'],['comps','比較標的'],['calc','試算'],['decide','決定價格'],['deliver','簽名交付']];
 var STATUSES=[['active','進行中'],['review','待確認'],['returned','退回修改'],['hold','暫停'],['cancelled','已取消']];
 function metaOf(id){ A.caseMeta=A.caseMeta||{}; return A.caseMeta[id] || (A.caseMeta[id]={assignee:null, appraiser:null, stage:'intake', status:'active', due:''}); }
-function metaPure(m){ return {assignee:m.assignee||null, appraiser:m.appraiser||null, stage:m.stage||'intake', status:m.status||'active', due:m.due||''}; }
+/* note：最近一次交接留言（階段 B）；noteBy、noteAt 由雲端填（本機模式只記時間） */
+function metaPure(m){ return {assignee:m.assignee||null, appraiser:m.appraiser||null, stage:m.stage||'intake', status:m.status||'active', due:m.due||'', note:m.note||null}; }
 function setMeta(id, patch){ var m=metaOf(id); Object.keys(patch).forEach(function(k){ m[k]=patch[k]; }); save(); }
 /* 新案件的預設：負責人＝自己；自己是估價師時也當簽證估價師 */
 function newCaseMeta(id){ var me=(typeof CLOUD_ME!=='undefined' && CLOUD_ME) ? CLOUD_ME : null; A.caseMeta=A.caseMeta||{};

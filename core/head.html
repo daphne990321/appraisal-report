@@ -200,6 +200,26 @@ button.opt{text-align:left;width:100%;font:inherit;color:inherit}button.opt b{di
 .metabar .inp{min-height:34px;width:auto;min-width:130px}
 .hist{display:flex;flex-direction:column;gap:8px}
 .hrow{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:13.5px}
+/* 步驟版面（階段 B）：步驟列、手機 chips、交接列、留言 */
+.steps-row{display:flex;align-items:flex-end;flex-wrap:wrap;gap:4px 8px;border-bottom:1px solid var(--line)}
+.steps-row nav.steps{display:flex;flex-wrap:wrap;flex:1 1 0;min-width:0}
+.steps{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto}
+.stepbtn{display:flex;align-items:center;gap:5px;min-height:42px;padding:0 8px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--ink2);font:inherit;font-size:14px;cursor:pointer;white-space:nowrap}
+.stepbtn .sn{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-family:var(--f-num)}
+.stepbtn.on{color:var(--ink);font-weight:700;border-bottom-color:var(--accent)}
+.stepbtn.on .sn{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.sc{font-size:11.5px;color:var(--warn)}.sc.zero{color:var(--ok)}
+.stepbtn .sc:not(.zero)::before,.menu-list .sc:not(.zero)::before{content:'還差 '}
+.scur{font-size:10.5px;padding:0 6px;border-radius:999px;background:var(--accent-soft);color:var(--ink2);line-height:16px}
+.steps-row>.btn{white-space:nowrap;flex:none;margin-bottom:4px}
+.mchips{display:none}
+.stepbox details summary{cursor:pointer;font-weight:700}
+.stepbox ul{margin:6px 0 0;padding-left:18px;font-size:13px;display:flex;flex-direction:column;gap:4px}
+.stepissue{min-height:0;border:0;padding:0;background:transparent;color:var(--accent);white-space:normal;text-align:left;font:inherit;font-size:13px;cursor:pointer;text-decoration:underline}
+.stepbox{flex-direction:column}
+.handoff{display:flex;justify-content:space-between;align-items:center;gap:8px 12px;flex-wrap:wrap;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:14px}
+.handoff .hf-b{display:flex;gap:6px;flex-wrap:wrap}
+.notebox{gap:10px;align-items:baseline}
 /* 手機：底部導覽、浮動估價金額、底部面板 */
 .mnav,.fab,.mtop{display:none}
 .sheet-bg{position:fixed;inset:0;background:rgba(10,17,20,.45);z-index:70}
@@ -236,6 +256,13 @@ button.opt{text-align:left;width:100%;font:inherit;color:inherit}button.opt b{di
   .mtop .t span{font-size:12px;color:var(--band-muted)}
   .mtop button{min-height:40px;min-width:40px;border-radius:8px;border:1px solid var(--band-line);background:transparent;color:var(--band-ink);font-size:14px;padding:0 10px;cursor:pointer}
   .tabs-row{display:none}
+  .steps-row{display:none}
+  .mchips{display:flex;gap:6px;overflow-x:auto;position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--mtopH,56px));z-index:29;background:var(--bg);padding:6px 12px;border-bottom:1px solid var(--line)}
+  .mchip{flex:none;display:inline-flex;align-items:center;gap:5px;min-height:34px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+  .mchip i{font-style:normal;font-family:var(--f-num);font-size:12px;color:var(--muted)}
+  .mchip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+  .mchip.on i,.mchip.on .sc{color:var(--accent-ink)}
+  .mnav.m3{grid-template-columns:repeat(3,1fr)}
   .metabar{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .metabar .inp{width:100%;min-width:0}
   .fchips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}

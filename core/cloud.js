@@ -143,11 +143,11 @@ function cloudSetStatus(st){
 var CLOUD_MEMBERS = [];   /* 本事務所成員 [{userId, name, role, active}] */
 var CLOUD_VER = {};       /* 案號 → 雲端版本號 */
 var CLOUD_CONFLICT_KEY = 'appraisal-conflict-backup';
-var CLOUD_CASE_COLS = 'case_no, signed, data, assignee, appraiser, stage, status, due_date, version, updated_at, updated_by';
-var CLOUD_META_COLS = 'case_no, signed, assignee, appraiser, stage, status, due_date, version, updated_at, updated_by';
+var CLOUD_CASE_COLS = 'case_no, signed, data, assignee, appraiser, stage, status, due_date, handoff_note, handoff_by, handoff_at, version, updated_at, updated_by';
+var CLOUD_META_COLS = 'case_no, signed, assignee, appraiser, stage, status, due_date, handoff_note, handoff_by, handoff_at, version, updated_at, updated_by';
 function cloudCaseRow(c){ return {office_id:CLOUD_ME.officeId, case_no:c.id, kind:c.kind||null, signed:!!c.signed, data:c}; }
-function cloudMetaRow(id){ var m=metaPure(metaOf(id)); return {assignee:m.assignee, appraiser:m.appraiser, stage:m.stage, status:m.status, due_date:m.due||null}; }
-function cloudMetaFromRow(row){ return {assignee:row.assignee||null, appraiser:row.appraiser||null, stage:row.stage||'intake', status:row.status||'active', due:row.due_date||'', updatedAt:row.updated_at||'', updatedBy:row.updated_by||null}; }
+function cloudMetaRow(id){ var m=metaPure(metaOf(id)); return {assignee:m.assignee, appraiser:m.appraiser, stage:m.stage, status:m.status, due_date:m.due||null, handoff_note:m.note}; }
+function cloudMetaFromRow(row){ return {assignee:row.assignee||null, appraiser:row.appraiser||null, stage:row.stage||'intake', status:row.status||'active', due:row.due_date||'', note:row.handoff_note||null, noteBy:row.handoff_by||null, noteAt:row.handoff_at||'', updatedAt:row.updated_at||'', updatedBy:row.updated_by||null}; }
 function cloudModelRow(m){ return {office_id:CLOUD_ME.officeId, model_key:m.id, name:m.name||m.id, data:m}; }
 function cloudSettingsOf(){ return {own:A.own, imported:A.imported, hideBuiltin:!!A.hideBuiltin}; }
 function cloudSnapshot(){

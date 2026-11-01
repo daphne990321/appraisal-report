@@ -31,13 +31,14 @@ function srcBar(c){
   t+='・本所案例 <b class="num">'+A.own.length+'</b> 筆';
   return '<div class="srcbar"><span class="small">資料來源：'+t+'</span><button class="btn ghost sm" data-act="sheet" data-v="sources">資料來源 ▸</button></div>';
 }
-function dataSubject(c,k,M,hub){
-  var b='c.basic.', pt=c.basic.priceType, dl=districtsOf(c.basic.county), land=isLandKind(c.kind), kd=kindOf(c.kind), R='c.report.';
-  return kindCard(c)
+/* part：'intake'＝接案部分、'docs'＝謄本部分（步驟版面用）；不給＝完整輸出（舊版） */
+function dataSubject(c,k,M,hub,part){
+  var b='c.basic.', pt=c.basic.priceType, dl=districtsOf(c.basic.county), land=isLandKind(c.kind), kd=kindOf(c.kind), R='c.report.', pI=part!=='docs', pD=part!=='intake';
+  return (pI ? kindCard(c)
    +'<section class="card"><h2>本案使用的估價模型 <span class="law">事務所設定，在「參數與指標」維護</span></h2>'
    +'<div class="g2">'+F('估價模型','c.modelId',{sel:A.models.map(function(m){ return [m.id, m.name]; }),rr:true,hint:esc(M.note||'')})
-   +'<div class="small" style="color:var(--ink2);align-self:end">比較標的選取、因素細項、經驗調整、方法權重、收益與開發參數都依模型帶入。'+(c.signed?'本案已簽名，使用簽名時的模型快照。':'')+'<div style="margin-top:6px"><button class="btn ghost sm" data-act="tab" data-v="params">開啟參數與指標</button></div></div></div></section>'
-   +'<section class="card"><h2>勘估標的（'+esc(kd.name)+'） <span class="law">§7、§11（依登記謄本）</span></h2>'
+   +'<div class="small" style="color:var(--ink2);align-self:end">比較標的選取、因素細項、經驗調整、方法權重、收益與開發參數都依模型帶入。'+(c.signed?'本案已簽名，使用簽名時的模型快照。':'')+'<div style="margin-top:6px"><button class="btn ghost sm" data-act="tab" data-v="params">開啟參數與指標</button></div></div></div></section>' : '')
+   +(pD ? '<section class="card"><h2>勘估標的（'+esc(kd.name)+'） <span class="law">§7、§11（依登記謄本）</span></h2>'
    +'<div class="g3">'+F('縣市',b+'county',{sel:COUNTIES.map(function(x){ return x[1]; }),rr:true})+F('鄉鎮市區',b+'district',{sel:dl.length?dl:[''],rr:true})+F('路街名（供比較標的評分）',b+'road',{ph:'例：光明六路東一段',rr:true})+'</div>'
    + F(land?'坐落（地段地號或鄰近門牌）':'門牌地址',b+'addr')
    +'<div class="g3">'+(land?'':F('建號',b+'bldgNo'))+F(land?'地號（摘要用）':'基地地號',b+'landNo')+F('使用分區',b+'zone',{rr:true,hint:'用於比較標的「同使用分區類別」'})+'</div>'
@@ -45,8 +46,8 @@ function dataSubject(c,k,M,hub){
      +'<div class="g3">'+F('建物型態',b+'btype',{sel:BTYPES,rr:true,hint:'選項同實價登錄「建物型態」'})+F('建物完成日',b+'completed',{type:'date',rr:true})+F('構造說明',b+'floorDesc')+'</div>')
    +'<div class="g2">'+F('所有權人及權利範圍',b+'owner')+F('他項權利及其他負擔',b+'encumbrance')+'</div>'
    +'<div class="g2">'+F('限制登記（預告登記、查封等）',R+'restrict',{ph:'留空寫「查無預告登記、查封等限制登記情事」'})+F('法定使用管制補充',R+'zoneRule',{ph:'例：建蔽率 50%、容積率 150%'})+'</div></section>'
-   +((c.parcels&&c.parcels.length)||land||c.kind!=='unit'?parcelsCard(c,k):'<section class="card"><h2>基地土地標示 <span class="law">選填，填了可估算土地增值稅</span></h2><button class="btn ghost sm" data-act="listAdd" data-path="c.parcels" data-tpl="'+esc(JSON.stringify({section:'',no:'',zone:'',areaM2:0,share:1,annVal:0,prevVal:0,prevDate:'',cpi:100,priceMode:'base',adjPct:0,annPct:30,unit:0,note:''}))+'"'+D()+'>＋ 加入基地地號</button></section>')
-   +'<section class="card"><h2>估價基本事項 <span class="law">§6、§9</span></h2>'
+   +((c.parcels&&c.parcels.length)||land||c.kind!=='unit'?parcelsCard(c,k):'<section class="card"><h2>基地土地標示 <span class="law">選填，填了可估算土地增值稅</span></h2><button class="btn ghost sm" data-act="listAdd" data-path="c.parcels" data-tpl="'+esc(JSON.stringify({section:'',no:'',zone:'',areaM2:0,share:1,annVal:0,prevVal:0,prevDate:'',cpi:100,priceMode:'base',adjPct:0,annPct:30,unit:0,note:''}))+'"'+D()+'>＋ 加入基地地號</button></section>') : '')
+   +(pI ? '<section class="card"><h2>估價基本事項 <span class="law">§6、§9</span></h2>'
    +'<div class="g3">'+F('估價目的',b+'purpose',{sel:PURPOSES,rr:true,hint:'收益參數依模型對此目的的設定'})+F('價格日期',b+'priceDate',{type:'date',rr:true})+F('勘察日期',b+'surveyDate',{type:'date'})+'</div>'
    +'<div class="g4">'+['正常價格','限定價格','特定價格','特殊價格'].map(function(x){return '<label class="opt'+(pt===x?' on':'')+'"><input type="radio" name="pt" data-b="c.basic.priceType" value="'+x+'"'+(pt===x?' checked':'')+D()+'><span>'+x+'</span></label>';}).join('')+'</div>'
    + F('估價條件',b+'conditions',{ta:true})
@@ -54,8 +55,8 @@ function dataSubject(c,k,M,hub){
    +'</section>'
    +'<section class="card"><h2>委託 <span class="law">估價師法 §15</span></h2><div class="g3">'+F('委託人',b+'client')+F('酬金（元）',b+'fee',{num:true})+F('簽約日',b+'contractDate',{type:'date'})+'</div>'+F('工作範圍',b+'scope')+'</section>'
    +'<section class="card"><h2>估價師 <span class="law">§16 II(15)</span></h2><div class="g2">'+F('姓名','c.appraiser.name')+F('事務所','c.appraiser.office')+F('估價師證書字號','c.appraiser.certNo')+F('開業證書字號','c.appraiser.licenseNo')+F('開業證書有效期限','c.appraiser.licenseExp',{type:'date'})+F('所屬公會','c.appraiser.guild')+F('公會會員證書字號','c.appraiser.guildNo')+'</div></section>'
-   +'<section class="card"><h2>報告書資料來源與其他負擔</h2>'+F('其他資料來源（寫入「估價資料來源說明」）',R+'dataSources',{ph:'例：委託人提供之營業報表、租約'})+F('其他負擔',R+'otherBurden')+'</section>'
-   +(hub?'':'<section class="card"><h2>勘估標的資料從哪裡取得</h2><div class="small" style="color:var(--ink2);line-height:1.8">'
+   +'<section class="card"><h2>報告書資料來源與其他負擔</h2>'+F('其他資料來源（寫入「估價資料來源說明」）',R+'dataSources',{ph:'例：委託人提供之營業報表、租約'})+F('其他負擔',R+'otherBurden')+'</section>' : '')
+   +(hub||part?'':'<section class="card"><h2>勘估標的資料從哪裡取得</h2><div class="small" style="color:var(--ink2);line-height:1.8">'
    +'<b>登記謄本</b>：全國地政電子謄本系統（需帳號，每張 20 元，費用併入 HiNet 帳單）；下載的 PDF 可交給 Claude 擷取地號、面積、權利範圍、公告現值與他項權利。<br>'
    +'<b>實價登錄</b>：內政部不動產交易實價查詢服務網開放資料，免費，每月 1、11、21 日更新。<br>'
    +'<b>使用分區、公告土地現值</b>：各縣市都市計畫查詢系統及地籍圖資服務。</div></section>');
