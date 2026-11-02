@@ -417,9 +417,21 @@ function tabFinal(c,k){
 }
 /* ===== 分頁：參數與指標（估價模型） ===== */
 var DIFFS = [['select','① 比較標的選取','選取條件、期間、評分權重'],['adjust','② 調整率判斷','指標級距、經驗調整表'],['weights','③ 方法權重','依估價目的分配'],['income','④ 收益參數','閒置、資本化率下限、費用加成'],['sources','⑤ 資料庫與工具','實價登錄、本所案例'],['weights','⑥ 估價目的','目的帶出權重與保守規則']];
+/* 估價模型或本所案例存檔時被別人搶先修改：列出備份，可另存為新模型或用備份取代 */
+function modelConflictBox(){
+  if (typeof cloudModelConflicts!=='function') return '';
+  var off=(typeof CLOUD_ME!=='undefined' && CLOUD_ME) ? CLOUD_ME.officeId : null;
+  var l=cloudModelConflicts().map(function(x,i){ return {x:x, i:i}; }).filter(function(o){ return (o.x.office||null)===off; });
+  if (!l.length) return '';
+  return '<div class="box warn"><b>有 '+l.length+' 份你未存成功的版本</b>（存檔時別人已先修改）<ul style="margin:6px 0 0;padding-left:18px">'
+   + l.map(function(o){ var t=String(o.x.at||'').replace('T',' ').slice(5,16);
+       return '<li style="margin:4px 0">'+(o.x.kind==='settings'?'本所案例／匯入的實價登錄':'估價模型「'+esc((o.x.data&&o.x.data.name)||'')+'」')+'　<span class="law">'+esc(t)+'</span> '
+        +(o.x.kind==='settings'?'<button class="btn ghost xs" data-act="mconflictUse" data-i="'+o.i+'">用這份取代目前資料</button>':'<button class="btn ghost xs" data-act="mconflictUse" data-i="'+o.i+'">另存為新模型</button>')
+        +' <button class="btn ghost xs" data-act="mconflictDrop" data-i="'+o.i+'">刪除備份</button></li>'; }).join('')+'</ul></div>';
+}
 function tabParams(){
   var p=modelById(A.pModel), sub=A.paramSub, usedBy=A.cases.filter(function(c){ return c.modelId===p.id && !c.signed; }).length, body;
-  var head='<section class="card"><h2>估價模型 <span class="law">事務所層級設定；每個案件選一個模型</span></h2>'
+  var head=modelConflictBox()+'<section class="card"><h2>估價模型 <span class="law">事務所層級設定；每個案件選一個模型</span></h2>'
    +'<div class="g3">'+F('編輯中的模型','a.pModel',{sel:A.models.map(function(m){ return [m.id,m.name]; }),rr:true,free:true})+F('模型名稱','p.name',{free:true,rr:true})+F('說明','p.note',{free:true})+'</div>'
    +'<div class="rowb"><span class="small">'+usedBy+' 件未簽名案件使用中；更新日 '+esc(p.updated)+'。法定門檻只能設得更嚴，不能放寬。</span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn ghost sm" data-act="dupModel">複製此模型</button><button class="btn ghost sm" data-act="useModel"'+(cur().modelId===p.id?' disabled':'')+D()+'>本案改用此模型</button><button class="btn ghost sm" data-act="delModel"'+(A.models.length<2?' disabled':'')+'>刪除模型</button></span></div>'
    +'<div class="diffmap">'+DIFFS.map(function(d){ return '<a href="#" data-act="sub" data-k="paramSub" data-v="'+d[0]+'"><b>'+d[1]+'</b><span>'+d[2]+'</span></a>'; }).join('')+'</div></section>';

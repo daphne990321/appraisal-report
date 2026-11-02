@@ -577,6 +577,11 @@ document.addEventListener('click', function(e){
     var parts=f.methods.map(function(m){return m.name+'（每坪 '+fmt(m.unit,S.unitDec)+' 萬元）給予 '+(f.methods.length>1?fmt(m.w,1):'100')+'%';});
     c.final.reason='綜合考量各方法所蒐集資料之可信度、估價目的（'+c.basic.purpose+'）及價格形成因素之相近程度'+(c.final.useModelWeights?'，依本所估價模型「'+kk.M.name+'」對此目的之權重':'')+'，'+parts.join('，')+'，決定勘估標的單價每坪 '+fmt(f.unit,S.unitDec)+' 萬元。'+(f.methods.length>1&&f.diff>=S.diffThreshold?'各方法差異 '+fmt(f.diff,1)+'%，經重新檢討後維持上述權重。':'');
     save(); render(); toast('已產生理由草稿，請依實際判斷修改'); }
+  else if (act==='mconflictDrop'){ cloudModelConflictDrop(Number(t.getAttribute('data-i'))); render(); }
+  else if (act==='mconflictUse'){ var mi=Number(t.getAttribute('data-i')), mx=cloudModelConflicts()[mi]; if (!mx) return;
+    if (mx.kind==='settings'){ var st=mx.data||{}; if (st.own) A.own=st.own; if (st.imported) A.imported=st.imported; if ('hideBuiltin' in st) A.hideBuiltin=!!st.hideBuiltin; toast('已用備份取代本所案例與匯入資料'); }
+    else { var nm=JSON.parse(JSON.stringify(mx.data)); nm.id='m'+Date.now().toString(36); nm.name=(nm.name||'模型')+'（備份）'; nm.updated=today(); A.models.push(nm); A.pModel=nm.id; toast('已另存為新模型「'+nm.name+'」'); }
+    cloudModelConflictDrop(mi); save(); render(); }
   else if (act==='dupModel'){ var cp=JSON.parse(JSON.stringify(P)); cp.id='m'+Date.now().toString(36); cp.name=P.name+'（複本）'; cp.updated=today(); A.models.push(cp); A.pModel=cp.id; save(); render(); toast('已複製為「'+cp.name+'」，可改名後指定給案件'); }
   else if (act==='useModel'){ if(L()) return; c.modelId=P.id; save(); render(); toast('本案改用「'+P.name+'」'); }
   else if (act==='delModel'){ if (A.models.length<2) return; var others=A.models.filter(function(m){ return m.id!==P.id; }), n=0;

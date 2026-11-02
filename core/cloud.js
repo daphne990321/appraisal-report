@@ -117,7 +117,7 @@ function cloudSignOut(){
     CLOUD_GEN++; clearTimeout(cloudSyncT); clearTimeout(saveT); /* 避免舊資料晚一步寫回 localStorage */
     CLOUD_ME=null; CLOUD_SYNCED=null; CLOUD_STATUS=''; cloudPushAgain=false;
     CLOUD_LVR_CACHE={}; CLOUD_LVR_KEY=''; CLOUD_LVR_LOADING=false; CLOUD_LVR_REQ++; CLOUD_LVR_LAST=null; delete A.cloudLvr; /* 登出：清掉雲端實價登錄與快取 */
-    CLOUD_MEMBERS=[]; CLOUD_VER={}; /* 階段 A：成員名單與版本號 */
+    CLOUD_MEMBERS=[]; CLOUD_VER={}; CLOUD_MVER={}; CLOUD_SVER=null; /* 成員名單與版本號 */
     var bak=null;
     try { bak=localStorage.getItem(CLOUD_BACKUP_KEY); if (bak!==null){ localStorage.setItem(KEY, bak); localStorage.removeItem(CLOUD_BACKUP_KEY); } } catch(e){}
     A = (bak!==null) ? load() : fresh();
@@ -142,6 +142,9 @@ function cloudSetStatus(st){
    新案件用 insert（不覆蓋）；案號被別人先用走時自動換號。每 60 秒與切回視窗時，自動載入別人的修改。 */
 var CLOUD_MEMBERS = [];   /* 本事務所成員 [{userId, name, role, active}] */
 var CLOUD_VER = {};       /* 案號 → 雲端版本號 */
+var CLOUD_MVER = {};      /* 估價模型代號 → 雲端 updated_at（存檔時比對，偵測別人同時修改） */
+var CLOUD_SVER = null;    /* 事務所設定的雲端 updated_at；null＝雲端還沒有這一列 */
+var CLOUD_MCONFLICT_KEY = 'appraisal-model-conflict-backup';
 var CLOUD_CONFLICT_KEY = 'appraisal-conflict-backup';
 var CLOUD_CASE_COLS = 'case_no, signed, data, assignee, appraiser, stage, status, due_date, handoff_note, handoff_by, handoff_at, version, updated_at, updated_by';
 var CLOUD_META_COLS = 'case_no, signed, assignee, appraiser, stage, status, due_date, handoff_note, handoff_by, handoff_at, version, updated_at, updated_by';
@@ -199,8 +202,8 @@ function cloudPull(){
   CLOUD_SYNCED=null; clearTimeout(cloudSyncT); cloudSetStatus('syncing');
   return Promise.all([
     cl.from('cases').select(CLOUD_CASE_COLS).eq('office_id', office),
-    cl.from('models').select('model_key, data').eq('office_id', office),
-    cl.from('office_settings').select('data').eq('office_id', office).maybeSingle(),
+    cl.from('models').select('model_key, data, updated_at').eq('office_id', office),
+    cl.from('office_settings').select('data, updated_at').eq('office_id', office).maybeSingle(),
     cloudMembersLoad(cl, office)
   ]).then(function(rs){
     if (gen!==CLOUD_GEN) return;
@@ -238,7 +241,8 @@ function cloudPull(){
     Object.keys(drafts).forEach(function(no){ var d=drafts[no], i=A.cases.findIndex(function(x){ return x.id===no; });
       if (i>=0 && CLOUD_VER[no]===d.ver && !A.cases[i].signed) A.cases[i]=d.c; else { cloudConflictAdd(d.c); lost++; } });
     if (lost) setTimeout(function(){ toast(lost+' 件案件的未儲存修改，因雲端已被別人更新而另存備份，可在案件總覽找回'); }, 600);
-    A.models=ms.map(function(r){ return r.data; });
+    A.models=ms.map(function(r){ return r.data; }); CLOUD_MVER={}; ms.forEach(function(r){ CLOUD_MVER[r.model_key]=r.updated_at; });
+    CLOUD_SVER=(rst.data && rst.data.updated_at) || null;
     if (st){
       if (st.own) A.own=st.own;
       if (st.imported) A.imported=st.imported;
@@ -327,16 +331,43 @@ function cloudPush(){
       });
     });
   });
+  /* 估價模型：比對 updated_at；別人先改過就載入最新版、自己的版本另存備份 */
+  var mq=function(){ return cl.from('models'); };
   A.models.forEach(function(m){
-    var js=now.models[m.id];
-    if (S.models[m.id]===js) return;
-    jobs.push(function(){ return cl.from('models').upsert(cloudModelRow(JSON.parse(js)), {onConflict:'office_id,model_key'}).then(function(r){ cloudChk(r); if (gen===CLOUD_GEN) S.models[m.id]=js; }); });
+    var id=m.id, js=now.models[id];
+    if (S.models[id]===js) return;
+    if (!(id in S.models)) jobs.push(function(){
+      return mq().insert(cloudModelRow(JSON.parse(js))).select('updated_at').then(function(r){
+        cloudChk(r); if (gen!==CLOUD_GEN) return; CLOUD_MVER[id]=r.data&&r.data[0]&&r.data[0].updated_at; S.models[id]=js; });
+    });
+    else jobs.push(function(){
+      var row=cloudModelRow(JSON.parse(js));
+      return mq().update({name:row.name, data:row.data}).eq('office_id', office).eq('model_key', id).eq('updated_at', CLOUD_MVER[id]).select('updated_at').then(function(r){
+        cloudChk(r); if (gen!==CLOUD_GEN) return;
+        if (r.data && r.data.length){ CLOUD_MVER[id]=r.data[0].updated_at; S.models[id]=js; return; }
+        return cloudModelConflict(id, JSON.parse(js));
+      });
+    });
   });
   Object.keys(S.models).forEach(function(id){
     if (id in now.models) return;
-    jobs.push(function(){ return cl.from('models').delete().eq('office_id', office).eq('model_key', id).then(function(r){ cloudChk(r); if (gen===CLOUD_GEN) delete S.models[id]; }); });
+    jobs.push(function(){ return mq().delete().eq('office_id', office).eq('model_key', id).eq('updated_at', CLOUD_MVER[id]).select('model_key').then(function(r){
+      cloudChk(r); if (gen!==CLOUD_GEN) return; delete S.models[id];
+      if (!(r.data && r.data.length)){ toast('估價模型在你刪除前已被別人修改，沒有刪除，已重新載入'); setTimeout(cloudPoll, 0); }
+      delete CLOUD_MVER[id]; }); });
   });
-  if (S.settings!==now.settings) jobs.push(function(){ return cl.from('office_settings').upsert({office_id:office, data:JSON.parse(now.settings)}, {onConflict:'office_id'}).then(function(r){ cloudChk(r); if (gen===CLOUD_GEN) S.settings=now.settings; }); });
+  /* 事務所設定（本所案例、匯入的實價登錄）：同樣比對 updated_at */
+  if (S.settings!==now.settings) jobs.push(function(){
+    var body=JSON.parse(now.settings);
+    var q=CLOUD_SVER ? cl.from('office_settings').update({data:body}).eq('office_id', office).eq('updated_at', CLOUD_SVER)
+                     : cl.from('office_settings').insert({office_id:office, data:body});
+    return q.select('updated_at').then(function(r){
+      if (!CLOUD_SVER && r.error && (r.error.code==='23505' || /duplicate key/i.test(r.error.message||''))) return cloudSettingsConflict(body);
+      cloudChk(r); if (gen!==CLOUD_GEN) return;
+      if (r.data && r.data.length){ CLOUD_SVER=r.data[0].updated_at; S.settings=now.settings; return; }
+      return cloudSettingsConflict(body);
+    });
+  });
   if (!jobs.length) return Promise.resolve();
   cloudPushing=true; cloudSetStatus('syncing');
   var firstErr=null, chain=Promise.resolve();
@@ -361,6 +392,43 @@ function cloudConflict(id, mine){
     save(); render();
   });
 }
+/* 估價模型、事務所設定的衝突備份（最多 20 份，存在這台電腦） */
+function cloudModelConflicts(){ try { var a=JSON.parse(localStorage.getItem(CLOUD_MCONFLICT_KEY)||'[]'); return Array.isArray(a)?a:[]; } catch(e){ return []; } }
+function cloudModelConflictSave(l){ try { localStorage.setItem(CLOUD_MCONFLICT_KEY, JSON.stringify(l.slice(-20))); } catch(e){} }
+function cloudModelConflictAdd(kind, data){ var l=cloudModelConflicts(); l.push({at:new Date().toISOString(), kind:kind, office:CLOUD_ME&&CLOUD_ME.officeId, data:data}); cloudModelConflictSave(l); }
+function cloudModelConflictDrop(i){ var l=cloudModelConflicts(); l.splice(i,1); cloudModelConflictSave(l); }
+function cloudApplyModelRow(row){
+  var i=A.models.findIndex(function(m){ return m.id===row.model_key; });
+  if (i>=0) A.models[i]=row.data; else A.models.push(row.data);
+  CLOUD_MVER[row.model_key]=row.updated_at;
+  if (CLOUD_SYNCED) CLOUD_SYNCED.models[row.model_key]=JSON.stringify(row.data);
+}
+function cloudModelConflict(id, mine){
+  var gen=CLOUD_GEN;
+  cloudModelConflictAdd('model', mine);
+  return CLOUD_CLIENT.from('models').select('model_key, data, updated_at').eq('office_id', CLOUD_ME.officeId).eq('model_key', id).maybeSingle().then(function(r){
+    cloudChk(r); if (gen!==CLOUD_GEN) return;
+    if (r.data) cloudApplyModelRow(r.data);
+    else { if (A.models.length>1){ A.models=A.models.filter(function(m){ return m.id!==id; }); if (A.pModel===id) A.pModel=A.models[0].id; } delete CLOUD_SYNCED.models[id]; delete CLOUD_MVER[id]; }
+    toast('估價模型「'+(mine.name||id)+'」已被別人'+(r.data?'修改':'刪除')+'，已載入最新版本；你的修改已備份，可在「估價模型」頁找回');
+    save(); render();
+  });
+}
+function cloudApplySettings(row){
+  var st=row.data||{};
+  if (st.own) A.own=st.own; if (st.imported) A.imported=st.imported; if ('hideBuiltin' in st) A.hideBuiltin=!!st.hideBuiltin;
+  CLOUD_SVER=row.updated_at; if (CLOUD_SYNCED) CLOUD_SYNCED.settings=JSON.stringify(cloudSettingsOf());
+}
+function cloudSettingsConflict(mine){
+  var gen=CLOUD_GEN;
+  cloudModelConflictAdd('settings', mine);
+  return CLOUD_CLIENT.from('office_settings').select('data, updated_at').eq('office_id', CLOUD_ME.officeId).maybeSingle().then(function(r){
+    cloudChk(r); if (gen!==CLOUD_GEN) return;
+    if (r.data) cloudApplySettings(r.data);
+    toast('本所案例或匯入資料已被別人修改，已載入最新版本；你的修改已備份，可在「估價模型」頁找回');
+    save(); render();
+  });
+}
 /* ===== 自動載入別人的修改：每 60 秒、切回視窗時 ===== */
 var CLOUD_POLL_T = null, CLOUD_POLLING = false;
 function cloudPollStart(){
@@ -374,8 +442,10 @@ function cloudPoll(){
   var gen=CLOUD_GEN, cl=CLOUD_CLIENT, office=CLOUD_ME.officeId, S=CLOUD_SYNCED;
   var dirty=function(now, no){ var c=A.cases.find(function(x){ return x.id===no; }); return ((no in now.cases) && S.cases[no]!==now.cases[no]) || (!!c && isDirty(c)); };
   CLOUD_POLLING=true;
-  return Promise.all([cl.from('cases').select(CLOUD_META_COLS).eq('office_id', office), cloudMembersLoad(cl, office)]).then(function(rs){
+  return Promise.all([cl.from('cases').select(CLOUD_META_COLS).eq('office_id', office), cloudMembersLoad(cl, office),
+    cl.from('models').select('model_key, updated_at').eq('office_id', office), cl.from('office_settings').select('updated_at').eq('office_id', office).maybeSingle()]).then(function(rs){
     var r=rs[0]; cloudChk(r); if (gen!==CLOUD_GEN || cloudPushing) return;
+    var mchg=cloudPollModels(cl, office, rs[2], rs[3]);
     var now=cloudSnapshot(), rows=r.data||[], seen={}, need=[], changed=false;
     rows.forEach(function(row){
       var no=row.case_no; seen[no]=1;
@@ -388,17 +458,33 @@ function cloudPoll(){
       }
     });
     Object.keys(S.cases).forEach(function(no){ if (!seen[no] && !dirty(now, no) && cloudRemoveLocal(no)) changed=true; }); /* 別人刪除的 */
-    if (!need.length) return changed;
+    if (!need.length) return mchg.then(function(m){ return changed || m; });
     return cl.from('cases').select(CLOUD_CASE_COLS).eq('office_id', office).in('case_no', need).then(function(r2){
       cloudChk(r2); if (gen!==CLOUD_GEN || cloudPushing) return false;
       var now2=cloudSnapshot();
       (r2.data||[]).forEach(function(row){ if (!dirty(now2, row.case_no)){ cloudApplyRow(row); changed=true; } });
-      return changed;
+      return mchg.then(function(m){ return changed || m; });
     });
   }).then(function(changed){
     CLOUD_POLLING=false;
     if (changed && gen===CLOUD_GEN){ save(); render(); }
   }, function(e){ CLOUD_POLLING=false; console.warn('更新案件清單失敗', cloudErrMsg(e)); });
+}
+/* 估價模型與事務所設定：別人改過、且我沒有未送出的修改 → 載入最新版。回傳 Promise<是否有變> */
+function cloudPollModels(cl, office, rm, rst){
+  if (!rm || rm.error || !CLOUD_SYNCED) return Promise.resolve(false);
+  var S=CLOUD_SYNCED, now=cloudSnapshot(), need=[], changed=false, seen={};
+  (rm.data||[]).forEach(function(x){ var id=x.model_key; seen[id]=1;
+    var mine=(id in now.models) && S.models[id]!==now.models[id];
+    if (!mine && CLOUD_MVER[id]!==x.updated_at) need.push(id); });
+  Object.keys(S.models).forEach(function(id){ if (!seen[id] && !((id in now.models) && S.models[id]!==now.models[id]) && A.models.length>1){
+    A.models=A.models.filter(function(m){ return m.id!==id; }); if (A.pModel===id) A.pModel=A.models[0].id; delete S.models[id]; delete CLOUD_MVER[id]; changed=true; } });
+  var sNeed = rst && !rst.error && rst.data && rst.data.updated_at!==CLOUD_SVER && S.settings===now.settings;
+  var jobs=[];
+  if (need.length) jobs.push(cl.from('models').select('model_key, data, updated_at').eq('office_id', office).in('model_key', need).then(function(r){ if (r.error) return; var now2=cloudSnapshot();
+    (r.data||[]).forEach(function(row){ if (!((row.model_key in now2.models) && S.models[row.model_key]!==now2.models[row.model_key])){ cloudApplyModelRow(row); changed=true; } }); }));
+  if (sNeed) jobs.push(cl.from('office_settings').select('data, updated_at').eq('office_id', office).maybeSingle().then(function(r){ if (r.error || !r.data) return; if (S.settings===cloudSnapshot().settings){ cloudApplySettings(r.data); changed=true; } }));
+  return Promise.all(jobs).then(function(){ return changed; }, function(){ return changed; });
 }
 /* 歷程：這件案子的操作紀錄（新到舊，最多 50 筆） */
 function cloudHistory(no){
