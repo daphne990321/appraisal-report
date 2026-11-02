@@ -52,7 +52,7 @@ function dataSubject(c,k,M,hub,part){
    +'<div class="g4">'+['正常價格','限定價格','特定價格','特殊價格'].map(function(x){return '<label class="opt'+(pt===x?' on':'')+'"><input type="radio" name="pt" data-b="c.basic.priceType" value="'+x+'"'+(pt===x?' checked':'')+D()+'><span>'+x+'</span></label>';}).join('')+'</div>'
    + F('估價條件',b+'conditions',{ta:true})
    + (pt==='特定價格'?F('同時估計之正常價格（萬元）',b+'normalPrice',{num:true,hint:'§6 II'}):'')
-   +'</section>'
+   +'</section>'+reportFormatCard(c)
    +'<section class="card"><h2>委託 <span class="law">估價師法 §15</span></h2><div class="g3">'+F('委託人',b+'client')+F('酬金（元）',b+'fee',{num:true})+F('簽約日',b+'contractDate',{type:'date'})+'</div>'+F('工作範圍',b+'scope')+'</section>'
    +'<section class="card"><h2>估價師 <span class="law">§16 II(15)</span></h2><div class="g2">'+F('姓名','c.appraiser.name')+F('事務所','c.appraiser.office')+F('估價師證書字號','c.appraiser.certNo')+F('開業證書字號','c.appraiser.licenseNo')+F('開業證書有效期限','c.appraiser.licenseExp',{type:'date'})+F('所屬公會','c.appraiser.guild')+F('公會會員證書字號','c.appraiser.guildNo')+'</div></section>'
    +'<section class="card"><h2>報告書資料來源與其他負擔</h2>'+F('其他資料來源（寫入「估價資料來源說明」）',R+'dataSources',{ph:'例：委託人提供之營業報表、租約'})+F('其他負擔',R+'otherBurden')+'</section>' : '')
@@ -60,6 +60,41 @@ function dataSubject(c,k,M,hub,part){
    +'<b>登記謄本</b>：全國地政電子謄本系統（需帳號，每張 20 元，費用併入 HiNet 帳單）；下載的 PDF 可交給 Claude 擷取地號、面積、權利範圍、公告現值與他項權利。<br>'
    +'<b>實價登錄</b>：內政部不動產交易實價查詢服務網開放資料，免費，每月 1、11、21 日更新。<br>'
    +'<b>使用分區、公告土地現值</b>：各縣市都市計畫查詢系統及地籍圖資服務。</div></section>');
+}
+/* ===== 階段 C：報告格式、面積明細、他項權利、現勘待填提示 ===== */
+function reportFormatCard(c){
+  var f=(c.report&&c.report.format)||'auto', now=reportFormat(c);
+  return '<section class="card"><h2>報告格式 <span class="law">第十四號公報</span></h2><div class="mpick" role="radiogroup">'
+   +[['auto','自動','依估價目的與標的類型'],['summary','摘要式','第十四號公報，個人房貸'],['narrative','敘述式','完整報告書']].map(function(o){
+      return '<label class="opt'+(f===o[0]?' on':'')+'"><input type="radio" name="rfmt" data-b="c.report.format" data-rr="1" value="'+o[0]+'"'+(f===o[0]?' checked':'')+D()+'><span><b>'+o[1]+'</b><span class="law">'+o[2]+'</span></span></label>'; }).join('')+'</div>'
+   +'<div class="small">目前會產出：<b>'+(now==='summary'?'摘要式':'敘述式')+'</b></div>'
+   +(RESIDENTIAL_KINDS.indexOf(c.kind)>=0?CB('高價宅（公報建議改用敘述式）','c.chk.luxury'):'')+'</section>';
+}
+function areaCard(c){
+  if (isLandKind(c.kind)) return '';
+  var a=(c.chk&&c.chk.area)||{}, sum=0, com=0;
+  AREA_ROWS.forEach(function(r){ var n=Number(a[r[0]])||0; sum+=n; if (r[0]==='common1'||r[0]==='common2'||r[0]==='other') com+=n; });
+  return '<section class="card"><h2>面積明細（依建物謄本，㎡） <span class="law">公報摘要式摘要表</span></h2>'
+   +'<div class="g3">'+AREA_ROWS.map(function(r){ return F(r[1],'c.chk.area.'+r[0],{num:true,step:'any',rr:true}); }).join('')+'</div>'
+   +'<div class="ck"><span>合計</span><span class="num">'+fmt(sum,2)+' ㎡</span></div>'
+   +'<div class="ck"><span>換算坪（× 0.3025）</span><span class="num">'+fmt(Math.round(sum*0.3025*100+1e-6)/100,2)+' 坪</span></div>'
+   +'<div class="ck"><span>公設比（公設Ⅰ＋公設Ⅱ＋其他獨立產權）</span><span class="num">'+(sum>0?fmt(com/sum*100,2)+'%':'—')+'</span></div>'
+   +'<div class="hint">「勘估標的」的建物面積欄位目前 '+fmt(c.basic.area,2)+' 坪；此處只供摘要用，不影響計算。</div></section>';
+}
+function lienCard(c){
+  var noLien=!!(c.chk&&c.chk.noLien), tpl={};
+  LIEN_COLS.forEach(function(x){ tpl[x[0]]=''; });
+  return '<section class="card"><h2>他項權利 <span class="law">公報摘要式第八項</span></h2>'+CB('無他項權利設定','c.chk.noLien')
+   +(noLien?'':LIST('c.chk.liens', LIEN_COLS.map(function(x){ return {key:x[0],label:x[1]}; }), {tpl:tpl, minW:900, addLabel:'新增他項權利'}))+'</section>';
+}
+/* 現勘建議填寫的題數（不算進「還差 N 項」）；使用現況與是否入內勘察都填了就不提示 */
+function surveyTodo(c){
+  var x=chkGet(c); if (x.entered && x.useNow) return '';
+  var n=0;
+  surveyGroups(c,'survey').forEach(function(g){ g.items.forEach(function(it){
+    if (it.type==='yn' || !chkShown(c,it)) return;
+    var v=x[it.k]; if (v===undefined || v===null || v==='' || (Array.isArray(v) && !v.length)) n++; }); });
+  return n ? '<div class="box info">現勘勾選：還有 '+n+' 題未填（建議填寫，不影響簽名）</div>' : '';
 }
 function libSummary(){
   var bs=BUILTIN.sales.length, br=BUILTIN.rents.length, is=A.imported.sales.length, ir=A.imported.rents.length;

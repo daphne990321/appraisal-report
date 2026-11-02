@@ -314,8 +314,8 @@ function stepChips(c, st, mv){
 function stepContent(c,k,v,st){
   var M=MOD(c);
   if (st==='intake') return dataSubject(c,k,M,true,'intake');
-  if (st==='docs') return '<div class="box info" style="justify-content:space-between;align-items:center;flex-wrap:wrap"><span>依登記謄本填寫標的資料；實價登錄、本所案例、營造單價等來源在「資料來源」面板。</span><button class="btn ghost sm" data-act="sheet" data-v="sources">資料來源</button></div>'+dataSubject(c,k,M,true,'docs');
-  if (st==='survey') return tabSurvey(c);
+  if (st==='docs') return '<div class="box info" style="justify-content:space-between;align-items:center;flex-wrap:wrap"><span>依登記謄本填寫標的資料；實價登錄、本所案例、營造單價等來源在「資料來源」面板。</span><button class="btn ghost sm" data-act="sheet" data-v="sources">資料來源</button></div>'+dataSubject(c,k,M,true,'docs')+areaCard(c)+lienCard(c)+surveyCards(c,'docs');
+  if (st==='survey') return surveyTodo(c)+'<div class="hint" style="margin:0 2px">照片請存在電腦，這裡只記張數（張數在下方「現場勘察」）</div>'+surveyCards(c,'survey')+tabSurvey(c);
   if (st==='comps'){ if (A.stepSub4!=='rents') A.stepSub4='sales';
     return SUB('stepSub4',[['sales','挑選比較標的'],['rents','租金行情']])+(A.stepSub4==='rents'?dataRents(c,k,M,true):dataSales(c,k,M,true)); }
   if (st==='calc'){
@@ -324,7 +324,7 @@ function stepContent(c,k,v,st){
     if (!on.some(function(x){ return x[0]===A.stepSub5; })) A.stepSub5=on[0][0];
     var sub=A.stepSub5, body=sub==='comp'?tabComp(c,k,v):sub==='income'?tabIncome(c,k,v):sub==='cost'?tabCost(c,k,v):tabLand(c,k,v);
     return SUB('stepSub5', on.map(function(x){ return [x[0],x[1]]; }))+body; }
-  if (st==='decide') return tabFinal(c,k,v);
+  if (st==='decide') return tabFinal(c,k,v)+surveyCards(c,'decide');
   return tabReport(c,k,v);
 }
 function handoffBar(c, st){
@@ -381,7 +381,7 @@ function render(){
    +(dataHub()?'<button class="btn ghost sm" data-act="sheet" data-v="sources">資料來源</button>':'')+(A.tab!=='report'?'<button class="btn ghost sm side-toggle" data-act="side" aria-pressed="'+(A.side?'true':'false')+'">'+(A.side?'收起對照報告':'對照報告')+'</button>':'')+'<button class="btn ghost sm" data-act="caseLayout" data-v="steps">步驟版面</button></div>')
    +metabar(c)+noteBox(c)
    +(c.signed?'<div class="box ok">本案已於 '+esc(c.signedAt)+' 簽名交付，資料與估價模型快照已鎖定；保存至 '+(Number(c.signedAt.slice(0,4))+15)+c.signedAt.slice(4)+' 以後（估價師法 §19 III）。要修改請用「複製本案」。</div>':'')
-   +methodStrip(c)
+   +(sl && mob && !mv && ['intake','docs','survey'].indexOf(st)>=0 ? '' : methodStrip(c)) /* 手機在接案、調資料、現勘：不放價格列，畫面留給表單（下方估價金額按鈕仍在） */
    + body)+'</div>'+(side?'<aside class="right" aria-label="報告書對照"><div data-rp="1"></div></aside>':'')+'</div>'
    +(lst?'':sl?'<nav class="mnav m3" aria-label="主要分頁">'+[['view','list','總覽','list'],['sheet','steps','步驟','steps'],['sheet','report','報告','report']].map(function(x){ return '<button data-act="'+x[0]+'" data-v="'+x[1]+'" class="'+(x[1]==='steps'?'on':'')+'">'+icon(x[3])+'<span>'+x[2]+'</span></button>'; }).join('')+'</nav>':'<nav class="mnav" aria-label="主要分頁">'+[['report','報告','report'],['data','資料','data'],['final','決定','final'],['survey','現勘','survey'],['more','更多','params,comp,income,cost,land']].map(function(x){
       var on = x[0]==='more' ? ['params','comp','income','cost','land'].indexOf(A.tab)>=0 : A.tab===x[0];
@@ -534,6 +534,10 @@ document.addEventListener('click', function(e){
   else if (act==='applyUnit'){ if(L()) return; var row=M.cost.table[Number(t.getAttribute('data-i'))]; if(!row) return; c.cost.unitCost=Number(row.unit)||0; c.cost.conMethod='unit'; c.cost.unitCostNote='本所估價模型「'+M.name+'」營造單價表「'+row.name+'」'; save(); render(); toast('已套用 '+fmt(row.unit,1)+' 萬元/坪到成本法'); }
   else if (act==='applyModelIncome'){ if(L()) return; c.income.vacMonths=M.income.vacMonths; c.income.cap=M.income.cap; save(); render(); toast(c.income.capMode==='input'?'已改回模型預設':'閒置月數已改回；資本化率預設只用在「直接輸入」'); }
   else if (act==='clearImported'){ A.imported={sales:[],rents:[]}; A.hideBuiltin=false; save(); render(); toast('已清除匯入資料'); }
+  else if (act==='chkPick'){ if(L()) return; var xp=chkOf(c), kp=t.getAttribute('data-k'); xp[kp]=(xp[kp]===v?'':v); save(); render(); }
+  else if (act==='chkToggle'){ if(L()) return; var xg=chkOf(c), kg=t.getAttribute('data-k'), ag=Array.isArray(xg[kg])?xg[kg].slice():[], ig=ag.indexOf(v);
+    if (ig>=0) ag.splice(ig,1); else if (v==='無' || v==='否') ag=[v]; else ag=ag.filter(function(o){ return o!=='無' && o!=='否'; }).concat(v);
+    xg[kg]=ag; save(); render(); }
   else if (act==='listAdd'){ var path=t.getAttribute('data-path'); if (path[0]==='c' && L()) return; var arr=getP(path); if (!Array.isArray(arr)){ setP(path,[]); arr=getP(path); } arr.push(JSON.parse(t.getAttribute('data-tpl')||'{}')); save(); render(); }
   else if (act==='listRm'){ var path2=t.getAttribute('data-path'); if (path2[0]==='c' && L()) return; getP(path2).splice(Number(t.getAttribute('data-i')),1); save(); render(); }
   else if (act==='draftFactors'){ if(L()) return; c.analysis.region=draftRegion(c); c.analysis.indiv=draftIndiv(c); if(!c.analysis.hbu) c.analysis.hbu=draftHbu(c); c.analysis.confirmed=false; save(); render(); toast('已產生草稿，請確認後勾選'); }

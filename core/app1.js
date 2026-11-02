@@ -70,3 +70,24 @@ function PICK(path, options, title, law){
 }
 function SUB(key, items){ var v=A[key]; return '<div class="subtabs" role="tablist">'+items.map(function(x){ return '<button role="tab" aria-selected="'+(v===x[0])+'" class="'+(v===x[0]?'on':'')+'" data-act="sub" data-k="'+key+'" data-v="'+x[0]+'">'+x[1]+'</button>'; }).join('')+'</div>'; }
 
+/* ===== 現勘勾選題（階段 C）：依 core/survey.js 的題目定義產生控制項，答案存在 c.chk[key] =====
+   one/many 用按鈕（手機好按；再點一次已選的 one＝取消），點擊由 data-act chkPick／chkToggle 處理；num、text、yn 沿用 F、CB */
+function CHK(c, it){
+  if (!chkShown(c, it)) return '';
+  var x=c.chk||{}, p='c.chk.'+it.k, v=x[it.k], dis=D(), lab=esc(it.label), h;
+  if (it.type==='num') return F(lab+(it.unit?' <span class="law">'+esc(it.unit)+'</span>':''), p, {num:true, step:'any', hint:it.hint?esc(it.hint):''});
+  if (it.type==='text') return F(lab, p, {ph:it.ph, hint:it.hint?esc(it.hint):''});
+  if (it.type==='yn') return '<div>'+CB(lab, p)+(it.hint?'<div class="hint">'+esc(it.hint)+'</div>':'')+'</div>';
+  var many=it.type==='many', opts=it.opts.slice(), sel=many?(Array.isArray(v)?v:[]):[v];
+  if (it.other) opts.push('其他');
+  var short=!many && opts.length<=4 && opts.every(function(o){ return o.length<=4; });
+  h='<div><div class="lbl">'+lab+'</div><div class="'+(many?'chkrow':'chkgrid'+(short?' s':''))+'" role="'+(many?'group':'radiogroup')+'" aria-label="'+lab+'">'
+   +opts.map(function(o){ var on=sel.indexOf(o)>=0;
+      return '<button type="button" class="chkopt'+(on?' on':'')+'" data-act="'+(many?'chkToggle':'chkPick')+'" data-k="'+esc(it.k)+'" data-v="'+esc(o)+'" role="'+(many?'checkbox':'radio')+'" aria-checked="'+on+'"'+dis+'>'+esc(o)+'</button>'; }).join('')+'</div>';
+  if (it.other && sel.indexOf('其他')>=0) h+='<div style="margin-top:8px">'+F('其他說明', p+'_x', {ph:'請說明'})+'</div>';
+  return h+(it.hint?'<div class="hint">'+esc(it.hint)+'</div>':'')+'</div>';
+}
+function surveyCard(c, g){
+  return '<section class="card chkcard"><h2>'+esc(g.title)+' <span class="law">'+esc(g.law||'')+'</span></h2>'+g.items.map(function(it){ return CHK(c, it); }).join('')+'</section>';
+}
+function surveyCards(c, step){ return surveyGroups(c, step).map(function(g){ return surveyCard(c, g); }).join(''); }
