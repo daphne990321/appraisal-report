@@ -17,6 +17,18 @@ function setMeta(id, patch){ var m=metaOf(id); Object.keys(patch).forEach(functi
 function newCaseMeta(id){ var me=(typeof CLOUD_ME!=='undefined' && CLOUD_ME) ? CLOUD_ME : null; A.caseMeta=A.caseMeta||{};
   A.caseMeta[id]={assignee:me?me.userId:null, appraiser:me&&me.role==='appraiser'?me.userId:null, stage:'intake', status:'active', due:''}; }
 
+/* ===== 編輯後確認儲存 =====
+   畫面綁定的是「工作中」的案件（A.cases），計算與報告即時跟著變；
+   A.saved[案號] 是上次按「確認儲存」的內容（JSON 字串），雲端只會收到這一份。
+   未儲存的修改隨本機存檔保留，重新整理不會消失。A.savedVer：儲存時的雲端版本號；A.savedAt：儲存時間。 */
+function caseBaseline(c){ A.saved=A.saved||{}; if (A.saved[c.id]===undefined) A.saved[c.id]=JSON.stringify(c); }
+function isDirty(c){ var s=(A.saved||{})[c.id]; return s!==undefined && s!==JSON.stringify(c); }
+function dirtyCount(c){ var s=(A.saved||{})[c.id]; if (s===undefined) return 0; var a=JSON.parse(s), n=0;
+  (function walk(x, y){ if (x===y) return; if (x && y && typeof x==='object' && typeof y==='object' && Array.isArray(x)===Array.isArray(y)){ var ks={}; Object.keys(x).forEach(function(k){ ks[k]=1; }); Object.keys(y).forEach(function(k){ ks[k]=1; }); Object.keys(ks).forEach(function(k){ walk(x[k], y[k]); }); return; } if (JSON.stringify(x)!==JSON.stringify(y)) n++; })(a, JSON.parse(JSON.stringify(c)));
+  return n; }
+function markSaved(c){ A.saved=A.saved||{}; A.savedAt=A.savedAt||{}; A.saved[c.id]=JSON.stringify(c); A.savedAt[c.id]=new Date().toISOString(); }
+function revertCase(id){ var s=(A.saved||{})[id]; if (s===undefined) return false; var i=A.cases.findIndex(function(x){ return x.id===id; }); if (i<0) return false; A.cases[i]=JSON.parse(s); return true; }
+
 /* ===== 工具 ===== */
 function esc(x){ return String(x==null?'':x).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];}); }
 function sgn(v,d){ v=Number(v)||0; return (v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(d===undefined?2:d); }

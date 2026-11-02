@@ -98,7 +98,7 @@ function tabCases(){
     h+='<div class="ccards">'+rows.map(function(r){ var c=r.c, m=r.m, parts=[];
       if (logged) parts.push(esc(memberName(m.assignee)));
       parts.push(esc(stageName(m.stage))); parts.push(m.due?dueText(m):'無期限');
-      return '<button class="ccard" data-act="openCase" data-v="'+esc(c.id)+'"><span class="r1"><b class="num">'+esc(c.id)+'</b>'+caseState(c,m)+'</span><span class="r2">'+esc(caseAddr(c))+'</span><span class="r3">'+parts.join('・')+'</span>'+(m.note?'<span class="r3">留言：'+esc(noteCut(m.note,40))+'</span>':'')+'</button>'; }).join('')+'</div>';
+      return '<button class="ccard" data-act="openCase" data-v="'+esc(c.id)+'"><span class="r1"><b class="num">'+esc(c.id)+'</b>'+caseState(c,m)+(isDirty(c)?'<span class="chip warn">未儲存</span>':'')+'</span><span class="r2">'+esc(caseAddr(c))+'</span><span class="r3">'+parts.join('・')+'</span>'+(m.note?'<span class="r3">留言：'+esc(noteCut(m.note,40))+'</span>':'')+'</button>'; }).join('')+'</div>';
   } else if (mode==='board'){
     h+='<div class="tw"><div class="board">'+STAGES.map(function(s){ var col=rows.filter(function(r){ return r.m.stage===s[0] || (!STAGES.some(function(z){ return z[0]===r.m.stage; }) && s[0]==='intake'); });
       return '<div class="bcol"><div class="bh"><b>'+s[1]+'</b><span class="num law">'+col.length+'</span></div>'+col.map(function(r){ var c=r.c, m=r.m;
@@ -109,7 +109,7 @@ function tabCases(){
         return '<tr class="crow" data-act="openCase" data-v="'+esc(c.id)+'"><td class="num"><b>'+esc(c.id)+'</b></td><td>'+esc(caseAddr(c))+'</td><td>'+esc(kindOf(c.kind).name)+'</td><td>'+esc(b.purpose||'')+'</td><td>'+esc(b.client||'')+'</td>'
           +(logged?'<td>'+esc(memberName(m.assignee))+'</td><td>'+(m.appraiser?esc(memberName(m.appraiser)):'<span class="law">—</span>')+'</td>':'')
           +'<td style="white-space:nowrap">'+caseDots(c,m)+' <span class="law">'+esc(c.signed?'已交付':stageName(m.stage))+'</span></td>'
-          +'<td class="num"'+(od?' style="color:var(--fail);font-weight:700"':'')+'>'+(m.due?dueText(m):'—')+'</td><td>'+caseState(c,m)+(m.note?' <span class="law" title="'+esc(m.note)+'">留言</span>':'')+'</td>'
+          +'<td class="num"'+(od?' style="color:var(--fail);font-weight:700"':'')+'>'+(m.due?dueText(m):'—')+'</td><td>'+caseState(c,m)+(isDirty(c)?' <span class="chip warn">未儲存</span>':'')+(m.note?' <span class="law" title="'+esc(m.note)+'">留言</span>':'')+'</td>'
           +(logged?'<td class="law">'+(m.updatedAt?esc(fmtDT(m.updatedAt).slice(0,10))+' '+esc(memberName(m.updatedBy)):'—')+'</td>':'')+'</tr>'; }).join('')
       +'</tbody></table></div>';
   }
@@ -181,5 +181,5 @@ function conflictRestore(i){
   var l=cloudConflicts(), e=l[i]; if (!e || !e.data) return;
   var d=JSON.parse(JSON.stringify(e.data)); d.id=nextId(); d.signed=false; d.signedAt=''; d.modelSnapshot=null;
   if (!A.models.some(function(m){ return m.id===d.modelId; })) d.modelId=A.models[0].id;
-  A.cases.unshift(d); newCaseMeta(d.id); cloudConflictDrop(i); save(); render(); toast('已另存為 '+d.id);
+  A.cases.unshift(d); newCaseMeta(d.id); markSaved(d); cloudConflictDrop(i); save(); render(); toast('已另存為 '+d.id);
 }

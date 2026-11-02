@@ -152,7 +152,7 @@ function cloudModelRow(m){ return {office_id:CLOUD_ME.officeId, model_key:m.id, 
 function cloudSettingsOf(){ return {own:A.own, imported:A.imported, hideBuiltin:!!A.hideBuiltin}; }
 function cloudSnapshot(){
   var o={cases:{}, meta:{}, models:{}, settings:JSON.stringify(cloudSettingsOf())};
-  A.cases.forEach(function(c){ o.cases[c.id]=JSON.stringify(c); o.meta[c.id]=JSON.stringify(metaPure(metaOf(c.id))); });
+  A.cases.forEach(function(c){ var sv=(A.saved||{})[c.id]; o.cases[c.id]=sv!==undefined ? sv : JSON.stringify(c); o.meta[c.id]=JSON.stringify(metaPure(metaOf(c.id))); }); /* 只送「已確認儲存」的內容 */
   A.models.forEach(function(m){ o.models[m.id]=JSON.stringify(m); });
   return o;
 }
@@ -170,12 +170,15 @@ function cloudApplyRow(row){
   if (i>=0) A.cases[i]=c; else A.cases.push(c);
   A.caseMeta=A.caseMeta||{}; A.caseMeta[no]=cloudMetaFromRow(row);
   CLOUD_VER[no]=row.version;
-  if (S){ S.cases[no]=JSON.stringify(c); S.meta[no]=JSON.stringify(metaPure(A.caseMeta[no])); }
+  A.saved=A.saved||{}; A.savedVer=A.savedVer||{}; A.savedAt=A.savedAt||{};
+  A.saved[no]=JSON.stringify(c); A.savedVer[no]=row.version; A.savedAt[no]=row.updated_at||A.savedAt[no]||'';
+  if (S){ S.cases[no]=A.saved[no]; S.meta[no]=JSON.stringify(metaPure(A.caseMeta[no])); }
 }
 function cloudRemoveLocal(no){
   if (A.cases.length<=1) return false;
   A.cases=A.cases.filter(function(x){ return x.id!==no; });
   if (A.caseMeta) delete A.caseMeta[no];
+  if (A.saved) delete A.saved[no]; if (A.savedVer) delete A.savedVer[no];
   if (A.caseId===no) A.caseId=A.cases[0].id;
   if (CLOUD_SYNCED){ delete CLOUD_SYNCED.cases[no]; delete CLOUD_SYNCED.meta[no]; }
   delete CLOUD_VER[no];
@@ -226,8 +229,15 @@ function cloudPull(){
     if (!ms.length) ups2.push(cl.from('models').upsert(A.models.map(cloudModelRow), {onConflict:'office_id,model_key'}));
     if (!cs.length) ups2.push(cl.from('cases').upsert(A.cases.map(function(c){ return Object.assign(cloudCaseRow(c), cloudMetaRow(c.id)); }), {onConflict:'office_id,case_no'}));
     if (ups2.length) return Promise.all(ups2).then(function(us){ us.forEach(cloudChk); if (gen!==CLOUD_GEN) return; return cloudPull(); });
-    A.cases=[]; A.caseMeta={}; CLOUD_VER={};
-    cs.forEach(function(r){ var c=r.data; c.signed=!!r.signed; A.cases.push(c); A.caseMeta[r.case_no]=cloudMetaFromRow(r); CLOUD_VER[r.case_no]=r.version; });
+    /* 未儲存的修改：雲端版本沒變就接回來；雲端已被別人改過就另存備份 */
+    var drafts={}; A.cases.forEach(function(c){ var sv=(A.savedVer||{})[c.id]; if (sv!==undefined && isDirty(c)) drafts[c.id]={c:c, ver:sv}; });
+    A.cases=[]; A.caseMeta={}; CLOUD_VER={}; A.saved={}; A.savedVer={}; A.savedAt={};
+    cs.forEach(function(r){ var c=r.data; c.signed=!!r.signed; A.cases.push(c); A.caseMeta[r.case_no]=cloudMetaFromRow(r); CLOUD_VER[r.case_no]=r.version;
+      A.saved[r.case_no]=JSON.stringify(c); A.savedVer[r.case_no]=r.version; A.savedAt[r.case_no]=r.updated_at||''; });
+    var lost=0;
+    Object.keys(drafts).forEach(function(no){ var d=drafts[no], i=A.cases.findIndex(function(x){ return x.id===no; });
+      if (i>=0 && CLOUD_VER[no]===d.ver && !A.cases[i].signed) A.cases[i]=d.c; else { cloudConflictAdd(d.c); lost++; } });
+    if (lost) setTimeout(function(){ toast(lost+' 件案件的未儲存修改，因雲端已被別人更新而另存備份，可在案件總覽找回'); }, 600);
     A.models=ms.map(function(r){ return r.data; });
     if (st){
       if (st.own) A.own=st.own;
@@ -253,7 +263,9 @@ function cloudFreeNo(serverNos){
 }
 function cloudRenameCase(oldId, newId){
   var c=A.cases.find(function(x){ return x.id===oldId; }); if (!c) return;
-  c.id=newId; A.caseMeta=A.caseMeta||{};
+  var wasDirty=isDirty(c), sv=(A.saved||{})[oldId];
+  c.id=newId; A.caseMeta=A.caseMeta||{}; A.saved=A.saved||{};
+  if (sv!==undefined){ var o=JSON.parse(sv); o.id=newId; A.saved[newId]=wasDirty?JSON.stringify(o):JSON.stringify(c); delete A.saved[oldId]; }
   if (A.caseMeta[oldId]){ A.caseMeta[newId]=A.caseMeta[oldId]; delete A.caseMeta[oldId]; }
   if (A.caseId===oldId) A.caseId=newId;
 }
@@ -282,7 +294,7 @@ function cloudPush(){
             });
           }
           cloudChk(r); if (gen!==CLOUD_GEN) return;
-          var row=r.data && r.data[0]; CLOUD_VER[id]=row ? row.version : 1;
+          var row=r.data && r.data[0]; CLOUD_VER[id]=row ? row.version : 1; A.savedVer=A.savedVer||{}; A.savedVer[id]=CLOUD_VER[id];
           if (row && row.assignee && !metaOf(id).assignee){ metaOf(id).assignee=row.assignee; mj=JSON.stringify(metaPure(metaOf(id))); }
           S.cases[id]=js; S.meta[id]=mj;
         });
@@ -299,7 +311,7 @@ function cloudPush(){
       var obj=JSON.parse(js);
       return q().update({kind:obj.kind||null, signed:!!obj.signed, data:obj}).eq('office_id', office).eq('case_no', id).eq('version', CLOUD_VER[id]).select('version').then(function(r){
         cloudChk(r); if (gen!==CLOUD_GEN) return;
-        if (r.data && r.data.length){ CLOUD_VER[id]=r.data[0].version; S.cases[id]=js; return; }
+        if (r.data && r.data.length){ CLOUD_VER[id]=r.data[0].version; A.savedVer=A.savedVer||{}; A.savedVer[id]=CLOUD_VER[id]; S.cases[id]=js; return; }
         return cloudConflict(id, obj);
       });
     });
@@ -340,7 +352,7 @@ function cloudPush(){
 /* 存檔被拒（別人先改過或已刪除）：我的版本存成備份，畫面改成雲端最新版 */
 function cloudConflict(id, mine){
   var gen=CLOUD_GEN, office=CLOUD_ME.officeId;
-  cloudConflictAdd(mine);
+  var work=A.cases.find(function(x){ return x.id===id; }); cloudConflictAdd(work || mine);
   return CLOUD_CLIENT.from('cases').select(CLOUD_CASE_COLS).eq('office_id', office).eq('case_no', id).maybeSingle().then(function(r){
     cloudChk(r); if (gen!==CLOUD_GEN) return;
     var row=r.data;
@@ -360,7 +372,7 @@ function cloudPollStart(){
 function cloudPoll(){
   if (!CLOUD_ME || !CLOUD_SYNCED || cloudPushing || CLOUD_POLLING || document.hidden) return;
   var gen=CLOUD_GEN, cl=CLOUD_CLIENT, office=CLOUD_ME.officeId, S=CLOUD_SYNCED;
-  var dirty=function(now, no){ return (no in now.cases) && S.cases[no]!==now.cases[no]; };
+  var dirty=function(now, no){ var c=A.cases.find(function(x){ return x.id===no; }); return ((no in now.cases) && S.cases[no]!==now.cases[no]) || (!!c && isDirty(c)); };
   CLOUD_POLLING=true;
   return Promise.all([cl.from('cases').select(CLOUD_META_COLS).eq('office_id', office), cloudMembersLoad(cl, office)]).then(function(rs){
     var r=rs[0]; cloudChk(r); if (gen!==CLOUD_GEN || cloudPushing) return;
