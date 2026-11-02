@@ -18,7 +18,7 @@ function reportPane(c,k,v){
   var canSign = !c.signed && v.bl.length===0 && A.role==='appraiser';
   return '<div class="rtool"><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">'
    +(c.signed?'<span class="chip ok">已簽名交付</span>':'<span class="chip '+(v.bl.length?'warn':'ok')+'">'+(v.bl.length?'待處理 '+v.bl.length+' 項':'檢核通過')+'</span>')
-   +'<span class="chip info">必載 '+v.items.filter(Boolean).length+'/15</span>'+(v.warns.length?'<span class="chip warn">提醒 '+v.warns.length+'</span>':'')+'<span class="chip info">'+esc(kindOf(c.kind).name)+'</span><span class="chip info">'+esc(k.M.name)+'</span></div>'
+   +'<button class="chip info" style="border:0;cursor:pointer;font:inherit" data-act="goTab" data-v="'+(stepLayout()?'step:intake':'data:subject')+'" title="到接案步驟更改報告格式">'+(reportFormat(c)==='summary'?'摘要式（第十四號公報）':'敘述式')+'</button><span class="chip info">必載 '+v.items.filter(Boolean).length+'/15</span>'+(v.warns.length?'<span class="chip warn">提醒 '+v.warns.length+'</span>':'')+'<span class="chip info">'+esc(kindOf(c.kind).name)+'</span><span class="chip info">'+esc(k.M.name)+'</span></div>'
    +'<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn sm" data-act="docx">下載 Word</button><button class="btn ghost sm" data-act="copy">複製全文</button><button class="btn ghost sm" data-act="download">下載 .html</button><button class="btn ghost sm" data-act="exportCase">案件檔 .json</button>'
    +(c.signed?'':'<button class="btn seal sm" data-act="sign"'+(canSign?'':' disabled')+' title="'+(A.role!=='appraiser'?'助理員不能簽名':v.bl.length?'仍有待處理項目':'簽名後鎖定')+'">估價師簽名交付</button>')+'</div></div>'
    +((v.bl.length||v.warns.length)&&!c.signed?'<div style="background:var(--surface);border-inline:1px solid var(--line);padding:4px 12px 10px"><details'+(onReport()?' open':'')+'><summary style="cursor:pointer;font-size:13.5px;padding:6px 0">簽名前須處理（'+v.bl.length+'）'+(v.warns.length?'與提醒（'+v.warns.length+'）':'')+'</summary><ul style="margin:4px 0 0;padding-left:18px;font-size:13px;display:flex;flex-direction:column;gap:4px">'
@@ -576,7 +576,7 @@ function exportHtml(c){ getDL().then(function(DL){
   if (!DL){ toast('這個檢視無法下載檔案，請改用「複製全文」'); return; }
   var css='body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;color:#17232B;max-width:860px;margin:32px auto;padding:0 24px;line-height:1.85;font-size:14.5px}h1{text-align:center;font-family:"Noto Serif TC",serif}h2{font-family:"Noto Serif TC",serif;border-bottom:1px solid #ccc;padding-bottom:4px;margin-top:28px}table{width:100%;border-collapse:collapse;margin:6px 0;font-size:13px}th,td{border:1px solid #bbb;padding:5px 8px;text-align:left;vertical-align:top}th{background:#eef2f1;font-weight:500}td.r{text-align:right}.amount{text-align:center;font-size:22px;font-weight:700}.ph{background:#fbefd9;color:#7a4b00}';
   var doc='<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><title>不動產估價報告書 '+esc(c.id)+'</title><style>'+css+'</style></head><body>'+el.innerHTML+'</body></html>';
-  DL.save({filename:'估價報告書_'+c.id+'.html', data:doc}).then(function(){ toast('已下載報告書'); }, function(err){ if (err && err.code==='declined') return; toast('無法下載：'+(err&&err.message||'請改用複製全文')); });
+  DL.save({filename:'估價報告書_'+c.id+(reportFormat(c)==='summary'?'_摘要式':'')+'.html', data:doc}).then(function(){ toast('已下載報告書'); }, function(err){ if (err && err.code==='declined') return; toast('無法下載：'+(err&&err.message||'請改用複製全文')); });
 }); }
 A = load();
 lastMob = isM();
@@ -585,7 +585,7 @@ function reportCtx(c,k){
   var M=k.M, st=null; try { st = marketStats(c, M, A); } catch(e){}
   return {kind:kindOf(c.kind), cn:CALC.cnAmount, inds:indsOf(M,c), exp:expOf(M,c), selText:c.comp.method==='reg'?'':selText(M), marketStats:st, capName:CAPNAMES[c.income.capMode]||''};
 }
-function reportBlocks(c,k,v){ return REPORT.build(c,k,v,reportCtx(c,k)); }
+function reportBlocks(c,k,v){ return reportFormat(c)==='summary' ? REPORT.buildSummary(c,k,v,reportCtx(c,k)) : REPORT.build(c,k,v,reportCtx(c,k)); }
 function applyKind(c, kid){
   var M=MOD(c), kd=kindOf(kid); c.kind=kd.id;
   c.methods.comparison=kd.methods.comparison; c.methods.income=kd.methods.income; c.methods.cost=kd.methods.cost; c.methods.land=kd.methods.land;
@@ -608,7 +608,7 @@ function exportDocx(c){
   Promise.all([getDL(), loadDocx()]).then(function(r){ var DL=r[0], Dx=r[1];
     if (!DL){ toast('這個檢視無法下載檔案'); return; }
     var doc=REPORT.toDocx(reportBlocks(c,k,v), Dx, {office:c.appraiser.office, caseNo:(c.report&&c.report.caseNo)||c.id});
-    return Dx.Packer.toBlob(doc).then(function(blob){ return DL.save({filename:'估價報告書_'+c.id+(c.signed?'':'_草稿')+'.docx', data:blob}); }).then(function(){ toast('已下載 Word 報告書'); });
+    return Dx.Packer.toBlob(doc).then(function(blob){ return DL.save({filename:'估價報告書_'+c.id+(reportFormat(c)==='summary'?'_摘要式':'')+(c.signed?'':'_草稿')+'.docx', data:blob}); }).then(function(){ toast('已下載 Word 報告書'); });
   }).catch(function(err){ if (err && err.code==='declined') return; toast((err&&err.message)||'無法產生 Word 檔'); });
 }
 function exportCase(c){ getDL().then(function(DL){ if (!DL){ toast('這個檢視無法下載檔案'); return; }

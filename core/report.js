@@ -2,6 +2,9 @@
 /* ===== 報告書結構（依全聯會第二號公報「敘述式估價報告書範本」章節） =====
    reportBlocks() 產生與輸出格式無關的區塊，網頁與 Word 共用。
    文字中以 ⟦…⟧ 標示待填欄位。 */
+if (typeof module !== 'undefined' && module.exports){ /* Node：載入摘要式需要的題目定義；網頁版已串接在同一個 script，不需要 */
+  var _SV = require('./survey.js'), SURVEY = _SV.SURVEY, AREA_ROWS = _SV.AREA_ROWS, LIEN_COLS = _SV.LIEN_COLS, chkShown = _SV.chkShown, surveyDisclosures = _SV.surveyDisclosures;
+}
 var REPORT = (function(){
   function n(x){ var v=Number(x); return isFinite(v)?v:0; }
   function f(v,d){ if (v===null||v===undefined||v===''||isNaN(v)) return '—'; return Number(v).toLocaleString('zh-TW',{minimumFractionDigits:d||0,maximumFractionDigits:d||0}); }
@@ -226,6 +229,211 @@ var REPORT = (function(){
     }
   }
 
+  /* ===== 摘要式不動產估價報告書（第十四號公報範本）=====
+     數字只取自 calc 結果 k 與案件資料 c；唯一的運算是面積換算、公設比、加總、單位換算與淨值。沒有資料一律顯示待填。 */
+  function buildSummary(c, k, v, ctx){
+    ctx = ctx || {};
+    var b=c.basic, a=c.appraiser, S=k.S, fin=k.fin, R=c.report||{}, X=(c.chk && typeof c.chk==='object')?c.chk:{}, out=[], land=!!k.isLand;
+    var hasParcels = k.parcels && k.parcels.rows.length, caseNo = R.caseNo || c.id;
+    var yuanTxt=function(y){ return y===null||y===undefined||isNaN(y) ? '⟦待填⟧' : f(Math.round(y),0); };
+    var finTxt = fin.yuan===null||fin.yuan===undefined ? '⟦尚未決定⟧' : '新台幣 '+f(fin.yuan,0)+' 元';
+    var P=function(t){ out.push({t:'p', text:t}); }, H1=function(t){ out.push({t:'h1', text:t}); }, H2=function(t){ out.push({t:'h2', text:t}); }, H3=function(t){ out.push({t:'h3', text:t}); };
+    var KV=function(rows){ out.push({t:'kv', rows:rows}); }, T=function(head, rows, o){ out.push(Object.assign({t:'table', head:head, rows:rows}, o||{})); }, L=function(items, ord){ out.push({t:'list', items:items, ordered:ord!==false}); };
+    var PB=function(){ out.push({t:'pb'}); };
+    var ping=function(m2){ return Math.round(n(m2)*0.3025*100+1e-6)/100; };
+    var areaTxt=function(x){ return n(x)>0 ? f(x,2) : '—'; };
+    var numTxt=function(x){ return Number(x).toLocaleString('zh-TW',{maximumFractionDigits:4}); };
+    var rate=function(x){ return f(100+n(x),2)+'%'; };
+    var adopted=['comparison','income','cost','land'].filter(function(m){ return c.methods[m]; });
+    var liens = Array.isArray(X.liens) ? X.liens : [];
+
+    /* 一題勾選題 → 「■選中 □未選」文字 */
+    function itemTxt(it){
+      var val=X[it.k], t=it.type;
+      if (t==='one' || t==='many'){
+        var sel = (val===undefined||val===null||val==='') ? [] : [].concat(val), opts=it.opts.slice(); if (it.other) opts.push('其他');
+        var s=opts.map(function(o){ return (sel.indexOf(o)>=0?'■':'□')+o; }).join('　');
+        if (it.other && sel.indexOf('其他')>=0) s+='　其他：'+V(X[it.k+'_x'],'說明');
+        return s; }
+      if (t==='num') return (val===undefined||val===null||val==='') ? '⟦待填⟧'+(it.unit?' '+it.unit:'') : numTxt(val)+(it.unit?' '+it.unit:'');
+      if (t==='yn') return val===true ? '■是　□否' : val===false ? '□是　■否' : '□是　□否';
+      return V(val,'待填');
+    }
+    function groupRows(id){
+      var g=SURVEY.filter(function(x){ return x.id===id; })[0];
+      if (!g || (land && !g.land)) return null;
+      var rows=g.items.filter(function(it){ return chkShown(c,it); }).map(function(it){ return [it.label, itemTxt(it)]; });
+      return rows.length ? rows : null;
+    }
+    function groupKV(id, extra){ var rows=groupRows(id); if (!rows && !(extra&&extra.length)) return false; KV((extra||[]).concat(rows||[])); return true; }
+    function lienLine(l){ return [l.kind, l.holder?'權利人 '+l.holder:'', n(l.amount)?'擔保債權總金額 '+f(l.amount,0)+' 元':(l.amount||'')].filter(Boolean).join('，'); }
+
+    /* 封面 */
+    out.push({t:'cover', office:a.office, title:'辦理金融機構不動產抵押貸款業務之不動產估價報告書', rows:[['案件編號',caseNo],['委託單位',V(b.client,'委託人')],['勘估標的',V(b.addr,'勘估標的')],['評估金額',finTxt],['勘察日期',roc(b.surveyDate)],['價格日期',roc(b.priceDate)]]});
+    PB();
+    /* 摘要表 */
+    KV([['委託人',V(b.client,'委託人')],['案件編號',caseNo]]);
+    H3('不動產坐落');
+    var ar=(X.area && typeof X.area==='object')?X.area:{}, sum=0, com=0, arows=[];
+    AREA_ROWS.forEach(function(r){ var m=n(ar[r[0]]); sum+=m; if (r[0]==='common1'||r[0]==='common2'||r[0]==='other') com+=m; });
+    var landNos = hasParcels ? k.parcels.rows.map(function(r){ return (r.p.section||'')+(r.p.no?r.p.no+' 地號':''); }).join('、') : V(b.landNo,'地號');
+    var sRows=[['土地', landNos, hasParcels?f(k.parcels.m2,2):'—', hasParcels?f(k.parcels.ping,2):'—', V(b.owner,'所有權人')]];
+    if (!land){
+      sRows.push(['建物', V(b.addr,'地址'), '', '', '']);
+      AREA_ROWS.forEach(function(r){ var m=ar[r[0]]; sRows.push([r[1], r[0]==='main' ? V(b.bldgNo,'建號') : '—', areaTxt(m), n(m)>0?f(ping(m),2):'—', r[0]==='main'?V(b.owner,'所有權人'):'—']); });
+      sRows.push(['合計', '公設比 '+(sum>0?f(com/sum*100,2)+'%':'—'), sum>0?f(sum,2):'—', sum>0?f(ping(sum),2):'—', '']);
+    }
+    T(['坐落及門牌','地號／建號','面積（㎡）','面積（坪）','所有權人'], sRows, {align:['l','l','r','r','l'], small:true});
+    if (!land) P('註：公設比為（公設Ⅰ＋公設Ⅱ＋其他獨立產權）÷（主建物＋附屬建物＋公設Ⅰ＋公設Ⅱ＋其他獨立產權）；依範本公式以謄本面積明細計算。');
+    H3('評估價值及土地增值稅');
+    var tax = hasParcels && n(k.parcels.tax)>0 ? k.parcels.tax : null, net = (tax!==null && fin.yuan!==null && fin.yuan!==undefined) ? fin.yuan-tax : null;
+    var costOn = !!c.methods.cost && k.cost, vRows=[];
+    if (land) vRows.push(['土地', unitTxt(fin.unit,S), yuanTxt(fin.yuan), yuanTxt(tax), yuanTxt(net)]);
+    else {
+      vRows.push(['土地', costOn ? unitTxt(c.cost.landUnit,S) : '⟦待填⟧', costOn ? f(k.cost.land,0) : '⟦待填⟧', '—', '—']);
+      vRows.push(['建物', '⟦待填⟧', costOn ? f(k.cost.building,0) : '⟦待填⟧', '—', '—']);
+      vRows.push(['房地一體', unitTxt(fin.unit,S), yuanTxt(fin.yuan), yuanTxt(tax), yuanTxt(net)]);
+    }
+    T(['項目','單價','總價（元）','土地增值稅（元）','淨值（元）'], vRows, {align:['l','r','r','r','r'], small:true});
+    if (!land){
+      KV([['不含車位建坪單價','⟦待填⟧']]);
+      P('註：車位價值：⟦待填⟧ 元，車位面積：⟦待填⟧ 坪。土地與建物分開之價格僅成本法有現成數值（土地為比較法求得、建物為成本價格），其餘待估價師填寫。');
+    }
+    H3('他項權利分析');
+    if (X.noLien) KV([['備註','無他項權利設定']]);
+    else if (liens.length) T(['項目'].concat(liens.map(function(l,i){ return '第 '+(i+1)+' 筆'; })), LIEN_COLS.map(function(col){ return [col[1]].concat(liens.map(function(l){ return l[col[0]]!==undefined&&l[col[0]]!==''?String(l[col[0]]):'—'; })); }), {small:true});
+    else KV([['他項權利', b.encumbrance ? b.encumbrance : '⟦待填⟧']]);
+    PB();
+
+    /* 評估內容 */
+    H1('評估內容');
+    H2('一、委託人'); P(V(b.client,'委託人'));
+    H2('二、勘估標的之基本資料');
+    KV([['1.土地標示', hasParcels ? landNos+'；面積 '+f(k.parcels.m2,2)+' 平方公尺（'+f(k.parcels.ping,2)+' 坪）' : V(b.landNo,'地號')],
+      ['2.建物標示', land ? '—' : V(b.bldgNo,'建號')+'；建物面積 '+f(b.area,2)+' 坪（'+f(n(b.area)*3.30579,2)+' 平方公尺）'],
+      ['3.建物門牌', land ? '—' : V(b.addr,'門牌')]]);
+    H2('三、價格日期及勘察日期'); KV([['價格日期',roc(b.priceDate)],['勘察日期',roc(b.surveyDate)]]);
+    H2('四、價格種類'); P(b.priceType+(k.special?'及特定價格':''));
+    H2('五、估價條件'); P(V(b.conditions,'估價條件'));
+    H2('六、估價目的'); P(V(b.purpose,'估價目的'));
+    H2('七、估價金額');
+    var vl=[];
+    if (c.methods.comparison && k.comp) vl.push('比較價格：建坪單價 '+unitTxt(k.comp.unit,S)); else vl.push('比較價格：未採用');
+    vl.push(c.methods.income && k.inc ? '收益價格：新台幣 '+f(k.inc.price,0)+' 元（建坪單價 '+unitTxt(k.inc.unit,S)+'）' : '收益價格：未採用');
+    if (c.methods.cost && k.cost) vl.push('成本價格：新台幣 '+f(k.cost.price,0)+' 元（建坪單價 '+unitTxt(k.cost.unit,S)+'）');
+    vl.push('最終決定之估價金額：'+finTxt);
+    L(vl);
+    H2('八、勘估標的之所有權、他項權利及其他負擔');
+    var lienTxt = X.noLien ? '■無設定　□有設定' : liens.length ? '□無設定　■有設定：'+liens.map(lienLine).join('；') : '□無設定　□有設定'+(b.encumbrance?'（'+b.encumbrance+'）':'');
+    var t8=groupRows('title')||[]; KV(t8.concat([['他項權利及其他負擔', lienTxt]]));
+    H2('九、勘估標的使用現況');
+    ['use','ext','defect'].forEach(function(id){ groupKV(id); });
+    H2('十、勘估標的法定使用管制或其他管制事項');
+    groupKV('law', [['使用分區', V(b.zone,'使用分區')]]);
+    H2('十一、價格形成之主要因素分析');
+    var no=0, sub=function(t){ H3((++no)+'.'+t); };
+    [['area','區域條件分析及區域建物使用'],['market','市場面分析']].forEach(function(g){ var rows=groupRows(g[0]); if (rows){ sub(g[1]); KV(rows); } });
+    if (!land){ sub('標的結構及規劃'); KV([['標的結構',V(b.floorDesc,'結構')],['標的規劃',V(b.btype,'規劃')]]); }
+    [['nuis','外在嫌惡設施及負面因素評估'],['site','宗地條件'],['bldg','建物個別條件'],['inner','建物內部條件評估'],['reflect','負面因素是否已反映於估值']].forEach(function(g){ var rows=groupRows(g[0]); if (rows){ sub(g[1]); KV(rows); } });
+    H2('十二、估價所運用之方法與其估算過程及價格決定之理由');
+    H3('（一）採用方法');
+    P('本次價格評估考量產品特性及市場資訊，採用'+[['comparison','比較法'],['income','收益法'],['cost','成本法']].map(function(m){ return (c.methods[m[0]]?'■':'□')+m[1]; }).join('　')+(c.methods.land?'　■土地開發分析法':'')+'。');
+    H3('（二）估價方法試算表');
+    if (c.methods.comparison) compTable();
+    if (c.methods.income) incomeTable();
+    if (c.methods.cost) costTable();
+    if (c.methods.land && k.land) P('土地開發分析法價格：'+unitTxt(k.land.unit,S)+'（詳細試算見敘述式報告）。');
+    H3('（三）價格決定說明'); P(V(c.final.reason,'價格決定理由'));
+    H2('十三、依不動產估價技術規則規定須敘明之情況');
+    var n13=(v&&v.notes?v.notes.map(function(x){ return x.t+'（'+x.law+'）'; }):[]).concat(surveyDisclosures(c));
+    if (n13.length) L(n13); else P('無。');
+    H2('十四、其他與估價相關之必要事項');
+    var oth=(c.other||'').split('\n').filter(Boolean); if (oth.length) L(oth); else P('無。');
+    H2('十五、不動產估價師姓名及其證照字號');
+    KV([['（一）不動產估價師',V(a.name)+(c.signed?'（已簽章，'+c.signedAt+'）':'（簽名或蓋章）')],['不動產估價師證書字號',V(a.certNo)],['不動產估價師開業證書字號',V(a.licenseNo)],['（二）不動產估價助理員','（簽名或蓋章）'],['登錄字號','⟦待填⟧']]);
+    return out;
+
+    function compTable(){
+      var cc=k.comp, cm=c.comp.method, isD=cm==='diff';
+      H3('比較法試算表');
+      if (cm==='reg'){ var Rg=k.reg; P(!Rg||Rg.err ? '⟦計量模型尚無法估計⟧' : '採迴歸分析，樣本 '+Rg.n+' 筆，調整後判定係數 '+f(Rg.adjR2,3)+'。'); P('推定比較價格：'+unitTxt(cc.unit,S)); return; }
+      if (!c.comps.length || !cc.rows || !cc.rows.length){ P('⟦尚未選擇比較標的⟧'); return; }
+      var idx=[]; c.comps.forEach(function(cp,i){ if (cp.include!==false && idx.length<6) idx.push(i); });
+      var more=c.comps.length-idx.length, line=function(lab, fn){ return [lab].concat(idx.map(function(i){ return fn(c.comps[i], cc.rows[i], i); })); };
+      var adj=function(pctv, diffv){ return isD ? sg(diffv) : rate(pctv); };
+      var rows=[
+        line('坐落', function(cp){ return cp.loc||'—'; }),
+        line('面積（坪）', function(cp){ return f(cp.area,2); }),
+        line('屋齡（年）', function(cp){ return cp.age===''||cp.age===undefined?'—':String(cp.age); }),
+        line('樓層', function(cp){ return cp.floor||'—'; }),
+        line('單價（萬元/坪）', function(cp){ return f(cp.price,S.unitDec); }),
+        line('總價（萬元）', function(cp){ return n(cp.area)>0&&n(cp.price)>0 ? f(n(cp.area)*n(cp.price),0) : '—'; }),
+        line('資料來源', function(cp){ return cp.dataSrc||cp.src||'估價師蒐集'; }),
+        line('價格日期', function(cp){ return cp.date||'—'; }),
+        line('價格種類', function(cp){ return cp.priceType==='ask'?'擬售價':'成交價'; }),
+        line('情況因素調整率', function(cp,r){ return adj(r.cond, r.cond); }),
+        line('價格日期調整率', function(cp,r){ return adj(r.date, r.date); }),
+        line('區域因素調整率', function(cp,r){ return adj(r.r, r.rv); }),
+        line('個別因素調整率', function(cp,r){ return adj(r.i, r.iv); }),
+        line('試算價格（萬元/坪）', function(cp,r){ return unitTxt(r.trial,S); }),
+        line('個案調整權重', function(cp,r){ return r.usable ? f(r.weight,0)+'%' : '不採用'; }),
+        line('加權後價格（萬元/坪）', function(cp,r){ return r.usable ? unitTxt(n(r.trial)*n(r.weight)/100,S) : '—'; })];
+      T(['項次'].concat(idx.map(function(i){ return '比較標的 '+(c.comps[i].label||(i+1)); })), rows, {align:['l'].concat(idx.map(function(){ return 'r'; })), small:true});
+      if (more>0) P('另有 '+more+' 件比較標的未列於本表（表格最多列 6 件）。');
+      if (isD) P('調整欄位為差額法之加減金額（萬元/坪）。');
+      P('推定比較價格：'+unitTxt(cc.unit,S)+'；經各項影響因素分析調整後，建坪單價以每坪 '+f(Math.round(n(cc.unit)*10000),0)+' 元評估。');
+      var why=idx.filter(function(i){ return c.comps[i].condReason; }).map(function(i){ return '比較標的 '+(c.comps[i].label||(i+1))+'：'+c.comps[i].condReason; });
+      P('調整說明：'+(why.length?why.join('；'):'⟦待填⟧'));
+    }
+    function incomeTable(){
+      var ic=k.inc, I=c.income, A=n(k.area||b.area), tot=ic.egi-ic.noi;
+      H3('收益法試算表（'+(I.method==='dcf'?'折現現金流量分析法':'直接資本化法')+'）');
+      if (I.method==='dcf'){
+        P('本案收益法採折現現金流量分析法（DCF）：分析期間 '+f(I.dcf.years)+' 年，折現率 '+f(I.dcf.disc,2)+'%，期末資本化率 '+f(I.dcf.termCap,2)+'%；收益價格 新台幣 '+f(ic.price,0)+' 元（建坪單價 '+unitTxt(ic.unit,S)+'）。');
+        return; }
+      T(['項目','內容'], [
+        ['勘估標的面積（坪）', f(A,2)],
+        ['評估毛租金（元/月）', ic.hotel ? '—' : f(ic.rent,0)],
+        ['評估毛租金（元/坪/月）', ic.hotel||!(A>0) ? '—' : f(ic.rent/A,0)],
+        ['總收入（元/年）', f(ic.gross,0)],
+        ['押金或保證金利息及其他收入（元/年）', f(ic.other,0)],
+        ['空置及其他損失', ic.hotel ? '—' : f(I.vacMonths,1)+' 個月（'+f(ic.loss,0)+' 元/年）'],
+        ['有效總收入（元/年）', f(ic.egi,0)],
+        ['費用率', ic.egi>0 ? f(tot/ic.egi*100,2)+'%' : '—'],
+        ['總費用（元/年，含建物折舊提存費）', f(tot,0)],
+        ['淨收入（元/年）', f(ic.noi,0)],
+        ['收益資本化率（%）', f(ic.cap,2)],
+        ['收益價格（元）', f(ic.price,0)],
+        ['收益單價（元/坪）', f(Math.round(n(ic.unit)*10000),0)]], {align:['l','r']});
+    }
+    function costTable(){
+      var ct=k.cost, K=c.cost;
+      H3('成本法試算表');
+      var rows=[
+        ['建物結構', V(b.floorDesc,'結構'), ''],
+        ['標的樓層/總樓層', (b.floorNum||'—')+'／'+(b.totalFloors||'—'), ''],
+        ['土地價格', '土地單價 '+unitTxt(K.landUnit,S)+' × '+f(b.landShare,2)+' 坪'+(ct.extraLand?'＋其他土地 '+f(ct.extraLand,0)+' 元':''), f(ct.land,0)],
+        ['營造或施工單價（元/坪）', K.conMethod==='items' ? '工程造價項目法' : f(Math.round(n(K.unitCost)*10000),0)+(n(ct.idx)!==1?'（× 物價指數 '+f(ct.idx*100,2)+'%）':''), ''],
+        ['建物總面積（坪）', f(k.area||b.area,2), ''],
+        ['直接成本：總值（元）', '', f(ct.construction,0)]];
+      if (ct.extras) rows.push(['附加成本（裝修、設備等）','',f(ct.extras,0)]);
+      rows.push(['規劃設計費','建物直接成本之 '+f(K.design,1)+'%',f(ct.design,0)],
+        ['廣告銷售費、管理費、稅捐及其他負擔','建築總成本之 '+f(K.adSell,1)+'%、'+f(K.mgmt,1)+'%、'+f(K.tax,1)+'%（合計）',f(ct.fees,0)],
+        ['間接成本小計','',f(n(ct.design)+n(ct.fees),0)],
+        ['資本利息','建築直接成本與間接成本之 '+f(K.interest,2)+'%',f(ct.interest,0)],
+        ['建物建築利潤','建物總成本之 '+f(K.profit,1)+'%',f(ct.profit,0)],
+        ['建物總成本（元）','',f(ct.T,0)],
+        ['建築完成日期', roc(b.completed), ''],
+        ['屋齡（年）', f(ct.age), ''],
+        ['耐用年數（年）', f(K.life), ''],
+        ['建物殘值價格率（%）', f(K.salvage,1), ''],
+        ['累積折舊', '', '−'+f(ct.dep,0)],
+        ['建物成本價格（元）','',f(ct.building,0)],
+        ['房地成本價格（元）','',f(ct.price,0)]);
+      T(['項目','內容','金額（元）'], rows, {align:['l','l','r'], small:true});
+    }
+  }
+
   /* ---- 網頁呈現 ---- */
   function esc(x){ return String(x==null?'':x).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];}); }
   function inl(t){ return esc(t).replace(/⟦([^⟧]*)⟧/g,'<span class="ph">$1</span>'); }
@@ -297,6 +505,6 @@ var REPORT = (function(){
       styles:{default:{document:{run:{font:FONT, size:24}}}},
       sections:[{properties:{page:{size:{width:11906, height:16838}, margin:{top:1418, bottom:1418, left:1418, right:1418}}}, headers:{default:header}, footers:{default:footer}, children:children}]});
   }
-  return {build:build, toHTML:toHTML, toDocx:toDocx, unitTxt:unitTxt, roc:roc};
+  return {build:build, buildSummary:buildSummary, toHTML:toHTML, toDocx:toDocx, unitTxt:unitTxt, roc:roc};
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = REPORT;

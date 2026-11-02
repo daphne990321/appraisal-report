@@ -8,6 +8,7 @@ const files = [
   ['core/data.js', 'mcp/core/data.js'],
   ['core/data_j.txt', 'mcp/core/data_j.txt'],
   ['core/model.js', 'mcp/core/model.js'],
+  ['core/survey.js', 'mcp/core/survey.js'],
   ['core/report.js', 'mcp/core/report.js'],
   ['lib/engine.js', 'mcp/server/engine.js'],
 ];
