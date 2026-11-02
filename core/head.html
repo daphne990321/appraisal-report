@@ -92,7 +92,9 @@ table.t tr.sum td{font-weight:700}
 .brand:hover span:last-child{text-decoration:underline;text-underline-offset:3px}
 .brand:focus-visible,.mseal:focus-visible{outline:2px solid var(--band-ink);outline-offset:3px}
 .top-mid{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
-.top-end{display:flex;align-items:center;justify-content:flex-end;gap:10px 14px;flex-wrap:wrap;justify-self:end}
+.top-end{display:flex;align-items:center;justify-content:flex-end;gap:10px 14px;flex-wrap:nowrap;justify-self:end;min-width:0}
+.top-end>.law{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px}
+.top-end>.btn,.top-end>.roles{flex:none}
 .top .cloud-st{display:inline-block;min-width:5em;text-align:left;white-space:nowrap}
 @media (max-width:1240px){.top-in{grid-template-columns:auto 1fr}.top-mid{justify-content:flex-start}.top-end{grid-column:1 / -1}}
 .seal-mark{width:30px;height:30px;border:2px solid var(--seal);color:var(--seal);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-weight:700;font-size:13px;flex:none}

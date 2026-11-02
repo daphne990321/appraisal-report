@@ -153,7 +153,7 @@ function histChange(key, pair){
   if (key==='appraiser') return '簽證估價師 '+(a?memberName(a):'未指定')+' → '+(b?memberName(b):'未指定');
   if (key==='stage') return '步驟 '+stageName(a)+' → '+stageName(b);
   if (key==='status') return '狀態 '+statusName(a)+' → '+statusName(b);
-  if (key==='note') return '留言：『'+(b||'')+'』';
+  if (key==='note') return '留言：『'+(typeof pair==='string' ? pair : (b||''))+'』'; /* 資料庫存的是整段文字，不是 [舊,新] */
   if (key==='due_date' || key==='due') return '期限 '+(a||'無')+' → '+(b||'無');
   return key;
 }
