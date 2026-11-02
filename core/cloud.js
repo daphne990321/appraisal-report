@@ -159,7 +159,7 @@ function cloudSnapshot(){
   A.models.forEach(function(m){ o.models[m.id]=JSON.stringify(m); });
   return o;
 }
-function memberName(uid){ if (!uid) return '未指派'; var m=CLOUD_MEMBERS.find(function(x){ return x.userId===uid; }); return m ? m.name : (CLOUD_ME && uid===CLOUD_ME.userId ? (CLOUD_ME.displayName||CLOUD_ME.email) : '已移除的成員'); }
+function memberName(uid){ if (!uid) return '未指派'; var m=(CLOUD_MEMBERS||[]).find(function(x){ return x.userId===uid; }); return m ? m.name : (typeof CLOUD_ME!=='undefined' && CLOUD_ME && uid===CLOUD_ME.userId ? (CLOUD_ME.displayName||CLOUD_ME.email) : '已移除的成員'); }
 function cloudMembersLoad(cl, office){
   return cl.from('members').select('user_id, display_name, role, active').eq('office_id', office).then(function(r){
     cloudChk(r); CLOUD_MEMBERS=(r.data||[]).map(function(m){ return {userId:m.user_id, name:m.display_name||'（未命名）', role:m.role, active:m.active!==false}; })
