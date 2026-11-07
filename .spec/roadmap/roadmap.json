@@ -1,0 +1,136 @@
+{
+  "title": "估價報告平台重新架構",
+  "intro": [
+    "把單一 HTML + Supabase 的估價報告產生器，改成 Python FastAPI 後端 + PostgreSQL + React SPA 的自架平台（podman compose），並加入可操作案件的 AI 助理。新版放在舊版旁邊，最後一段才搬資料並移除舊版。每一段送一個 PR 給 upstream。"
+  ],
+  "now": [
+    "正在做 foundation：steering 已提交；platform-foundation 的 design 已審查收斂，正在補 spec 完整性檢查的缺口，之後 Spec Briefing → 實作。"
+  ],
+  "children": [
+    {
+      "id": "foundation",
+      "title": "平台地基：steering + compose / Dockerfile / 空殼程式 / 測試框架",
+      "status": "active",
+      "spec": "platform-foundation",
+      "ordinal": 1,
+      "updated": "2026-11-07",
+      "summary": "第一個 PR：方向提案加可跑的骨架，不改現有功能"
+    },
+    {
+      "id": "visual-design",
+      "title": "視覺設計（/design，畫布放 .spec/design）",
+      "status": "planned",
+      "ordinal": 2,
+      "dependsOn": [
+        "foundation"
+      ],
+      "updated": "2026-11-07",
+      "summary": "配色、字型、版面；含案件頁三欄與 AI 浮動泡泡"
+    },
+    {
+      "id": "accounts-domain",
+      "title": "資料模型、帳號與身分",
+      "status": "planned",
+      "ordinal": 2,
+      "dependsOn": [
+        "foundation"
+      ],
+      "updated": "2026-11-07",
+      "summary": "offices / members / identities / invitations / cases / models / settings / audit schema；可外掛的登入提供者（本系統帳號、Google、M365、Meta）、session、邀請、重設密碼；事務所隔離與身分規則"
+    },
+    {
+      "id": "calc-engine",
+      "title": "計算引擎與法規檢查移植到 Python",
+      "status": "planned",
+      "ordinal": 2,
+      "dependsOn": [
+        "foundation"
+      ],
+      "updated": "2026-11-07",
+      "summary": "案件文件 Pydantic schema + 版本升級；calc / validate；以 golden snapshot 比對並訂容許誤差"
+    },
+    {
+      "id": "case-api",
+      "title": "案件 API、版本衝突與 SSE",
+      "status": "planned",
+      "ordinal": 3,
+      "dependsOn": [
+        "accounts-domain",
+        "calc-engine"
+      ],
+      "updated": "2026-11-07",
+      "summary": "案件 CRUD、流程欄位與交接、簽名鎖定、草稿計算端點、SSE 即時更新"
+    },
+    {
+      "id": "report-gen",
+      "title": "報告產生（敘述式 / 摘要式、HTML 預覽、Word）",
+      "status": "planned",
+      "ordinal": 3,
+      "dependsOn": [
+        "calc-engine"
+      ],
+      "updated": "2026-11-07",
+      "summary": "python-docx；同一條路徑給網頁與 MCP"
+    },
+    {
+      "id": "lvr-sync",
+      "title": "實價登錄每月同步與行情查詢",
+      "status": "planned",
+      "ordinal": 3,
+      "dependsOn": [
+        "accounts-domain"
+      ],
+      "updated": "2026-11-07",
+      "summary": "行程內排程取代 GitHub Actions；篩選、評分、行情統計"
+    },
+    {
+      "id": "frontend-app",
+      "title": "前端主畫面：案件清單 / 看板、7 步驟案件頁、確認儲存",
+      "status": "planned",
+      "ordinal": 4,
+      "dependsOn": [
+        "visual-design",
+        "case-api",
+        "report-gen",
+        "lvr-sync"
+      ],
+      "updated": "2026-11-07"
+    },
+    {
+      "id": "mcp-endpoint",
+      "title": "MCP 端點與 OAuth 2.1",
+      "status": "planned",
+      "ordinal": 4,
+      "dependsOn": [
+        "case-api",
+        "report-gen",
+        "lvr-sync"
+      ],
+      "updated": "2026-11-07",
+      "summary": "案件工具、法規查詢、謄本讀取；外部 MCP client 連線"
+    },
+    {
+      "id": "ai-assistant",
+      "title": "AI 助理（浮動泡泡、可釘選成三欄）",
+      "status": "planned",
+      "ordinal": 5,
+      "dependsOn": [
+        "frontend-app",
+        "mcp-endpoint"
+      ],
+      "updated": "2026-11-07",
+      "summary": "Claude Agent SDK + assistant-ui；對話存 DB；AI 寫入與未儲存草稿的處理"
+    },
+    {
+      "id": "legacy-retire",
+      "title": "從 Supabase 搬資料並移除舊版",
+      "status": "planned",
+      "ordinal": 6,
+      "dependsOn": [
+        "ai-assistant"
+      ],
+      "updated": "2026-11-07",
+      "summary": "搬 offices / members / cases / models / settings；移除 core/ lib/ mcp/ tools/ test/ supabase/ workflows"
+    }
+  ]
+}
