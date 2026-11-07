@@ -119,14 +119,6 @@
           "detail": "steering：系統內建模型可作為起點。舊版 fresh() 建 m1「本所標準模型」與 m2「抵押貸款保守模型」並複製到每所。選項：A 建所時複製 m1、m2 到 models 表（各所可自由修改）；B 內建模型存在程式碼中，事務所選用後才複製；C 內建模型永遠唯讀，要改就「另存新模型」。\n取捨：A 最像舊版；B、C 讓內建模型升級時較容易推送給各所。"
         },
         {
-          "id": "accounts-domain.q-model-settings-permissions",
-          "title": "誰可以改估價模型與事務所設定",
-          "status": "open",
-          "updated": "2026-11-07",
-          "summary": "product.md 沒定義模型與設定的編輯權限，舊版也沒有限制",
-          "detail": "舊版 RLS 讓事務所任何成員（含 manager、assistant）可新增、修改、刪除 models 與 office_settings（supabase/001 policies），界面也沒鎖。選項：A 只有 appraiser；B appraiser 與 manager；C 全員可改但每次寫稽核。\n取捨：模型決定報告數字與法定門檻，權限太寬有風險；太窄則助理無法調整本所案例。這是產品規則，需使用者決定後寫進 product.md。"
-        },
-        {
           "id": "accounts-domain.q-session-and-password-policy",
           "title": "session 期限與密碼規則",
           "status": "open",
@@ -241,6 +233,16 @@
       "summary": "models / office_settings 的讀寫 API 與後端版本檢查；誰能改模型與設定；法定門檻下限在後端強制；內建模型作為起點",
       "notes": [
         "2026-11-07 新增：交接盤點發現舊版 models、office_settings 由 core/cloud.js 整份同步，原本沒有節點負責；問題 q-models-api-home、q-model-settings-permissions 改由本節點處理。"
+      ],
+      "children": [
+        {
+          "id": "accounts-domain.q-model-settings-permissions",
+          "title": "誰可以改估價模型與事務所設定",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "product.md 沒定義模型與設定的編輯權限，舊版也沒有限制",
+          "detail": "舊版 RLS 讓事務所任何成員（含 manager、assistant）可新增、修改、刪除 models 與 office_settings（supabase/001 policies），界面也沒鎖。選項：A 只有 appraiser；B appraiser 與 manager；C 全員可改但每次寫稽核。\n取捨：模型決定報告數字與法定門檻，權限太寬有風險；太窄則助理無法調整本所案例。這是產品規則，需使用者決定後寫進 product.md。"
+        }
       ]
     },
     {
@@ -304,10 +306,10 @@
         {
           "id": "case-api.q-models-api-home",
           "title": "估價模型與事務所設定的 API 放哪個節點",
-          "status": "open",
+          "status": "decided",
           "updated": "2026-11-07",
           "summary": "路線圖沒有節點負責 models 與 office_settings 的讀寫、版本衝突與法定門檻檢查",
-          "detail": "舊版有 models（版本靠 updated_at 比對）與 office_settings（本所案例、匯入資料）的完整同步（core/cloud.js cloudPush、cloudPollModels）。選項：A 併入本節點；B 新增節點 models-api（依賴 accounts-domain、calc-engine，排在 frontend-app 前）；C 模型 API 併入 accounts-domain（資料表已在那裡）。\n取捨：本節點已很大（B 較好）；frontend-app 與 mcp-endpoint 都依賴它，所以必須在它們之前完成。"
+          "detail": "已決定（2026-11-07）：另開 models-settings-api 節點負責，不放在 case-api。"
         },
         {
           "id": "case-api.q-conflict-response-body",
