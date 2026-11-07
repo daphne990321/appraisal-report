@@ -10,12 +10,15 @@
     {
       "id": "foundation",
       "title": "平台地基：steering + compose / Dockerfile / 空殼程式 / 測試框架",
-      "status": "active",
+      "status": "done",
       "spec": "platform-foundation",
       "ordinal": 1,
       "updated": "2026-11-07",
       "summary": "第一個 PR：方向提案加可跑的骨架，不改現有功能",
-      "detail": "範圍：Dockerfile 多 target、compose.yaml / compose.dev.yaml、FastAPI 空殼（/healthz /readyz /api/v1 擴充點）、Alembic 命名慣例、pytest 真 PostgreSQL 與 CI。\n限制：不改舊版功能；保留路徑 /api /mcp /healthz /readyz /assets（/legacy/ 不在清單內，見 legacy-serve）。設定只讀 process 環境變數。\n完成訊號與細節：見 spec platform-foundation（requirements / design / tasks）。\n交給後續節點：單一 DB session 來源（測試可回滾）、/api/v1 前綴、設定範本 .env.example、CI 指令。"
+      "detail": "e33f7a0 platform-foundation（rearch/main）",
+      "notes": [
+        "before finish: 範圍：Dockerfile 多 target、compose.yaml / compose.dev.yaml、FastAPI 空殼（/healthz /readyz /api/v1 擴充點）、Alembic 命名慣例、pytest 真 PostgreSQL 與 CI。\n限制：不改舊版功能；保留路徑 /api /mcp /healthz /readyz /assets（/legacy/ 不在清單內，見 legacy-serve）。設定只讀 process 環境變數。\n完成訊號與細節：見 spec platform-foundation（requirements / design / tasks）。\n交給後續節點：單一 DB session 來源（測試可回滾）、/api/v1 前綴、設定範本 .env.example、CI 指令。"
+      ]
     },
     {
       "id": "visual-design",
