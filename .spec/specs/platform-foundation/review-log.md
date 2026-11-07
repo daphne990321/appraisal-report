@@ -57,7 +57,7 @@
   - catch-all route 會讓既有 API 用錯 method 時回 404 而不是 405。改成「沒有路由對上」時才判斷是否回 `index.html`；保留前綴（api、mcp、healthz、readyz、assets）一律 JSON。（main agent, 2026-11-07）
 - **A3 正式環境密碼更換改由 README 要求，不由程式強制** `[user-confirmed 2026-11-07]`（D2 Smell U）
   - 資料庫在正式環境不發布 port；程式強制需要寫死範本密碼字串。（main agent, 2026-11-07）
-- **A4 dev image 用 `uv sync --frozen`，嚴格檢查只在 runtime 建置與 CI** `[main-agent-resolved · pending your review]`（D3 Smell X）
+- **A4 dev image 用 `uv sync --frozen`，嚴格檢查只在 runtime 建置與 CI** `[user-confirmed 2026-11-07]`（D3 Smell X）
   - 讓 lock 過期時開發環境仍可建置並在容器內修 lock。（main agent, 2026-11-07）
 - **A5 e2e 驗證步驟放在各 Phase 結束時，由主 agent 執行** `[main-agent-resolved · pending your review]`（tasks 對齊檢查）
   - 不集中到最後一個 Phase；runtime image 內容檢查在 Phase 2 結束時先做，CI 之後重跑。（main agent, 2026-11-07）
