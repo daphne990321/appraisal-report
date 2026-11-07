@@ -205,7 +205,7 @@ steering 只決定 UI 元件庫。配色、字型和整體外觀由設計稿決�
 
 開發、測試、建置都在容器內執行；主機只需要 podman（或 docker）與 compose。理由：每位開發者和 CI 用同一個環境，結果一致；不需要手動安裝 Python、uv、Node 或 pnpm，也不會因為主機上的版本不同而出錯。
 
-- 開發用 `compose.yaml` 加上 `compose.dev.yaml`：`app`（含 dev 工具，原始碼 bind mount，自動重載）、`postgres`、`web`（Vite dev server）。
+- 開發用 `compose.yaml` 加上 `compose.override.yaml`（compose 在沒有 `-f` 時自動合併，所以開發指令不加 `-f`）：`app`（含 dev 工具，原始碼 bind mount，自動重載）、`postgres`、`web`（Vite dev server）。開發環境不接上反向代理。
 - lint、型別檢查、測試、更新 lock 檔，都用 `compose run` 在對應的容器中執行；產生的 lock 檔經 bind mount 寫回原始碼。
 - CI 執行和本機相同的 compose 指令，並建置 production image。
 - 不使用 Makefile 或只能在特定作業系統上執行的腳本。
@@ -252,7 +252,7 @@ steering 只決定 UI 元件庫。配色、字型和整體外觀由設計稿決�
 | `postgres` | `postgres:17` | 主資料庫 |
 
 - 沒有獨立的前端、nginx 或 Redis 容器。
-- compose 檔：`compose.yaml`（基本）+ `compose.dev.yaml`（開發覆寫）。podman compose 與 docker compose 都要能用。
+- compose 檔：`compose.yaml`（共用基礎）+ `compose.override.yaml`（開發，自動合併）+ `compose.prod.yaml`（正式環境，一律用 `-f compose.yaml -f compose.prod.yaml` 明確指定）。反向代理的 network 與 `VIRTUAL_*` 只出現在 `compose.prod.yaml`。podman compose 與 docker compose 都要能用。
 - `app` 只對內提供 plain HTTP。TLS 由主機上的反向代理（nginx-proxy）處理，`app` 透過 `VIRTUAL_HOST`、`LETSENCRYPT_HOST` 等環境變數接上。
 - 網域與所有部署值都從 `.env` 讀取，不寫死在程式或 compose 檔裡。`.env.example` 提交到 git，列出每個變數和說明；`.env` 不提交。
 - app 啟動時執行 Alembic migration 到最新版本。

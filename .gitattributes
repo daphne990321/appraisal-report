@@ -1,0 +1,7 @@
+backend/**                      text=auto eol=lf
+frontend/**                     text=auto eol=lf
+Dockerfile                      text eol=lf
+compose*.yaml                   text eol=lf
+.env.example                    text eol=lf
+.github/workflows/app-ci.yml    text eol=lf
+.gitattributes                  text eol=lf

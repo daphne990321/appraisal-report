@@ -57,8 +57,9 @@ appraisal-report/
 │       ├── hooks/                  # 跨功能共用 hooks
 │       ├── lib/                    # 共用工具（民國年日期、金額格式）
 │       └── types/                  # 由後端 OpenAPI 產生的型別
-├── compose.yaml                    # 基本 compose：app + postgres
-├── compose.dev.yaml                # 開發覆寫
+├── compose.yaml                    # 共用基礎：app + postgres
+├── compose.override.yaml           # 開發（compose 自動合併）：dev target、bind mount、web
+├── compose.prod.yaml               # 正式環境（明確 -f 指定）：反向代理 network、VIRTUAL_*、restart
 ├── Dockerfile                      # 多個 target：runtime（production）、dev（後端開發與測試）、web-dev（Vite）
 ├── .env.example                    # 所有環境變數與說明
 ├── .spec/

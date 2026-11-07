@@ -1,0 +1,117 @@
+# 新版（backend/、frontend/、容器設定）的 CI：所有檢查都在 compose 的容器中執行
+name: 新版 CI
+
+on:
+  pull_request:
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'Dockerfile'
+      - '.dockerignore'
+      - '.gitattributes'
+      - 'compose.yaml'
+      - 'compose.override.yaml'
+      - 'compose.prod.yaml'
+      - '.env.example'
+      - '.github/workflows/app-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'Dockerfile'
+      - '.dockerignore'
+      - '.gitattributes'
+      - 'compose.yaml'
+      - 'compose.override.yaml'
+      - 'compose.prod.yaml'
+      - '.env.example'
+      - '.github/workflows/app-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      # .env 用範本產生，密碼換成隨機值
+      - name: Create .env
+        run: |
+          cp .env.example .env
+          sed -i "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=$(openssl rand -hex 16)/" .env
+
+      - name: Validate compose files
+        run: |
+          docker compose config -q
+          PROXY_NETWORK=ci VIRTUAL_HOST=ci.invalid LETSENCRYPT_HOST=ci.invalid \
+            docker compose -f compose.yaml -f compose.prod.yaml config -q
+
+      - name: Build dev images
+        run: docker compose build app web
+
+      # app 的開發 entrypoint 在 lock 檔過期時只會警告；這一步讓 CI 嚴格
+      - name: Backend lock file is current
+        run: docker compose run --rm app uv lock --check
+
+      - name: Backend ruff check
+        run: docker compose run --rm app ruff check .
+
+      - name: Backend ruff format
+        run: docker compose run --rm app ruff format --check .
+
+      - name: Backend mypy
+        run: docker compose run --rm app mypy
+
+      - name: Backend pytest
+        run: docker compose run --rm app pytest
+
+      # Settings、compose.yaml（只有共用基礎）與 .env.example 的變數清單必須一致
+      - name: Environment variable contract
+        run: |
+          docker compose -f compose.yaml config --format json \
+            | docker compose run --rm -T -v "$PWD/.env.example:/env.example:ro" app \
+                python scripts/check_env_contract.py --compose-json - --env-example /env.example
+
+      - name: Frontend lint
+        run: docker compose run --rm web pnpm lint
+
+      - name: Frontend typecheck
+        run: docker compose run --rm web pnpm typecheck
+
+      - name: Frontend test
+        run: docker compose run --rm web pnpm test
+
+      - name: Frontend format check
+        run: docker compose run --rm web pnpm format:check
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
+
+  image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      # 建置 runtime image 時也會執行前端的 pnpm build
+      - name: Build runtime image
+        run: docker build --target runtime -t appraisal:ci .
+
+      # runtime image 必須以非 root 執行，且不含建置與開發工具、不含 .env
+      - name: Check runtime image contents
+        run: |
+          docker run --rm --entrypoint sh appraisal:ci -c '
+            if [ "$(id -u)" = "0" ]; then echo "Image runs as root" >&2; exit 1; fi
+            for tool in uv node pnpm pytest ruff mypy; do
+              if command -v "$tool" >/dev/null 2>&1; then
+                echo "Image contains $tool" >&2
+                exit 1
+              fi
+            done
+            if [ -e /app/.env ]; then echo "Image contains /app/.env" >&2; exit 1; fi
+          '

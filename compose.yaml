@@ -1,0 +1,52 @@
+# 開發與正式環境共用的設定；開發設定在 compose.override.yaml，正式環境在 compose.prod.yaml
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      # 用 TCP 檢查：初始化時的暫時伺服器只開 socket，不會被誤判為就緒
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      target: runtime
+    # 逐一列出 Settings 讀取的變數；沒設定的以空字串傳入，Settings 會改用預設值
+    # STATIC_DIR 不列在這裡：空字串會蓋掉 runtime image 設定的值
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST:-}
+      POSTGRES_PORT: ${POSTGRES_PORT:-}
+      POSTGRES_USER: ${POSTGRES_USER:-}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
+      POSTGRES_DB: ${POSTGRES_DB:-}
+      LOG_LEVEL: ${LOG_LEVEL:-}
+      STARTUP_DB_WAIT_SECONDS: ${STARTUP_DB_WAIT_SECONDS:-}
+      FORWARDED_ALLOW_IPS: ${FORWARDED_ALLOW_IPS:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    healthcheck:
+      # 用 CMD-SHELL：podman 會把 exec 形式中含空白的單一參數再切開，python -c 拿到不完整的程式
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+networks:
+  backend:
+
+volumes:
+  pgdata:

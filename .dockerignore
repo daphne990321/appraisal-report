@@ -1,0 +1,25 @@
+# 版本控制與機密
+.git
+.env
+.env.*
+
+# 依賴與快取（容器內自己產生）
+**/node_modules
+**/__pycache__
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/.tanstack
+**/.venv
+dist
+frontend/dist
+
+# 舊版目錄與專案文件，不屬於新版 image
+core
+lib
+mcp
+tools
+test
+supabase
+.spec
+.github

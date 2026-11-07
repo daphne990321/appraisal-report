@@ -1,0 +1,27 @@
+# 正式環境：一定要明確指定
+#   podman compose -f compose.yaml -f compose.prod.yaml up -d
+services:
+  postgres:
+    restart: unless-stopped
+
+  app:
+    environment:
+      VIRTUAL_HOST: ${VIRTUAL_HOST:?set VIRTUAL_HOST in .env}
+      LETSENCRYPT_HOST: ${LETSENCRYPT_HOST:?set LETSENCRYPT_HOST in .env}
+      VIRTUAL_PORT: "8000"
+    networks:
+      - backend
+      - proxy
+    restart: unless-stopped
+    healthcheck:
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      # 涵蓋等待資料庫與 migration 的時間
+      start_period: 90s
+
+networks:
+  # 沒有預設名稱：缺少時 compose 直接報錯，不會接到錯誤的 network
+  proxy:
+    external: true
+    name: ${PROXY_NETWORK:?set PROXY_NETWORK in .env}
