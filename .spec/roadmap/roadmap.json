@@ -134,7 +134,18 @@
         "ai-assistant"
       ],
       "updated": "2026-11-07",
-      "summary": "搬 offices / members / cases / models / settings；移除 core/ lib/ mcp/ tools/ test/ supabase/ workflows"
+      "summary": "搬 offices / members / cases / models / settings；移除 core/ lib/ mcp/ tools/ test/ supabase/ workflows 與 /legacy/ 入口"
+    },
+    {
+      "id": "legacy-serve",
+      "title": "過渡期：新後端在 /legacy/ 提供舊版單頁",
+      "status": "planned",
+      "ordinal": 2,
+      "dependsOn": [
+        "foundation"
+      ],
+      "updated": "2026-11-07",
+      "summary": "image build 時執行 tools/build.py，把 generator.html 放進 runtime image，由後端掛在 /legacy/（保留前綴）；舊版照常直連 Supabase；不改舊版檔案；新版畫面完成後再切入口"
     },
     {
       "id": "host-deploy",
