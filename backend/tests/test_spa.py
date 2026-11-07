@@ -164,3 +164,42 @@ def test_mount_spa_rejects_static_dir_without_index_html(tmp_path: Path) -> None
 
     with pytest.raises(RuntimeError, match=r"index\.html"):
         mount_spa(FastAPI(), empty_dir)
+
+
+LEGACY_HTML = b"<!doctype html><title>legacy-test-page</title>"
+
+
+@pytest_asyncio.fixture
+async def legacy_client(
+    test_settings: Settings, static_dir: Path
+) -> AsyncIterator[httpx.AsyncClient]:
+    (static_dir / "legacy").mkdir()
+    (static_dir / "legacy" / "index.html").write_bytes(LEGACY_HTML)
+    settings = test_settings.model_copy(update={"static_dir": static_dir})
+    async with open_running_app(settings) as running:
+        yield running.client
+
+
+async def test_legacy_page_is_served_with_no_cache(legacy_client: httpx.AsyncClient) -> None:
+    response = await legacy_client.get("/legacy/")
+    assert response.status_code == 200, f"expected 200, got {response.status_code}"
+    assert response.content == LEGACY_HTML, "the legacy page must be served unchanged"
+    assert response.headers["cache-control"] == "no-cache"
+
+
+async def test_legacy_without_trailing_slash_redirects(legacy_client: httpx.AsyncClient) -> None:
+    response = await legacy_client.get("/legacy")
+    assert response.status_code in (307, 308), f"expected a redirect, got {response.status_code}"
+    assert response.headers["location"].endswith("/legacy/")
+
+
+async def test_unknown_legacy_path_is_json_404_not_spa(legacy_client: httpx.AsyncClient) -> None:
+    response = await legacy_client.get("/legacy/missing")
+    _assert_json_error(response, 404, "Not Found", "unknown legacy path")
+
+
+async def test_legacy_path_is_json_404_when_legacy_page_is_absent(
+    spa_client: httpx.AsyncClient,
+) -> None:
+    response = await spa_client.get("/legacy/")
+    _assert_json_error(response, 404, "Not Found", "legacy page absent")

@@ -10,7 +10,7 @@ from starlette.staticfiles import StaticFiles
 from starlette.types import Scope
 
 # 後端端點一律放在這些第一段路徑之下；新增頂層前綴時要一併加進來
-RESERVED_PREFIXES = frozenset({"api", "mcp", "healthz", "readyz", "assets"})
+RESERVED_PREFIXES = frozenset({"api", "mcp", "healthz", "readyz", "assets", "legacy"})
 
 _IMMUTABLE_CACHE = "public, max-age=31536000, immutable"
 _NO_CACHE = "no-cache"
@@ -26,8 +26,22 @@ class ImmutableStaticFiles(StaticFiles):
         return response
 
 
+class NoCacheStaticFiles(StaticFiles):
+    """每次都向伺服器確認是否有新版；用在檔名不含 hash 的檔案。"""
+
+    async def get_response(self, path: str, scope: Scope) -> Response:
+        response = await super().get_response(path, scope)
+        if response.status_code < 400:
+            response.headers["Cache-Control"] = _NO_CACHE
+        return response
+
+
 def mount_spa(app: FastAPI, static_dir: Path) -> None:
-    """掛載 /assets 並註冊 404 handler。缺少 index.html 或 assets 目錄時丟出 RuntimeError。"""
+    """掛載 /assets 並註冊 404 handler。缺少 index.html 或 assets 目錄時丟出 RuntimeError。
+
+    static_dir 下有 legacy/ 目錄時，另外把它掛在 /legacy/（過渡期的舊版單頁）。
+    /legacy 沒有結尾斜線時由 router 導向 /legacy/。
+    """
     index_file = static_dir / "index.html"
     if not index_file.is_file():
         raise RuntimeError(f"SPA index.html not found in {static_dir}")
@@ -35,6 +49,10 @@ def mount_spa(app: FastAPI, static_dir: Path) -> None:
 
     # assets 目錄不存在時，StaticFiles 在建立時就丟出 RuntimeError（訊息含目錄路徑），讓啟動失敗
     app.mount("/assets", ImmutableStaticFiles(directory=static_dir / "assets"), name="assets")
+
+    legacy_dir = static_dir / "legacy"
+    if legacy_dir.is_dir():
+        app.mount("/legacy", NoCacheStaticFiles(directory=legacy_dir, html=True), name="legacy")
 
     def root_file(name: str) -> Path | None:
         """根目錄下已存在的檔案；解析後離開 static_dir 的路徑當成不存在。"""

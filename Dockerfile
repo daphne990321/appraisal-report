@@ -68,6 +68,14 @@ RUN --mount=type=cache,target=/pnpm/store \
 COPY frontend/ ./
 RUN pnpm build
 
+# ---------- 過渡期：建置舊版單頁 ----------
+FROM python:3.12-slim AS legacy-build
+WORKDIR /src
+COPY core ./core
+COPY tools ./tools
+# build.py 失敗時（例如原始檔缺少）整個 image 建置失敗
+RUN python tools/build.py /out
+
 # ---------- 正式環境 image（預設 target，必須放在最後） ----------
 FROM python:3.12-slim AS runtime
 RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin app
@@ -78,6 +86,7 @@ COPY --from=py-build /app/src ./src
 COPY backend/alembic.ini ./
 COPY backend/alembic ./alembic
 COPY --from=web-build /app/dist ./static
+COPY --from=legacy-build /out/generator.html ./static/legacy/index.html
 RUN python -m compileall -q /app/src
 ENV PATH=/opt/venv/bin:$PATH \
     PYTHONUNBUFFERED=1 \

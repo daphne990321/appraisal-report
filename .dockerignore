@@ -14,11 +14,9 @@
 dist
 frontend/dist
 
-# 舊版目錄與專案文件，不屬於新版 image
-core
+# 舊版目錄與專案文件，不屬於新版 image（core 與 tools 例外：過渡期建置舊版單頁要用）
 lib
 mcp
-tools
 test
 supabase
 .spec

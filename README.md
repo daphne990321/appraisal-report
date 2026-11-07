@@ -141,6 +141,13 @@ LETSENCRYPT_HOST=report.example.com
 export COMPOSE_FILE=compose.yaml:compose.prod.yaml
 ```
 
+### 過渡期的舊版入口 `/legacy/`
+
+新版畫面完成前，正式 image 在建置時用 `tools/build.py` 產生舊版單頁，放在 `https://<網域>/legacy/`。舊版照常直接連 Supabase，資料不會搬到新資料庫。
+
+- **Supabase 設定**：舊版重設密碼信的連結會回到目前網址，所以要在 Supabase 後台 Authentication → URL Configuration → Redirect URLs 加入 `https://<網域>/legacy/`，否則重設密碼會失敗。
+- **瀏覽器裡的草稿**：舊版把還沒上傳的草稿存在瀏覽器裡，而且這些資料綁在網址上。從舊網址改到 `/legacy/` 的使用者，要先在舊網址匯出案件檔，再到新網址匯入。
+
 ---
 
 # 估價報告產生器 原始碼
