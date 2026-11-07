@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<title>手機：案件頁與 AI</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2747A0}a:hover{color:#1E3A85}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #F4F5F7; color: #161B26; font-family: 'Noto Sans TC', system-ui, sans-serif; display: flex; flex-direction: column">
+  <header style="background: #FFFFFF; border-bottom: 1px solid #D9DDE4; padding: 8px 8px 12px 4px; display: flex; flex-direction: column; gap: 8px">
+    <div style="display: flex; align-items: center; gap: 4px">
+      <a href="MobileList.dc.html" aria-label="回到案件清單" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #3A4253"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></a>
+      <div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5C6475">115-0142・第 5／7 步</span>
+        <h1 style="margin: 0; font-size: 16px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">大安區信義路四段 公寓 5 樓</h1>
+      </div>
+      <button type="button" aria-label="交接" style="height: 36px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 6px; background: #FFFFFF; font: inherit; font-size: 14px; color: #161B26">交接</button>
+    </div>
+    <div role="tablist" aria-label="檢視" style="margin-left: 12px; display: flex; gap: 4px; background: #EDEFF3; padding: 4px; border-radius: 8px">
+      <button type="button" role="tab" aria-selected="true" style="flex: 1; height: 34px; border: 0; border-radius: 6px; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 500; color: #161B26">案件內容</button>
+      <button type="button" role="tab" aria-selected="false" style="flex: 1; height: 34px; border: 0; border-radius: 6px; background: transparent; font: inherit; font-size: 14px; color: #3A4253">對照報告</button>
+    </div>
+  </header>
+
+  <main style="flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <h2 style="margin: 0; font-size: 18px; font-weight: 700">試算・比較法</h2>
+      <button type="button" style="height: 32px; padding: 0 10px; border: 1px solid #D9DDE4; border-radius: 6px; background: #FFFFFF; font: inherit; font-size: 13px; color: #3A4253">換方法</button>
+    </div>
+    <div style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 10px; padding: 14px 16px; display: flex; justify-content: space-between">
+      <div><div style="font-size: 13px; color: #5C6475">比較價格（元/坪）</div><div style="font-size: 20px; font-weight: 500; font-family: 'IBM Plex Mono', monospace">612,300</div></div>
+      <div style="text-align: right"><div style="font-size: 13px; color: #5C6475">總價（元）</div><div style="font-size: 20px; font-weight: 500; font-family: 'IBM Plex Mono', monospace">28,640,000</div></div>
+    </div>
+  </main>
+
+  <div style="position: absolute; inset: 0; background: rgba(22,27,38,0.32)"></div>
+  <section role="dialog" aria-label="AI 助理" style="position: absolute; left: 0; right: 0; bottom: 0; height: 600px; background: #FFFFFF; border-radius: 16px 16px 0 0; display: flex; flex-direction: column">
+    <div style="display: flex; justify-content: center; padding-top: 8px"><div style="width: 40px; height: 4px; border-radius: 2px; background: #C9CED8"></div></div>
+    <div style="height: 52px; display: flex; align-items: center; padding: 0 4px 0 16px; border-bottom: 1px solid #D9DDE4">
+      <span style="font-size: 16px; font-weight: 700; flex: 1">AI 助理</span>
+      <button type="button" aria-label="關閉" style="width: 44px; height: 44px; border: 0; background: transparent; color: #3A4253; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+    </div>
+    <div style="flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 12px; font-size: 15px; line-height: 1.7">
+      <div style="align-self: flex-end; max-width: 85%; background: #2747A0; color: #FFFFFF; padding: 10px 14px; border-radius: 12px 12px 4px 12px">現勘看到頂樓有加蓋，幫我記下來</div>
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #3A4253"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D6B43" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-11"></path></svg>現勘紀錄新增 1 項：頂樓增建</div>
+      <div>已記下。頂樓增建不在謄本登記面積內，報告會加一段「未登記增建不列入估價」的說明。</div>
+    </div>
+    <form style="margin: 0; padding: 12px 16px 28px; border-top: 1px solid #D9DDE4; display: flex; gap: 8px">
+      <label for="m-ai" style="position: absolute; left: -9999px">給 AI 的訊息</label>
+      <input id="m-ai" type="text" placeholder="問 AI" style="flex: 1; min-width: 0; height: 44px; padding: 0 12px; border: 1px solid #C9CED8; border-radius: 8px; font: inherit; font-size: 16px">
+      <button type="submit" aria-label="送出" style="width: 44px; height: 44px; border: 0; border-radius: 8px; background: #2747A0; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></button>
+    </form>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

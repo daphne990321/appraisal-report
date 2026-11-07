@@ -1,0 +1,783 @@
+{
+  "title": "估價報告平台重新架構",
+  "intro": [
+    "把單一 HTML + Supabase 的估價報告產生器，改成 Python FastAPI 後端 + PostgreSQL + React SPA 的自架平台（podman compose），並加入可操作案件的 AI 助理。新版放在舊版旁邊，最後一段才搬資料並移除舊版。每一段送一個 PR 給 upstream。"
+  ],
+  "now": [
+    "正在實作 foundation（platform-foundation spec 已確認）。"
+  ],
+  "children": [
+    {
+      "id": "foundation",
+      "title": "平台地基：steering + compose / Dockerfile / 空殼程式 / 測試框架",
+      "status": "done",
+      "spec": "platform-foundation",
+      "ordinal": 1,
+      "updated": "2026-11-07",
+      "summary": "第一個 PR：方向提案加可跑的骨架，不改現有功能",
+      "detail": "e33f7a0 platform-foundation（rearch/main）",
+      "notes": [
+        "before finish: 範圍：Dockerfile 多 target、compose.yaml / compose.dev.yaml、FastAPI 空殼（/healthz /readyz /api/v1 擴充點）、Alembic 命名慣例、pytest 真 PostgreSQL 與 CI。\n限制：不改舊版功能；保留路徑 /api /mcp /healthz /readyz /assets（/legacy/ 不在清單內，見 legacy-serve）。設定只讀 process 環境變數。\n完成訊號與細節：見 spec platform-foundation（requirements / design / tasks）。\n交給後續節點：單一 DB session 來源（測試可回滾）、/api/v1 前綴、設定範本 .env.example、CI 指令。"
+      ]
+    },
+    {
+      "id": "visual-design",
+      "title": "視覺設計（/design，畫布放 .spec/design）",
+      "status": "planned",
+      "ordinal": 2,
+      "dependsOn": [
+        "foundation"
+      ],
+      "updated": "2026-11-07",
+      "summary": "配色、字型、版面；含案件頁三欄與 AI 浮動泡泡",
+      "detail": "範圍（做）：用 /design 在 .spec/design 畫出所有畫面的桌面版與手機版：登入頁（提供者按鈕、忘記密碼、受邀設定密碼）、案件清單與看板（7 個篩選、期限與狀態 chip）、7 步驟案件頁、工作流程列與交接面板、確認儲存列（未儲存 N 處、取消修改）、版本衝突畫面、報告預覽紙張、估價模型與事務所設定、資料來源面板、歷程、成員與邀請管理、AI 浮動泡泡與三欄（案件內容 / 對照報告 / AI 面板）。\n範圍（不做）：實作程式；元件庫已由 steering 決定（shadcn/ui + Tailwind 4 + lucide-react）。\n舊版參考（只看不搬）：core/head.html 的 CSS（Noto Sans TC / Noto Serif TC / IBM Plex Mono、「估」印章）；畫面內容見 core/cases.js（tabCases、caseState、caseFilters）、core/app3.js（stepContent、handoffBar、handoffSheet、saveBox、render 的版面）、core/app2.js（tabParams 10 個子面板）；手機斷點 760px（isM）。\n限制：steering product「說人話」與民國年；AI 動作用一般人看得懂的一句話；舊的 9 分頁版面不重做。更換帳號造成 artifacts 無法存取時，重新發布本地版本。\n完成訊號：使用者批准每個畫面的桌面與手機稿；三欄的釘選與取消釘選狀態都有畫；設計 token（色、字、間距）可直接對應成 Tailwind theme。\n交給 frontend-app：畫布檔、token 清單、各畫面的狀態清單（空、載入、錯誤、唯讀、已簽名）。",
+      "notes": [
+        "2026-11-07 初稿：.spec/design/project（7 張：token、登入、案件清單、案件頁浮動泡泡、三欄釘選、手機清單、手機案件頁＋AI 底部面板），Artifact https://claude.ai/artifact/HMVyb8mvnnkgQXeyFjyVVt。主色地籍藍 #2747A0，朱紅只用於已簽名；未沿用舊版青綠印章配色。尚缺：看板、交接面板、版本衝突、報告全頁、模型與設定、成員與邀請、歷程、資料來源。",
+        "上面的初稿只是範例，正式的視覺設計由 Daphne 接手，可整份重做；本節點維持未認領（planned），3 個待決問題仍由設計者決定。"
+      ],
+      "children": [
+        {
+          "id": "visual-design.q-brand-continuity",
+          "title": "沿用舊版印章風格嗎",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "新版視覺是沿用舊版「估」印章與襯線字，還是重新設計",
+          "detail": "選項：A 沿用舊版配色與印章標誌（core/head.html），舊使用者熟悉，設計工作量小；B 全新設計，可配合 shadcn/ui 預設風格，但需要使用者重新適應。\n取捨：熟悉度與品牌一致 對 視覺統一與維護成本。需使用者看過兩種稿再決定。"
+        },
+        {
+          "id": "visual-design.q-mobile-scope",
+          "title": "手機版做到什麼程度",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "手機版是完整編輯，還是只做查看、交接與確認",
+          "detail": "舊版手機完整可用（ccards、mchips、760px 斷點）。選項：A 全功能手機版（現勘時可填資料）；B 手機只做清單、查看報告、交接與確認，編輯在桌面；C 手機做現勘與拍照記錄相關步驟。\n取捨：現勘在現場常用手機（survey 步驟），但比較標的與試算表在手機上很難用。"
+        },
+        {
+          "id": "visual-design.q-three-column-breakpoints",
+          "title": "三欄在窄螢幕怎麼退化",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "AI 釘選後的三欄在平板與小筆電上怎麼排",
+          "detail": "steering 只說桌面版改 3 欄。選項：A 低於某寬度時 AI 面板改成覆蓋層；B 對照報告欄先收起，保留案件內容與 AI；C 三欄寬度可拖曳調整並記住。\n取捨：資訊同時可見 對 每欄的可用寬度。需決定斷點與優先順序。"
+        },
+        {
+          "id": "visual-design.example-draft",
+          "title": "範例初稿（僅供參考，不是定案）",
+          "status": "done",
+          "updated": "2026-11-07",
+          "summary": "7 張示範畫面，用來示範 /design 畫布的做法與存放位置；配色、版面都可以推翻",
+          "detail": "2ce0d09 .spec/design/project；Artifact https://claude.ai/artifact/HMVyb8mvnnkgQXeyFjyVVt"
+        }
+      ]
+    },
+    {
+      "id": "accounts-domain",
+      "title": "資料模型、帳號與身分",
+      "status": "planned",
+      "tickets": [
+        "bl-59cb59"
+      ],
+      "ordinal": 2,
+      "dependsOn": [
+        "foundation"
+      ],
+      "updated": "2026-11-07",
+      "summary": "offices / members / identities / invitations / cases / models / settings / audit schema；可外掛的登入提供者（本系統帳號、Google、M365、Meta）、session、邀請、重設密碼；事務所隔離與身分規則",
+      "detail": "範圍（做）：Alembic schema 與 Repository / Service 基礎：offices、members（role appraiser|assistant|manager、active、display_name、cert_no）、identities（提供者 + subject）、invitations、sessions、password_resets、cases（文件 JSONB + 流程欄位 + version + signed）、models、office_settings、audit_logs（MCP 的 OAuth client 與 token 表由 mcp-endpoint 加，AI 對話表由 ai-assistant 加）；登入流程（local argon2id、Google、Entra、Meta 為各一個提供者檔案）、HttpOnly session cookie、邀請、重設密碼（SMTP）、email_verified 才可用 email 連結身分。\n範圍（不做）：案件端點與流程規則的 REST 入口（case-api）、登入畫面（frontend-app）、MCP 的 OAuth（mcp-endpoint）。\n搬移來源：supabase/001_init.sql（offices、members、cases、models、office_settings、audit_log）、006_case_mgmt.sql（manager 身分、active、assignee、appraiser、stage、status、due_date、version）、008_handoff.sql（handoff_note 500 字、handoff_by、handoff_at）。把這些 DB 觸發器與 RLS 改成 Service 層規則：guard_case（簽名後不可改不可刪；只有 appraiser 可簽；不可換事務所；manager 不可改 data、case_no、kind、signed，不可新增與刪除；assignee 必須同事務所；appraiser 必須是同事務所的 appraiser）、stamp_row（updated_by、updated_at；version 只在 data 或 signed 改變時加 1）、stamp_handoff（handoff_by 取自 actor、handoff_at 由伺服器填）、log_case（記錄 assignee、appraiser、stage、status、due_date、note、data 的前後值；什麼都沒變不記）。\n限制：不使用 RLS；每個 Repository 方法必帶 office_id；Service 第一個參數是 actor；舊的 members.user_id 是 PK（一人一所）；稽核紀錄只新增；時間欄位 timestamptz；命名依 structure.md。\n完成訊號：每個 Repository 方法有「別的事務所」拒絕測試；每條身分規則（上面 guard_case 各條）有 Service 測試；提供者核心流程不含 if provider == ...，測試用一個假提供者證明；Alembic 升級可重複執行。\n交給下游：Actor / CurrentUser 依賴、Repository 基底（強制 office 條件）、全部資料表、session 與 token 驗證、稽核寫入函式（case-api、lvr-sync、mcp-endpoint 使用）。",
+      "children": [
+        {
+          "id": "accounts-domain.q-multi-office-person",
+          "title": "同一個人可否在兩個事務所各有成員",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "steering 規定一位使用者只屬於一個事務所；同一個 email 能不能在兩所各有一個成員",
+          "detail": "舊版 members.user_id 是 PK，所以一個登入帳號只有一個事務所（supabase/001）。選項：A 身分（提供者 + subject）全站唯一，一人一所，要換所就要新帳號；B 允許同 email 在兩所各建一個成員（兩份獨立帳號與密碼）；C 一個人多個成員並在登入後選事務所（和 steering 衝突，需改 steering）。\n取捨：顧問估價師常跨所工作，但 B、C 會讓 email 連結身分與 session 變複雜。"
+        },
+        {
+          "id": "accounts-domain.q-system-admin-bootstrap",
+          "title": "誰建立事務所與第一位估價師",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "沒有公開註冊時，新事務所與第一位成員怎麼建立，系統管理員是什麼",
+          "detail": "舊版是管理者在 Supabase 後台手動建帳號再執行 supabase/002_first_office.sql。steering 提到「估價師或系統管理員邀請」，但沒定義系統管理員。選項：A 環境變數 SYSTEM_ADMIN_EMAILS 列出管理員；B 容器內的 CLI 指令（compose run app ... create-office）；C members 上的旗標加管理畫面。\n取捨：A、B 最簡單且不用新畫面；C 方便但要多一組權限與測試。"
+        },
+        {
+          "id": "accounts-domain.q-invitation-rules",
+          "title": "邀請流程的規則",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "邀請的有效期限、可邀請的身分、重複邀請與接受方式",
+          "detail": "需決定：誰能邀請哪種身分（估價師邀請全部？manager 能邀請嗎？）；邀請連結有效幾天、能否重寄與撤銷；受邀者用本系統密碼、還是用 Google / Entra / Meta 接受；已存在的身分被邀請到另一所時怎麼處理（見 multi-office-person）。\n取捨：嚴格（短期限、單次使用）較安全，但小事務所的行政成本較高。"
+        },
+        {
+          "id": "accounts-domain.q-deactivate-effects",
+          "title": "停用成員後的連帶處理",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "成員被停用時，session、MCP token、AI 憑證與他負責的案件怎麼辦",
+          "detail": "舊版 members.active 只影響「不能被指派新工作」，舊案件仍顯示名字（supabase/006）。選項：A 只擋指派與登入，既有 session 到期自然失效；B 立即撤銷全部 session 與 OAuth token；C 在 B 之外把他負責的未簽名案件標記為未指派。\n取捨：安全（離職立刻失效）對 案件流程不中斷。"
+        },
+        {
+          "id": "accounts-domain.q-model-key-and-deletion",
+          "title": "估價模型的識別與刪除",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "案件文件以 modelId（如 m1）指向模型；新版模型用什麼識別、能不能刪除",
+          "detail": "舊版 models.model_key 是文字代號，案件存 modelId；刪除模型後 validate 只出提醒並改用第一個模型（core/model.js validate、findModel）。選項：A 保留文字代號，唯一約束 (office_id, key)，允許刪除；B 改 UUID 並在升級函式轉換案件的 modelId；C 不允許刪除，只能停用（已簽名案件有快照，但未簽名案件會失去模型）。\n取捨：保持與舊資料相容 對 避免孤兒參照。"
+        },
+        {
+          "id": "accounts-domain.q-builtin-model-seeding",
+          "title": "新事務所的內建模型怎麼來",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "新建事務所時，內建模型是複製一份進該所，還是以參照方式提供",
+          "detail": "steering：系統內建模型可作為起點。舊版 fresh() 建 m1「本所標準模型」與 m2「抵押貸款保守模型」並複製到每所。選項：A 建所時複製 m1、m2 到 models 表（各所可自由修改）；B 內建模型存在程式碼中，事務所選用後才複製；C 內建模型永遠唯讀，要改就「另存新模型」。\n取捨：A 最像舊版；B、C 讓內建模型升級時較容易推送給各所。"
+        },
+        {
+          "id": "accounts-domain.q-session-and-password-policy",
+          "title": "session 期限與密碼規則",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "session 閒置與絕對期限、密碼長度規則、登入失敗限制",
+          "detail": "舊版只記住 email（localStorage），session 交給 Supabase。新版需決定：閒置幾分鐘登出、絕對期限幾天、是否有「記住我」、密碼最短長度與是否檢查常見密碼、連續失敗幾次後延遲或鎖定。\n取捨：估價報告含客戶資料，偏嚴；但現勘時手機常切換，過短會一直重新登入。"
+        },
+        {
+          "id": "accounts-domain.q-own-cases-storage",
+          "title": "本所案例是否獨立成資料表",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版 office_settings.data 裡的 own 與 imported 是無上限的陣列，整塊一起存",
+          "detail": "舊版 office_settings.data = {own, imported, hideBuiltin}，任何一筆改動都是整塊覆寫，兩人同時改只能整塊衝突（core/cloud.js cloudSettingsConflict）。選項：A 沿用 JSONB 一塊加版本號（簡單，衝突粒度粗）；B own 拆成 office_comparables 資料表（每筆有 id、版本、可逐筆編輯）；C own 拆表、imported 另由 lvr-sync 的手動匯入決定。\n取捨：簡單 對 逐筆編輯與衝突粒度。與 lvr-sync 的 manual-import-storage 相關。"
+        },
+        {
+          "id": "accounts-domain.q-forwarded-headers-trust",
+          "title": "app 如何知道對外是 https",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "OAuth redirect URI、Secure cookie、MCP 的 metadata 網址都要正確的 scheme 與 host",
+          "detail": "選項：A 以 .env 的 PUBLIC_BASE_URL 組出所有對外網址，完全不信任請求標頭；B 信任代理送的 X-Forwarded-Proto / Host（uvicorn --proxy-headers 與 forwarded-allow-ips 限於 local-bridge 網段）；C 兩者並用，不一致時啟動失敗。\n取捨：A 最不易出錯，但開發環境要另外設值；B 方便但標頭被偽造風險取決於網路隔離。steering 的環境變數表已有 PUBLIC_BASE_URL。",
+          "notes": [
+            "目前 uvicorn 信任 forwarded headers（FORWARDED_ALLOW_IPS 預設 *），實測 /legacy 的導向網址是 https。要不要改用 PUBLIC_BASE_URL 跟 OAuth redirect URI 一起決定，移到 accounts-domain。"
+          ]
+        },
+        {
+          "id": "accounts-domain.q-backup-strategy",
+          "title": "資料庫備份",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "正式 stack 的 postgres 資料在 volume；路線圖沒有備份節點",
+          "detail": "選項：A 排程容器每日 pg_dump 到 主機的備份資料夾（已存在的備份資料夾）並保留 N 天；B 把 volume 快照交給主機的既有備份機制；C 暫時不做（風險：遷移後這是唯一資料來源）。需要決定保留天數、還原演練與加密。\n取捨：簡單 對 資料安全。遷移後舊 Supabase 資料不再更新，備份就變成必要。",
+          "notes": [
+            "部署時新資料庫還沒有使用者資料（舊版仍用 Supabase）。第一個寫入正式資料的是 accounts-domain，移到那裡，在它上線前決定。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "calc-engine",
+      "title": "計算引擎與法規檢查移植到 Python",
+      "status": "planned",
+      "tickets": [
+        "bl-e37c81",
+        "bl-0912f5",
+        "bl-829026",
+        "bl-2f9384"
+      ],
+      "ordinal": 2,
+      "dependsOn": [
+        "foundation"
+      ],
+      "updated": "2026-11-07",
+      "summary": "案件文件 Pydantic schema + 版本升級；calc / validate；以 golden snapshot 比對並訂容許誤差",
+      "detail": "範圍（做）：backend/src/appraisal/domain/{case,calc,validate,model}，純函式。\n 1) 案件文件 Pydantic schema：以 core/model.js blankCase()（第 83 行）為形狀，標的種類見 core/data.js KINDS（unit、house、land、industrial、hotel、commercial、factory）；JSON key 沿用 camelCase（alias）；schema_version 與升級函式鏈（舊版是 {v:5} 與案件檔 {format:'appraisal-case', v:5}）；blank_case()；合併與預設值只有一份（取代 core/model.js deepMerge）。\n 2) 估價模型 schema 與內建模型：core/data.js defaultModel()、defaultIndicatorSets、defaultExp、defaultPurpose、defaultKindWeights、defaultTexts；常數 COUNTIES、BTYPES、PURPOSES、SPECIALS、REGVARS、LEVELS。\n 3) 計算：core/calc.js 全部（compCalc、deviationWeights、ols/gammln/betacf/betai/invert、incomeCalc、capRate、costCalc、capitalInterest、ldaDetailed、landCalc、finalCalc、landVAT、parcelsCalc、discountFactor、cnAmount、monthsBetween、yearsBetween）與 core/model.js calc()、regression()、filteredSales、scoreOf、filteredRents、marketStats、rentStats、quantile、subj、areaOf、basePing、purposeRule、modelOf（簽名後用 modelSnapshot）。\n 4) 法規檢查：core/model.js validate()（回傳 bl 必須修正 / notes 必須說明 / warns 提醒 / items 15 項）、selText、ITEMS15；每條訊息保留法條出處。\n範圍（不做）：報告區塊（report-gen）、LVR 下載與 CSV 解析 importLvr（lvr-sync，雖然舊版放在 core/model.js）、DB 與 API。\n限制：domain 不 import 其他 appraisal 子套件；計算輸入明確（case、model、參考資料、today），不讀全域與時鐘；函式 ≤ 50 行、檔案 ≤ 300 行，要依估價方法拆檔（舊 validate 與 compCalc 都太長）；註解寫法條依據。\nJS 與 Python 的行為差異要特別處理：Math.round 是「.5 往正無限大」而 Python round() 是銀行家捨入；n() 把 ''、null、字串轉 0；toFixed 與 Intl 格式；new Date(...) 的日期解析。\n完成訊號：golden 比對通過。golden 來源是 test/snapshots/cases.json（6 組＝3 個示範案件 115-0412 unit、115-0420 land、115-0431 hotel × 2 個模型 m1 本所標準、m2 抵押貸款保守；每組有 calc、validate、marketStats、sales、blocks、html；約 1093 個非整數）。因為 Python 無法執行 sampleCase()，第一步是在舊版還在時用 node 把 E.fresh() 輸出成 JSON 輸入檔（案件、模型、BUILTIN 實價登錄 core/data_j.txt、ownCases）放進 backend/tests/golden。validate 訊息文字要逐字相同，sales 的 id 與順序要相同。每個 schema 升級步驟有測試。\n交給下游：CaseDocument、upgrade_case_document()、blank_case()、calculate(case, model, ref, today)、validate()、ModelDocument 與內建模型、golden 測試工具（case-api、report-gen、mcp-endpoint 共用）。",
+      "children": [
+        {
+          "id": "calc-engine.q-numeric-tolerance",
+          "title": "各種數字的容許誤差",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "golden 比對對每一種數字用多大的誤差",
+          "detail": "steering 把容許誤差交給本 spec。要分類：金額（元、萬元）、單價（unitDec 位）、百分率與調整率、權重、因子（factor）、迴歸統計（r2、F、p、beta、se）、日期差。選項：A 全部用同一個相對誤差（例如 1e-9）；B 依類別訂不同誤差，顯示用數字要求逐字相同；C 比對「顯示捨入後」的值，另對原始值用較寬誤差。\n取捨：嚴格 對 JS 與 Python 浮點最後幾位的差異。放寬必須寫理由。"
+        },
+        {
+          "id": "calc-engine.q-rounding-semantics",
+          "title": "四捨五入要和 JavaScript 一模一樣嗎",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "Math.round 與 Python round() 對 .5 的處理不同，且影響顯示與判斷",
+          "detail": "舊版 r2、roundTo、權重取整、yuan 都用 Math.round（.5 往正無限大：-2.5 → -2）。Python round() 是銀行家捨入（2.5 → 2），Decimal ROUND_HALF_UP 對負數是 -3。選項：A 寫一個 js_round（floor(x + 0.5)）逐位重現舊行為；B 改用 Decimal HALF_UP 並接受極少數金額差 1；C 用 float 乘 10^n 後再 js_round。\n取捨：和舊報告數字完全一致 對 更合理的捨入。也要確認 toFixed 的行為（它依二進位精確值）。"
+        },
+        {
+          "id": "calc-engine.q-open-map-typing",
+          "title": "開放式的 map 要多嚴格",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "比較標的的 adj（以因素 id 為 key）、chk 題庫答案、regionChecks、indicatorSets 是動態 key",
+          "detail": "全部嚴格型別會讓 schema 很大且常改；全部 dict[str, Any] 又失去驗證（steering：寫入都經 schema 驗證）。選項：A 固定欄位嚴格，動態 map 用 dict[str, 值型別]（例如 adj: dict[str, AdjCell]）；B 動態 map 只驗最外層是 object；C 先全部嚴格，由 golden 與舊案件匯入測試找出缺口。\n取捨：驗證強度 對 匯入舊案件（真實資料可能有多餘欄位）的容錯。"
+        },
+        {
+          "id": "calc-engine.q-ols-implementation",
+          "title": "OLS 與 betai 怎麼移植",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "計量模型分析法用 gammln、betacf、betai、invert 算 p 值",
+          "detail": "選項：A 逐行移植 core/calc.js 的 ols、invert（部分樞軸高斯消去）、gammln、betacf、betai（EPS 3e-12，MAXIT 200），不加依賴，結果最接近舊版；B 用 numpy 與 scipy.stats（新依賴、image 變大，數值較精確，但和舊 golden 可能差在 p 值的最後幾位）；C 矩陣用 numpy、p 值用手寫 betai。\n取捨：沒有新依賴與可重現舊值 對 依賴成熟函式庫。steering 的技術表沒有 numpy / scipy，採 B 或 C 要先更新 tech.md。"
+        },
+        {
+          "id": "calc-engine.q-document-identity-fields",
+          "title": "案件文件裡的 id、signed、modelSnapshot 怎麼放",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "案件 JSON 內有 id、signed、signedAt、modelId、modelSnapshot，和資料表欄位 case_no、signed 重複",
+          "detail": "舊版 cases.data 內含完整的 c.id 與 c.signed，資料表另有 case_no 與 signed 欄位（supabase/001），兩份可能不一致。選項：A 文件內移除 id 與 signed，只由欄位決定，升級函式負責轉換，API 回傳時再合併；B 文件內保留，寫入時由 Service 強制與欄位相同；C modelSnapshot 也移出文件放獨立欄位。\n取捨：單一真相 對 與舊案件檔（含匯出匯入）的相容。steering 已決定簽名時模型複製進案件。"
+        },
+        {
+          "id": "calc-engine.q-reference-data-interface",
+          "title": "計算要拿多少實價登錄",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "calculate() 的參考資料由誰先篩、篩多少",
+          "detail": "舊版 filteredSales 在記憶體裡套全部規則；雲端模式先用 SQL 依縣市、區、期間、種類、型態預篩並限 8000 筆（core/cloud.js cloudLvrSpec）。選項：A 呼叫端用 SQL 預篩，domain 再套完整規則（要保證預篩條件不比 filteredSales 嚴）；B domain 收全部候選（可能數萬筆），效能與記憶體較差；C 預篩條件由 domain 提供函式產生，呼叫端只負責執行查詢。\n取捨：草稿計算小於 1 秒的目標與 golden 一致性。C 可避免兩份規則不同步。"
+        },
+        {
+          "id": "calc-engine.q-validate-location-key",
+          "title": "檢查結果指向哪裡",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版 validate 的每一項帶 tab（data:subject、comp、income、cost、land、final、survey），對應舊的 9 分頁",
+          "detail": "新版是 7 個步驟。選項：A 回傳語意區段（subject、comps、income、cost、land、final、survey 等），由前端對應到步驟；B 直接回傳步驟代碼（intake、docs、survey、comps、calc、decide、deliver）；C 回傳欄位路徑（例如 basic.addr），前端可直接跳到欄位。\n取捨：domain 不知道畫面（A、C 較乾淨）對 前端最少工作（B）。C 最有用但要為每條規則標路徑。"
+        },
+        {
+          "id": "calc-engine.q-schema-version-start",
+          "title": "案件 schema 版本從幾號開始",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊資料是 v:5；新版 schema_version 起點與升級鏈",
+          "detail": "舊版 db.v 與案件檔的 v 都是 5（core/model.js fresh、importCaseFile 的檔案格式）。選項：A 延續 5，新版第一個格式是 6，升級函式鏈從 5 開始；B 新版從 1 開始，另有「legacy v5」的專用匯入轉換器；C 用日期或字串版本。\n取捨：舊檔案直接可辨識 對 乾淨起點。影響 case-api 的匯入相容與 legacy-retire 的遷移。"
+        }
+      ]
+    },
+    {
+      "id": "models-settings-api",
+      "title": "估價模型與事務所設定 API（版本衝突、權限）",
+      "status": "planned",
+      "ordinal": 3,
+      "dependsOn": [
+        "accounts-domain",
+        "calc-engine"
+      ],
+      "updated": "2026-11-07",
+      "summary": "models / office_settings 的讀寫 API 與後端版本檢查；誰能改模型與設定；法定門檻下限在後端強制；內建模型作為起點",
+      "notes": [
+        "2026-11-07 新增：交接盤點發現舊版 models、office_settings 由 core/cloud.js 整份同步，原本沒有節點負責；問題 q-models-api-home、q-model-settings-permissions 改由本節點處理。"
+      ],
+      "children": [
+        {
+          "id": "accounts-domain.q-model-settings-permissions",
+          "title": "誰可以改估價模型與事務所設定",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "product.md 沒定義模型與設定的編輯權限，舊版也沒有限制",
+          "detail": "舊版 RLS 讓事務所任何成員（含 manager、assistant）可新增、修改、刪除 models 與 office_settings（supabase/001 policies），界面也沒鎖。選項：A 只有 appraiser；B appraiser 與 manager；C 全員可改但每次寫稽核。\n取捨：模型決定報告數字與法定門檻，權限太寬有風險；太窄則助理無法調整本所案例。這是產品規則，需使用者決定後寫進 product.md。"
+        }
+      ]
+    },
+    {
+      "id": "case-api",
+      "title": "案件 API、版本衝突與 SSE",
+      "status": "planned",
+      "tickets": [
+        "bl-3e1c6e",
+        "bl-1ee892",
+        "bl-68baa2"
+      ],
+      "ordinal": 3,
+      "dependsOn": [
+        "accounts-domain",
+        "calc-engine"
+      ],
+      "updated": "2026-11-07",
+      "summary": "案件 CRUD、複製本案、案件檔匯出／匯入（相容舊版 v5 案件檔）、流程欄位與交接、簽名鎖定、草稿計算端點、SSE 即時更新",
+      "detail": "範圍（做）：services/、repositories/、api/ 的案件部分：\n - 案件 CRUD 與版本檢查（版本不同回 409，不寫入）；案件清單與篩選（舊版 core/cases.js caseFilters 的 7 種：進行中、我負責的、待我確認、3 天內到期、已逾期、已交付、全部；搜尋案號、地址、委託人；依標的種類與負責人；排序 caseSort＝期限近者先、再案號新者先）。\n - 流程欄位與交接（後寫入為準、不動案件版本）：完成這一步、交給…、送估價師確認、確認繼續、退回修改（core/app3.js handoffBar、handoffSheet；留言 ≤ 500 字，退回必填；預設留言「送估價師確認」「交給 X」「已確認」）。\n - 簽名：只有 appraiser；伺服器自己跑 validate，bl 非空就拒絕；把當時模型複製進 modelSnapshot；signedAt 由伺服器填；簽名後內容寫入一律拒絕。舊版 core/app3.js act==='sign' 只在瀏覽器檢查（見 backlog）。\n - 複製本案（core/app3.js dupCase：新案號、signed=false、清 modelSnapshot、模型不存在就改用第一個）、案件檔匯出與匯入（exportCase；core/model.js importCaseFile：模型同代號不同內容就另存為「-imp-」模型、案號重複就換號、以 blankCase 補齊缺欄）。\n - 草稿計算端點（不寫入，回傳計算、檢查、報告區塊）。\n - 案件編號由後端產生；SSE（單 process 內的訂閱者清單，同事務所推送）；歷程查詢（舊版 core/cloud.js cloudHistory 讀 audit_log）。\n範圍（不做）：資料表定義與身分規則的基底（accounts-domain）、計算與報告本身（calc-engine、report-gen）、前端工作副本。\n限制：Service 丟領域錯誤，API 層轉 404 / 403 / 409 / 422；REST 與 MCP 共用同一個 Service；每個寫入端點至少一個「別的事務所」與「身分不符」拒絕測試；已簽名案件任何路徑都不能寫；稽核紀錄寫「誰、哪個事務所、哪件案子、做了什麼」。\n完成訊號：隔離、身分、版本衝突、簽名鎖定四類測試涵蓋每個寫入端點；同時改同一案件時後寫者 100% 得到 409；草稿計算對示範案件小於 1 秒；匯入舊版 v5 案件檔後計算結果與舊版相同（用 test/interop.js 的案例改寫）。\n交給下游：Service 層全部入口（frontend-app、mcp-endpoint 使用）、SSE 事件、草稿計算端點、OpenAPI（前端型別產生）。\n注意：路線圖目前沒有節點負責估價模型與事務所設定的 API（舊版 models、office_settings 的讀寫與衝突），見下方問題 models-api-home。",
+      "children": [
+        {
+          "id": "case-api.q-draft-calc-payload",
+          "title": "草稿計算端點收什麼、回什麼",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "前端每次編輯都要呼叫；案件文件可能很大",
+          "detail": "選項：A 送整份草稿案件，回傳全部（計算、檢查、區塊）；B 送整份草稿，由 include= 參數選回傳哪幾項（報告區塊較大，預覽沒開就不需要）；C 送 case_id + base version + 變更 patch，伺服器套用後計算（上行小，但 patch 格式與衝突較複雜）。\n取捨：實作簡單 對 頻寬與延遲（目標小於 1 秒）。要用示範案件量測 JSON 大小再決定。"
+        },
+        {
+          "id": "case-api.q-export-import-format",
+          "title": "案件檔匯出與匯入的相容",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版案件檔是 {format:'appraisal-case', v:5, savedAt, case, model}；新版要接受它嗎",
+          "detail": "選項：A 匯入同時接受舊 v5 檔（走 calc-engine 升級）與新格式；匯出用新格式（含 schema_version）；B 匯出仍用舊 v5 格式，讓舊版與新版互通到舊版移除；C 匯入舊檔時依 importCaseFile 的規則處理模型（同代號不同內容 → 另存為「-imp-」新模型）還是一律要求使用者選擇。\n取捨：互通與簡單。也要決定匯入時案號衝突要自動換號（舊行為）還是讓使用者確認，以及匯入的模型內容是否要過 schema 與法定門檻檢查。"
+        },
+        {
+          "id": "case-api.q-case-number-generation",
+          "title": "案號的產生與跨年",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "steering：民國年-流水號、後端產生；細節未定",
+          "detail": "舊版網頁寫死 '115-'（core/app3.js nextId、core/cloud.js cloudFreeNo），且取所有案號的最大流水號；MCP 的 nextId 則依當年度重新編號。選項：A 在 (office, 民國年) 內取 max + 1，靠唯一約束失敗重試；B 每所每年一列計數表，用 SELECT FOR UPDATE；C 年度取自價格日期而非建立日期。\n取捨：簡單 對 並行建立時不重號、不跳號。也要決定匯入或複製時案號怎麼給、跨年當天的時區（台灣時間）。"
+        },
+        {
+          "id": "case-api.q-post-sign-flow-fields",
+          "title": "簽名後流程欄位還能改嗎",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版簽名後任何更新都被擋（含負責人、期限、交接留言）",
+          "detail": "supabase/006 guard_case：old.signed 時 UPDATE 一律丟例外，所以簽名後連 manager 也不能改。steering 說簽名後案件內容不能改，流程欄位後寫入為準。選項：A 全部凍結（沿用舊行為）；B 內容凍結，流程欄位（負責人、期限、留言）仍可改，stage 與 status 凍結；C 簽名後只允許加交接留言與稽核。\n取捨：不可變的保證 對 交付後的行政需求（例如補記備註）。另需決定：簽名時是否由伺服器自動把 stage 設成 deliver（舊版由瀏覽器先設）。"
+        },
+        {
+          "id": "case-api.q-sign-authority",
+          "title": "誰可以簽哪一件",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版只檢查「是 appraiser」，不檢查是不是這件案子的簽證估價師",
+          "detail": "supabase/006 guard_case 只檢查簽名者的 role = appraiser；cases.appraiser（簽證估價師）只是資訊欄位。另外案件文件內有 appraiser 物件（name、certNo、licenseNo，報告封面與函使用），和 members.cert_no 重複。選項：A 沿用，同所任一 appraiser 可簽；B 只有 cases.appraiser 指定的人可簽；C 簽名時用簽名者的 member 資料覆寫文件內 appraiser 欄位。\n取捨：責任歸屬明確 對 流程彈性。這是產品規則。"
+        },
+        {
+          "id": "case-api.q-models-api-home",
+          "title": "估價模型與事務所設定的 API 放哪個節點",
+          "status": "decided",
+          "updated": "2026-11-07",
+          "summary": "路線圖沒有節點負責 models 與 office_settings 的讀寫、版本衝突與法定門檻檢查",
+          "detail": "已決定（2026-11-07）：另開 models-settings-api 節點負責，不放在 case-api。"
+        },
+        {
+          "id": "case-api.q-conflict-response-body",
+          "title": "409 回應要帶什麼",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "版本衝突時，前端需要什麼資料才能讓人決定怎麼處理",
+          "detail": "舊版：載入最新版，把自己的版本存 localStorage（最多 20 份），之後可「另存為新案件」（core/cloud.js cloudConflict、core/cases.js conflictRestore）。選項：A 409 只帶目前版本號與更新者，前端另外取最新版；B 409 直接帶最新文件、版本、更新人與時間；C 在 B 之外，伺服器算出雙方欄位差異清單（三方合併需要 base 版本，伺服器要保留舊版本）。\n取捨：簡單 對 衝突畫面能做到多細。C 需要保存歷史版本。"
+        },
+        {
+          "id": "case-api.q-case-delete-semantics",
+          "title": "刪除案件是真刪還是標記",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版是真刪除（帶 version 條件），稽核紀錄保留",
+          "detail": "supabase/001 與 core/cloud.js cloudPush 的 delete。steering 稽核紀錄只新增，不可刪。選項：A 真刪除，稽核留存（沿用）；B 標記刪除（deleted_at），清單隱藏，系統管理員可還原；C 只允許 status=cancelled，不提供刪除。\n取捨：資料可復原與隱私（客戶資料真的消失）對 保存義務。簽名後的案件本來就不能刪。"
+        },
+        {
+          "id": "case-api.q-sse-protocol",
+          "title": "SSE 的事件內容與重連",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "steering：資料變更後用 SSE 通知同事務所中正在看的人，前端再重新讀取",
+          "detail": "舊版是輪詢（core/cloud.js cloudPoll）。選項：A 事件只帶 {type, case_id, version}，前端重新讀取；B 帶 Last-Event-ID，伺服器記憶體保留最近 N 筆事件，斷線重連時補送；C 重連一律由前端整批重新讀取。另需決定頻道粒度（每所一條、依案件訂閱）、心跳間隔，以及代理逾時（見 host-deploy）。\n取捨：實作簡單 對 斷線期間不漏通知。單 worker 記憶體保留事件是可行的。"
+        },
+        {
+          "id": "case-api.q-list-api-shape",
+          "title": "案件清單 API 的形狀",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版把事務所全部案件一次讀到瀏覽器再篩選與計數（core/cloud.js cloudPull、core/cases.js tabCases）",
+          "detail": "steering：數百件進行中案件要順暢。選項：A 一次回傳全部案件摘要（不含文件）、前端篩選與計數；B 伺服器端篩選、排序、分頁，另有計數端點（篩選 chip 與看板各階段都需要數量）；C B 加上看板每階段分別分頁。\n取捨：實作簡單 對 規模成長。因為看板與 7 個篩選 chip 都要數量，B 要設計計數的呼叫方式。"
+        },
+        {
+          "id": "case-api.q-streaming-timeouts",
+          "title": "SSE 與 AI 串流穿過代理",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "nginx-proxy 預設緩衝回應且讀取逾時 60 秒",
+          "detail": "SSE（case-api）與 AI 串流（ai-assistant）需要不緩衝、較長的逾時。選項：A 應用程式回應加 X-Accel-Buffering: no，並在 reverse-proxy/data/vhost.d/<VIRTUAL_HOST> 加 proxy_read_timeout 與 proxy_buffering off；B 只靠應用程式的心跳（每 15–30 秒）避免逾時；C 兩者都做。\n取捨：vhost.d 在 reverse-proxy 專案裡，不是本 repo，要協調；只靠心跳不用改代理，但不保證緩衝已關。這個問題在 case-api 與 ai-assistant 完成前就要解。",
+          "notes": [
+            "部署時還沒有串流端點，移到 case-api：SSE 是第一個需要它的功能。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "report-gen",
+      "title": "報告產生（敘述式 / 摘要式、HTML 預覽、Word）",
+      "status": "planned",
+      "tickets": [
+        "bl-36f933",
+        "bl-a9e50a"
+      ],
+      "ordinal": 3,
+      "dependsOn": [
+        "calc-engine"
+      ],
+      "updated": "2026-11-07",
+      "summary": "python-docx；同一條路徑給網頁與 MCP",
+      "detail": "範圍（做）：domain/report，產生與格式無關的區塊（blocks），再轉成 HTML 與 Word。\n - 敘述式：core/report.js build()（15 項必載事項、SECT 章節、parcelTable、compSection、incomeSection、costSection、landSection、specialSection）。\n - 摘要式：core/report.js buildSummary()（itemTxt、groupRows、groupKV、lienLine、compTable、incomeTable、costTable）與 core/survey.js（SURVEY 題庫、AREA_ROWS、LIEN_COLS、chkShown、surveyGroups、surveyDisclosures）。\n - 格式選擇：core/survey.js reportFormat()（auto：估價目的「抵押權設定」且標的為 unit 或 house 且未勾高價宅 → 摘要式；使用者可指定）。\n - 輸出：toHTML()、toDocx()（改用 python-docx；舊版用 docx.js，字型標楷體 + Times New Roman、A4、邊界 1418、頁首「事務所 案號」、頁尾頁碼）。區塊種類：cover、letter、h1、h2、h3、p、amount、list、kv、table、pb。待填欄位 ⟦…⟧（舊版 V()、roc()、amtTxt()）。\n - 報告脈絡 ctx：kind、cn（中文大寫金額 cnAmount）、inds、exp、selText、marketStats、capName（舊版在 core/app3.js reportCtx）。\n範圍（不做）：計算與檢查（calc-engine）、REST 端點與 MCP 工具的包裝（case-api、mcp-endpoint）。\n限制：網頁預覽、下載與 MCP 走同一條路徑；數字格式要與畫面逐字相同（舊版用 toLocaleString('zh-TW') 與 toFixed，負號用「−」U+2212）；資料不足的欄位一定要標 ⟦…⟧，不可留白。\n完成訊號：6 組 golden 的 blocks 與 html 逐字相同（test/snapshots/cases.json）；另補摘要式的 golden（舊版 snapshot 只涵蓋 REPORT.build）；docx 用 python-docx 讀回，標題、表格與段落文字與 blocks 相同；同一案件 REST 與 MCP 報告內容相同（跨入口測試）。\n交給下游：build_report()、render_html()、render_docx()（case-api、mcp-endpoint 使用）；摘要式題庫定義（frontend-app 的表單可能要用，見問題）。",
+      "children": [
+        {
+          "id": "report-gen.q-docx-style-source",
+          "title": "Word 樣式從程式來還是從範本檔來",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "steering 已選 python-docx；問題是樣式放在哪",
+          "detail": "舊版 toDocx 全部用程式設定（字型標楷體 + Times New Roman、A4、邊界 1418、頁首事務所與案號、頁尾頁碼、表格框線）。選項：A 全用程式（和舊版一致、可測試）；B 用一份 .docx 範本檔提供樣式與頁首頁尾，程式只填內容（事務所可換信紙格式，但要管理範本檔）；C A 為預設，事務所可選擇上傳範本。\n取捨：簡單可測 對 事務所客製化。不影響 blocks。"
+        },
+        {
+          "id": "report-gen.q-placeholder-contract",
+          "title": "待填欄位 ⟦…⟧ 怎麼表示",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版把 ⟦…⟧ 直接寫在文字裡，網頁與 Word 再用正規式找出來上色",
+          "detail": "網頁高亮、Word 黃底（toDocx 的 runs）、MCP 文字改成【待填：…】（mcp/server/index.js blocksToText）。選項：A 沿用字串內嵌標記（和 golden 逐字相同、最簡單）；B blocks 內用結構化的行內片段 {text} 與 {placeholder}（格式轉換器各自處理，不依賴正規式）；C A 為儲存格式，另提供解析函式。\n取捨：golden 與舊行為一致 對 之後新增輸出格式（例如 PDF）時的乾淨度。"
+        },
+        {
+          "id": "report-gen.q-survey-definition-home",
+          "title": "摘要式題庫定義放哪",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "SURVEY 題庫同時決定前端的現勘表單與摘要式報告",
+          "detail": "舊版 core/survey.js 是同一份定義，前端 core/app1.js CHK() 依它產生控制項，report.js buildSummary 依它輸出。steering 說前端不實作計算與法規檢查，沒說表單定義。選項：A 後端 domain 持有定義，提供 API 給前端產生表單（單一來源）；B 前端與後端各放一份（簡單，但會不同步）；C 以共用的 JSON 檔放在後端，build 時複製進前端。\n取捨：單一來源 對 前端額外的 API 往返。選 A 時 frontend-app 要有「依定義產生表單」的元件。"
+        },
+        {
+          "id": "report-gen.q-html-renderer-keep",
+          "title": "還要保留伺服器端 HTML 嗎",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "steering 說區塊轉 HTML 預覽或 Word；前端也可以直接把 blocks 畫成 React",
+          "detail": "舊版 toHTML 同時用於網頁預覽、「下載 .html」、與 golden 的 html 欄位。選項：A 保留 render_html（下載 .html、golden 都不變；前端預覽也用它，要小心 XSS，舊版用 esc）；B 前端用 React 直接渲染 blocks，伺服器不產 HTML，golden 只比 blocks，「下載 .html」功能取消；C 兩者都有，前端預覽用 React，下載 .html 用 render_html。\n取捨：一個渲染器 對 預覽的互動性（例如點待填欄位跳到表單）。要使用者決定是否保留下載 .html。"
+        }
+      ]
+    },
+    {
+      "id": "lvr-sync",
+      "title": "實價登錄每月同步與行情查詢",
+      "status": "planned",
+      "tickets": [
+        "bl-cb5d5d"
+      ],
+      "ordinal": 3,
+      "dependsOn": [
+        "accounts-domain",
+        "calc-engine"
+      ],
+      "updated": "2026-11-07",
+      "summary": "行程內排程取代 GitHub Actions；手動匯入實價登錄 CSV（同步範圍外的縣市）；篩選、評分、行情統計",
+      "detail": "範圍（做）：\n - 資料表：lvr_records、lvr_sync_log（欄位與索引見 supabase/004_lvr.sql；主鍵 serial＝內政部編號；cat A 買賣 B 預售屋 C 租賃；kind sale|landsale|rent；無 office 欄位，全事務所共用）。\n - 排程：app process 內（FastAPI lifespan）每月執行，取代 .github/workflows/lvr-sync.yml（舊版每月 5 日 02:00 UTC）；單 worker 保證只有一份；upsert 可重複執行。\n - 同步邏輯：搬 tools/lvr-sync.js（recentSeasons、cutoffYM、toRow、download 含重試與 NotPublished、1000 筆一批 upsert、同檔重複編號留最後一筆、每個檔案寫一筆 sync log、全部成功才清除過期資料）。下載網址 https://plvr.land.moi.gov.tw/DownloadSeason?season=115S2&fileName=F_lvr_land_A.csv；舊版預設縣市 F（新北市）B（臺中市）J（新竹縣）、類別 A,B,C、最近 2 個已結束的季（補資料 12 季）、檔案之間等 3 秒、保留 36 個月。\n - CSV 解析：搬 core/model.js 的 parseCSV、rocToYM、cnToNum、matchType、cleanZone、guessCounty、importLvr 與 core/data.js 的 COUNTIES、BTYPES、noteToSpecial、isPresaleNote、normTai、zoneClass、ymDiffYears（舊版放在計算核心，但屬於資料匯入，歸本節點）。\n - 查詢：取代 core/cloud.js cloudLvrSpec / cloudLvrFetch（依縣市、鄉鎮市區、ym ≥ 起始、kind、type 篩選，ym 新到舊，一頁 1000 筆、最多 8000 筆並提示被截斷）與 cloudLvrLastSync（最近一次成功同步日期與最新季）。\n - 手動匯入 CSV（舊版 core/app3.js 匯入 → importLvr → A.imported，存在 office_settings）。\n範圍（不做）：篩選評分與行情統計（calc-engine 的 filteredSales、marketStats）、前端拖入介面（frontend-app）。\n限制：實價登錄是公開資料，不帶事務所欄位；httpx 是唯一 HTTP client；CI 不連外網（用 httpx MockTransport 與本機 CSV）；排程失敗要看得到。\n完成訊號：對同一批 CSV（core/data_j.txt、test/lvr-cloud.js 的列），Python 解析結果與舊版 importLvr 逐筆相同；重複執行不產生重複資料；有失敗時不清除過期資料；查詢結果可餵給 calc-engine 的 calculate()。\n交給下游：查詢函式（case-api 的草稿計算與 mcp-endpoint 使用）、sync log 讀取（frontend-app 資料來源面板）、手動匯入服務。\n注意：calc-engine 先定義它要吃的買賣與租賃紀錄型別（舊版 lvrRowToRecord 的輸出形狀）；本節點把解析結果與資料列對應到那個型別。",
+      "children": [
+        {
+          "id": "lvr-sync.q-retention-window",
+          "title": "實價登錄保留多久",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版保留 36 個月，原因是 Supabase 免費版 500 MB（supabase/004 註解：3 縣市 3 年約 160～220 MB）",
+          "detail": "新版是自己的 PostgreSQL，沒有這個限制。選項：A 維持 36 個月；B 延長（例如 60 個月，讓模型可設較長的選取期間 select.months）；C 不清除，只靠索引與分區。\n取捨：磁碟與備份大小 對 估價時可用的歷史資料。要看目前模型預設 12–24 個月是否足夠。"
+        },
+        {
+          "id": "lvr-sync.q-synced-counties",
+          "title": "同步哪些縣市",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版寫死 F（新北市）、B（臺中市）、J（新竹縣），UI 文字也寫死（core/cloud.js CLOUD_LVR_COUNTIES）",
+          "detail": "選項：A 預設同一組，但由環境變數 LVR_COUNTIES 設定；B 預設全台 22 縣市（資料量約 7 倍以上，未驗證）；C 事務所在設定中選縣市，系統同步所有被選到的縣市聯集。\n取捨：資料量與下載時間（檔案之間等 3 秒）對 各所的覆蓋範圍。範圍外的縣市由手動匯入（見 manual-import-storage）。"
+        },
+        {
+          "id": "lvr-sync.q-manual-import-storage",
+          "title": "手動匯入的 CSV 存在哪",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版匯入的紀錄存在各所的 office_settings.imported；steering 的 lvr_records 是公開、無事務所欄位",
+          "detail": "手動匯入是為了同步範圍外的縣市。選項：A 另建有 office_id 的資料表（隔離安全，各所自己看到）；B 寫進共用 lvr_records 並標 source=manual（所有所都能用，但一所匯入的資料所有人都看到，且和每月 purge 與 upsert 衝突）；C 只存在使用者的工作副本，不落資料庫。\n取捨：隔離與共用 對 簡單。A 與 accounts-domain 的 own-cases-storage 相關。這和 steering「實價登錄不帶事務所」有出入，需要使用者決定。"
+        },
+        {
+          "id": "lvr-sync.q-failure-visibility",
+          "title": "同步失敗怎麼讓人知道",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版失敗時 GitHub Actions 變紅；新版排程在 process 內",
+          "detail": "選項：A 只寫 lvr_sync_log，畫面資料來源面板顯示最近狀態；B 另外用 SMTP 寄信給系統管理員；C /readyz 或獨立的狀態端點回報，給外部監控用。\n取捨：沒有人看畫面就不會發現。也要決定連續幾次失敗才通知。"
+        },
+        {
+          "id": "lvr-sync.q-catch-up-after-downtime",
+          "title": "app 停機錯過排程怎麼補",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版 cron 每月 5 日；in-process 排程在 app 停機時會直接漏掉",
+          "detail": "選項：A 啟動時檢查最近一次成功同步時間，超過 N 天就補跑；B 每天檢查一次，條件是本月尚未成功；C 只固定時間跑，漏了靠手動觸發。同時要決定手動觸發的入口（管理端點或 CLI）。\n取捨：簡單 對 不漏資料。單 worker 已保證不會重複跑。"
+        }
+      ]
+    },
+    {
+      "id": "frontend-app",
+      "title": "前端主畫面：案件清單 / 看板、7 步驟案件頁、確認儲存",
+      "status": "planned",
+      "ordinal": 4,
+      "dependsOn": [
+        "visual-design",
+        "case-api",
+        "report-gen",
+        "lvr-sync",
+        "models-settings-api"
+      ],
+      "updated": "2026-11-07",
+      "summary": "案件清單／看板、7 步驟案件頁（步驟可自由點選、試算可切換採用的方法，不做鎖定式精靈；不保留舊的 9 分頁版面）、確認儲存、複製本案、案件檔匯出匯入、拖入實價登錄 CSV",
+      "detail": "範圍（做）：frontend/ 的 React SPA。\n - 案件清單與看板（core/cases.js：tabCases、caseFilters、caseState、caseDots、caseSort、dueChip）；手機卡片（ccards）。\n - 7 步驟案件頁（STAGES：intake 接案、docs 調資料、survey 現勘、comps 比較標的、calc 試算、decide 決定價格、deliver 簽名交付；每步內容見 core/app3.js stepContent；步驟可自由點選；試算頁可切換採用的方法；顯示「第 n／7 步・還差 N 項可簽名」）。不保留舊的 9 分頁版面與 localStorage 的版面切換（CASE_LAYOUT_KEY、DATA_LAYOUT_KEY）。\n - 工作流程列與交接（metabar、handoffBar、handoffSheet、noteBox）。\n - 確認儲存：工作副本放 Zustand 並存在瀏覽器；舊版是 core/app1.js caseBaseline / isDirty / dirtyCount / markSaved / revertCase 與 A.saved；顯示「有 N 處未儲存」與「取消修改」。\n - 草稿計算：呼叫草稿計算端點（防抖），顯示計算、檢查、報告區塊；前端不自己計算。\n - 版本衝突（舊版 cloudConflict：載入最新版、自己的版本備份最多 20 份到 localStorage、conflictRestore 另存為新案件）。\n - 報告預覽與 Word 下載、複製本案、案件檔匯出與匯入、拖入實價登錄 CSV、資料來源面板（本所案例、同步狀態）、估價模型編輯（core/app2.js tabParams：model、select、adjust、weights、income、lda、sources、cost、texts、check）、歷程、登入與邀請相關頁面、SSE 連線（取代舊版輪詢 cloudPoll）。\n範圍（不做）：AI 面板（ai-assistant，但本節點要留三欄版面的位置）、任何提供者 SDK、計算與法規檢查。\n限制：伺服器資料只透過 api/ 的 TanStack Query hooks；元件不直接 fetch；型別由後端 OpenAPI 產生；前端隱藏按鈕只是方便，權限由後端判斷；日期用民國年；視覺依 visual-design 的畫布。\n完成訊號：Vitest 覆蓋工作副本（編輯、重新整理後還原、取消修改、確認儲存）、衝突畫面、依身分停用欄位；畫面上的數字只來自 API；用 3 種身分（appraiser、assistant、manager）手動走完一件案子的 7 步驟。\n交給 ai-assistant：三欄版面容器與「目前案件」的狀態來源（工作副本與已存版本）。",
+      "notes": [
+        "2026-11-07 決定：不保留「原本的分頁」切換；7 步驟版已可自由跳步驟與切換方法，功能相同。"
+      ],
+      "children": [
+        {
+          "id": "frontend-app.q-browsing-step-vs-stage",
+          "title": "瀏覽的步驟和案件階段的關係",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "步驟可自由點選；但案件有 stage 欄位，兩者是什麼關係",
+          "detail": "舊版 A.step（目前看的步驟）與 meta.stage（案件進度）是分開的；按「完成這一步」時，只有正在看的步驟不早於 stage 才推進 stage（core/app3.js stepNext）。選項：A 沿用，stage 只有「完成這一步」或交接才改；B 點到某步就把 stage 設成該步；C stage 由資料完成度自動推算，不手動。\n取捨：stage 是看板與清單的欄位（要穩定），自由瀏覽不應改它；但「還差 N 項」要不要依 stage 計算也要決定。"
+        },
+        {
+          "id": "frontend-app.q-working-copy-persistence",
+          "title": "工作副本怎麼保存",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "steering：工作副本放 Zustand 並保存在瀏覽器；細節未定",
+          "detail": "舊版整個狀態放 localStorage 的 appraisal-generator-v5，每案有基準 JSON（A.saved）。需決定：用 localStorage 還是 IndexedDB（案件文件可能數百 KB，localStorage 約 5 MB 上限）；key 是否含使用者與事務所（共用電腦登出後會看到上一位的草稿）；登出時是否清除；多分頁同時編輯同一案件怎麼辦；草稿保存時要不要記下它的基準版本號。\n取捨：資料安全與不遺失編輯。草稿含客戶資料，需決定登出時清除還是保留。"
+        },
+        {
+          "id": "frontend-app.q-conflict-ux",
+          "title": "遇到版本衝突時畫面怎麼做",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "後存的人收到 409 之後，人要怎麼決定",
+          "detail": "steering：衝突一定讓人看到，由人決定。選項：A 沿用舊版：載入最新版並把自己的版本另存為新案件或備份；B 顯示雙方差異，讓使用者逐區選擇保留哪邊，再存；C 只顯示「別人改了哪幾個區」，讓使用者重新套用自己的修改。\n取捨：實作成本 對 使用者不遺失自己的修改。依 case-api 的 conflict-response-body 而定。"
+        },
+        {
+          "id": "frontend-app.q-handoff-with-dirty-draft",
+          "title": "有未儲存草稿時交接怎麼辦",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版交接會順手把草稿一併儲存（core/app3.js handoffSend 的 markSaved）",
+          "detail": "新版流程欄位是獨立端點、不動案件版本。選項：A 有草稿時先要求確認儲存，再交接（兩步）；B 交接面板上提示「會一併儲存」並依序呼叫儲存與交接，儲存失敗就不交接；C 交接獨立進行，草稿留在原地不處理。\n取捨：接手的人看到的是已存內容 對 不打斷操作。「送估價師確認」時估價師要看到最新內容，所以 C 有風險。"
+        },
+        {
+          "id": "frontend-app.q-form-generation",
+          "title": "表單用手寫還是依 schema 產生",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "案件文件很大，估價模型有 10 個子面板，現勘題庫又是資料驅動",
+          "detail": "選項：A 全部手寫（最自由，量很大）；B 依後端 OpenAPI 的 JSON schema 產生通用表單，特殊欄位再覆寫；C 只有題庫與模型參數依 schema 或定義產生，案件主要欄位手寫。\n取捨：開發量與一致性 對 排版與互動的細緻度（例如比較標的調整格、滑桿與加總補齊）。舊版有「加總須為 100%」的自動補齊介面。"
+        },
+        {
+          "id": "frontend-app.q-role-aware-ui",
+          "title": "前端怎麼知道哪些按鈕能按",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "steering：前端隱藏按鈕只是方便，權限在後端",
+          "detail": "舊版前端用 isManager()、A.role、L()、D() 重複實作規則（core/app1.js）。選項：A 前端複製一份規則（簡單，但會不同步）；B 後端在 /me 與案件回應中回傳 allowed_actions（例如 can_edit、can_sign、can_hand_off），前端只讀；C 前端先按預設行為，被 403 再提示。\n取捨：B 讓規則只有一份，但每個案件回應要多算一次權限。"
+        }
+      ]
+    },
+    {
+      "id": "mcp-endpoint",
+      "title": "MCP 端點與 OAuth 2.1",
+      "status": "planned",
+      "ordinal": 4,
+      "dependsOn": [
+        "case-api",
+        "report-gen",
+        "lvr-sync",
+        "models-settings-api"
+      ],
+      "updated": "2026-11-07",
+      "summary": "案件工具、法規查詢、謄本讀取；外部 MCP client 連線",
+      "detail": "範圍（做）：backend/src/appraisal/mcp，Streamable HTTP（路徑 /mcp 已由 foundation 保留）；把 Service 層包成 MCP 工具；OAuth 2.1（authorization code + PKCE，依 MCP authorization 規範；授權時的登入頁就是網頁登入頁）；每個 token 只代表一位成員；同時接受內建 AI 助理的短期憑證（綁成員與案件，由 ai-assistant 發出，本節點定義驗證介面）。\n搬移來源：mcp/server/index.js 的 17 個工具：list_options、case_create、case_list、case_get、case_update（deepMerge 加 stripLocked，鎖住 id、signed、signedAt、modelSnapshot；不可改 kind）、comps_add（含 snapAdj）、comps_autopick、case_calculate、report_preview、report_docx、lvr_fetch、lvr_search、transcript_read、law_lookup、model_get、model_update、case_import。法規全文 mcp/laws/*.md（技術規則、估價師法、施行細則）搬到 backend/src/appraisal/data/，條文以 `### 第 N 條` 標題切分（lawArticles）。\n範圍（不做）：AI 對話與 agent（ai-assistant）；舊版 manifest.json 與 .mcpb 打包（steering 已決定不提供本機擴充）。\n限制：工具名稱 snake_case、名詞在前；每個 MCP 呼叫以某位成員身分執行，隔離、身分、版本檢查、簽名鎖定與網頁相同；報告走 report-gen 同一條路徑（舊版 MCP 只會產敘述式）；AI 不能簽名（不提供 sign 工具）；回傳結果寫給模型讀。\n完成訊號：用 MCP client 測試每個工具的跨事務所拒絕、身分不符拒絕、已簽名拒絕；同一案件 REST 與 MCP 的報告內容相同；token 只能存取發給它的那位成員的事務所；撤銷 token 立即生效。\n交給 ai-assistant：工具清單與短期憑證驗證；工具說明字串（舊版 mcp/server/index.js 的 instructions 可作為 system prompt 起點）。",
+      "children": [
+        {
+          "id": "mcp-endpoint.q-tool-set",
+          "title": "17 個舊工具保留、合併或刪除",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊工具為單機檔案設計；新工具面對伺服器與多人",
+          "detail": "要決定：case_get 與 case_list 是否合併；lvr_fetch（用戶端下載實價登錄）刪除，因為伺服器每月同步；case_import 與 transcript_read 的本機路徑改成別的方式（見 remote-files）；report_preview 與 report_docx 依 report-gen 的格式選擇；model_update 是否保留給 AI（改模型會影響全所案件）；list_options 的回傳要不要依模型動態。另可考慮把大 patch 的 case_update 拆成較窄的工具（comps_*、parcels_*、survey_*）。\n取捨：工具數量與模型選擇準確度 對 每個工具的規則簡單。"
+        },
+        {
+          "id": "mcp-endpoint.q-remote-files",
+          "title": "遠端工具怎麼收謄本與送出 Word",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版 transcript_read 讀本機 PDF 路徑、report_docx 寫本機路徑；新版 MCP 在伺服器上，steering 也沒有檔案儲存",
+          "detail": "選項：A 由 AI 用戶端自己讀 PDF 並把文字或欄位傳給工具（工具只收文字，伺服器不存檔，也不需要 PDF 函式庫）；B 提供上傳端點，PDF 存進 DB 或 volume，伺服器用 Python PDF 函式庫抽字（新依賴，steering 技術表沒有，需更新 tech.md）；C 工具回傳短期簽名下載網址取得 docx，謄本仍走 A。\n取捨：不存客戶文件（隱私、簡單）對 AI 助理內建面板也要能「上傳謄本」（ai-assistant 受影響）。舊版 transcriptHints 用的正規式（地號、建號、面積、權利範圍、公告土地現值等）也要決定搬到哪裡。"
+        },
+        {
+          "id": "mcp-endpoint.q-oauth-client-registration",
+          "title": "外部 MCP client 怎麼註冊",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "OAuth 2.1 要先知道 client；Claude Desktop 等 client 通常動態註冊（未驗證）",
+          "detail": "選項：A 開放動態 client 註冊（RFC 7591），註冊本身不給權限，使用者授權時才給（需限流與清理無用 client）；B 由系統管理員預先登錄 client，只放行名單內的；C 支援 client metadata document（以 URL 當 client id）。\n取捨：連線容易 對 防濫用。steering 的資料表已列「MCP 的 OAuth client 與 token」。要先確認目標 client（Claude Desktop、Claude Code 等）支援哪種註冊方式。"
+        },
+        {
+          "id": "mcp-endpoint.q-token-lifetime-scope",
+          "title": "token 的期限與範圍",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "每個 token 只代表一位成員；期限、refresh 與 scope 未定",
+          "detail": "選項：A 單一範圍＝成員的全部權限，access token 1 小時加 refresh token 30 天；B 分 read 與 write 兩種 scope，授權畫面讓成員選；C 外部 client 預設唯讀，寫入需另外授權。另需決定成員在哪裡看到並撤銷已授權的 client，以及成員被停用時（accounts-domain deactivate-effects）token 如何失效。\n取捨：安全與使用者負擔。"
+        },
+        {
+          "id": "mcp-endpoint.q-update-patch-and-version",
+          "title": "case_update 的版本與 patch 格式",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "steering 要求 AI 與 MCP 的寫入也走版本檢查；舊版 patch 是深層合併、不帶版本",
+          "detail": "選項：A case_get 回傳 version，case_update 必須帶 base_version，衝突回錯誤並由模型重新讀取再試；B 不需帶版本，伺服器以最新版為基礎做深層合併（等於後寫入為準，違反 steering 的「不蓋掉別人」）；C 使用 JSON Merge Patch（RFC 7396）並限制可改的路徑，必帶版本。\n取捨：模型要多處理一輪重試 對 不靜靜蓋掉使用者的編輯。陣列整個取代的舊規則也要決定。"
+        },
+        {
+          "id": "mcp-endpoint.q-human-confirmation-fields",
+          "title": "AI 可以寫入「人工確認」欄位嗎",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版 case_update 只鎖 id、signed、signedAt、modelSnapshot；AI 可以把 final.reviewed、analysis.confirmed、comps[].exception 設成 true",
+          "detail": "這些欄位是估價師的人工確認，會讓 validate 的必須修正項目消失（core/model.js validate：final.reviewed 對應 §15，analysis.confirmed 對應 §16 第 11 項；比較標的 exception 對應 §25 但書）。steering 只說 AI 不能簽名。選項：A 這類欄位列入 AI 唯讀清單（伺服器端 schema 標記），只有人類成員寫入；B AI 可寫但稽核特別標示，且簽名前要估價師再確認一次；C 不限制。\n取捨：AI 的實用性 對 簽名責任不被繞過（product 原則 6）。"
+        }
+      ]
+    },
+    {
+      "id": "ai-assistant",
+      "title": "AI 助理（浮動泡泡、可釘選成三欄）",
+      "status": "planned",
+      "ordinal": 5,
+      "dependsOn": [
+        "frontend-app",
+        "mcp-endpoint"
+      ],
+      "updated": "2026-11-07",
+      "summary": "Claude Agent SDK + assistant-ui；對話存 DB；AI 寫入與未儲存草稿的處理",
+      "detail": "範圍（做）：\n - 後端 agent/：Claude Agent SDK 設定（內建檔案與 shell 工具全關；唯一工具是本後端 MCP 的案件工具）、短期憑證（綁成員與目前打開的案件）、AG-UI 事件轉換、對話與訊息資料表（綁案件與成員，可重開舊對話）、只有執行中那一輪放 process 記憶體、模型 API key 取自 .env ANTHROPIC_API_KEY。\n - 前端 features/assistant：assistant-ui 對話；每個案件頁的浮動泡泡（快速開關）；可釘選成 3 欄（案件內容、即時報告預覽、AI 面板）；AI 動作在面板上用一句一般語言顯示（例如「新增 4 件比較標的」），不顯示原始參數與結果（動作摘要由另外的程式產生）。\n - 稽核：AI 的每次寫入記為「AI 代表某某人」。\n舊版參考：core/app3.js askAIText() / askAIHtml()（把一條檢核問題做成提示詞，複製後開 claude.ai；act 'askCopy'）。新版保留「問 AI 這條檢核」當作起始入口。\n範圍（不做）：MCP 工具本身（mcp-endpoint）、外部 MCP client。\n限制：AI 是 Service 層的一個使用者，權限等於它代表的成員；只處理目前這件案子；已簽名案件唯讀；AI 不能簽名；MCP 結果與面板摘要分開；單一 worker（正在執行的對話輪次在記憶體中）。\n完成訊號：CI 用假模型（不連 Anthropic）測：AI 憑證不能讀別案與別的事務所；已簽名案件寫入被拒；稽核有 AI 來源；動作摘要產生器有單元測試；釘選與取消釘選的版面測試。\n交給 legacy-retire：無（葉節點）；完成後舊版才可移除。",
+      "children": [
+        {
+          "id": "ai-assistant.q-ai-write-vs-draft",
+          "title": "AI 寫入和使用者未儲存草稿衝突時怎麼辦",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "AI 經 MCP 寫伺服器版本；使用者可能有還沒確認儲存的工作副本",
+          "detail": "選項：A AI 的修改是「建議」，在前端以差異顯示，使用者接受後進工作副本，再由使用者按確認儲存（AI 不直接寫伺服器；但 steering 說 AI 用 MCP 工具填資料，需改設計）；B AI 直接寫伺服器，前端收到 SSE 後，若草稿與 AI 改動的欄位沒重疊就自動併入草稿，有重疊就跳衝突畫面；C AI 寫入前先要求使用者儲存草稿。\n取捨：使用者掌控 對 AI 速度。product 原則 4（使用者決定什麼時候儲存）與原則 6 要一起考慮。"
+        },
+        {
+          "id": "ai-assistant.q-model-effort-picker",
+          "title": "要不要讓使用者選模型與思考力度",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "一套 stack 一把 API key；成本與品質取捨",
+          "detail": "選項：A 固定一個模型與力度，由 .env 設定；B 泡泡中提供選擇（少數幾個），預設值由 .env；C 依任務自動選（讀謄本用便宜模型、判斷用強模型）。\n取捨：簡單與成本可控 對 使用者彈性。選項清單要用目前 Claude Agent SDK 實際支援的模型（導入時以 claude-api skill 或官方文件確認，不用記憶）。"
+        },
+        {
+          "id": "ai-assistant.q-cost-control",
+          "title": "成本控制",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "一把 key 全所共用，沒有控管就沒有帳單歸屬",
+          "detail": "選項：A 每次對話最大輪數與最大 token 限制，超過就停止並提示；B 每個事務所與成員每月額度，記錄用量表（可顯示於管理畫面）；C 只記錄用量，不限制。\n取捨：防失控 對 實作量。至少要記錄每次對話的用量，才能日後分攤。"
+        },
+        {
+          "id": "ai-assistant.q-conversation-privacy",
+          "title": "對話的可見範圍與保存",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "對話綁案件與成員；案件資料會傳到 Anthropic API",
+          "detail": "需決定：同事務所的其他成員能否看到某人的對話；案件刪除時對話是否一併刪；保存期限；是否在首次使用時讓事務所同意「案件內容會送到外部 AI 服務」；是否可關閉 AI（每所設定）。\n取捨：協作與隱私。估價報告含客戶個資，建議至少有每所開關，但這是產品決定。"
+        },
+        {
+          "id": "ai-assistant.q-credential-and-transport",
+          "title": "AI 短期憑證與呼叫方式",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "steering：agent 在 app 內呼叫 MCP（process 內或 localhost），憑證綁成員與案件",
+          "detail": "選項：A 用 SECRET_KEY 簽的短期 token（內含成員、案件、到期，無狀態）；B 隨機 token 存 DB，可立即撤銷；傳輸方式 C process 內直接呼叫 MCP server 物件（快，但繞過 HTTP 層的驗證路徑，要確保測試涵蓋同一條授權邏輯）；D localhost HTTP（和外部 client 同一條路徑，較易測）。\n取捨：測試涵蓋同一條授權路徑 對 效能。建議兩種呼叫方式共用同一個授權函式。"
+        }
+      ]
+    },
+    {
+      "id": "legacy-retire",
+      "title": "從 Supabase 搬資料並移除舊版",
+      "status": "planned",
+      "tickets": [
+        "bl-a4e60a",
+        "bl-2ef9ec"
+      ],
+      "ordinal": 6,
+      "dependsOn": [
+        "ai-assistant"
+      ],
+      "updated": "2026-11-07",
+      "summary": "搬 offices / members / cases / models / settings；移除 core/ lib/ mcp/ tools/ test/ supabase/ workflows 與 /legacy/ 入口",
+      "detail": "範圍（做）：一次性遷移與移除舊版。\n - 遷移腳本（容器內可執行、可 dry-run、可重複執行）：從 Supabase 讀 offices、members（連 auth.users 的 email 與 uuid）、cases（data JSONB + signed、assignee、appraiser、stage、status、due_date、version、handoff_note、handoff_by、handoff_at、created_by、updated_by 與時間）、models（model_key、data、updated_at）、office_settings（own、imported、hideBuiltin）、audit_log（見問題）。案件文件 v5 交給 calc-engine 的升級函式。lvr_records 不搬，由新版同步重建。\n - 移除：core/ lib/ mcp/ tools/ test/（golden 要先確認已在 backend/tests/golden）supabase/ .github/workflows/（lvr-sync.yml、supabase-keepalive.yml）、根目錄 package.json 與 package-lock.json、舊版 README；移除 /legacy/ 入口（legacy-serve）；更新 structure.md 的「舊版」段落。一次移除，不分批。\n - 收尾：停用 Supabase 專案與 GitHub secret SUPABASE_SECRET_KEY（見問題）。\n限制：遷移期間舊版對 Supabase 的寫入要先停；已簽名案件遷移後仍是已簽名，且保有 modelSnapshot；遷移不得修改 Supabase 資料。\n完成訊號：每個事務所各資料表筆數與來源相同；每件案件用舊版 node 引擎與新版 Python 各算一次，決定單價與總價在 golden 容許誤差內；已簽名案件簽名狀態與快照相同；重複執行不重複寫入；有回復方案（舊版保持唯讀直到使用者確認）。\n交給後續：無。",
+      "children": [
+        {
+          "id": "legacy-retire.q-id-mapping",
+          "title": "遷移時沿用舊的 uuid 嗎",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "auth.users 的 uuid 被 members.user_id、cases 的 assignee、appraiser、created_by、updated_by、handoff_by 與 audit_log.user_id 使用",
+          "detail": "選項：A 沿用舊 uuid 當新的 member、office、case 主鍵（不需改寫參照；要求新 schema 的主鍵是 uuid 且可由遷移寫入）；B 產生新 id，另存對照表並改寫所有參照；C 沿用 office 與 case 的 uuid，member 另產生新 id（因為新版 member 與登入身分分開）。\n取捨：A 最簡單且可重複執行；B、C 對 schema 設計較自由。影響 accounts-domain 的主鍵型別，要在它的 spec 前先決定。"
+        },
+        {
+          "id": "legacy-retire.q-audit-log-migration",
+          "title": "舊稽核紀錄要搬嗎",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊 audit_log 的 detail 是 {case_no, changes:{欄位:[舊,新]}}，user_id 是 auth uuid",
+          "detail": "選項：A 搬進新 audit_logs，並在升級函式轉成新格式（保留歷程畫面連續）；B 不搬，匯出成 JSON 檔封存，新系統從遷移日開始；C 搬成只讀的 legacy 欄位，不參與新格式查詢。\n取捨：歷程連續（簽名案件的法規保存）對 新格式簡潔。已簽名案件的稽核歷史依估價師法 §19 III 保存，建議至少封存。"
+        },
+        {
+          "id": "legacy-retire.q-password-migration",
+          "title": "舊密碼怎麼處理",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "Supabase Auth 的密碼雜湊在 auth.users.encrypted_password，通常是 bcrypt（未驗證，需用資料庫連線確認）；新版本系統帳號用 argon2id",
+          "detail": "選項：A 匯入 bcrypt 雜湊，第一次登入時驗證並改存 argon2id（本系統提供者要多一條舊雜湊驗證路徑，是對「只用 argon2id」的暫時例外）；B 不搬密碼，寄重設連結給所有成員（需要 SMTP 先可用）；C 要求成員改用 Google 或 Microsoft 登入，並以邀請連結身分。\n取捨：使用者零摩擦 對 保持單一雜湊演算法。A 要先確認能從 Supabase 資料庫讀到雜湊。"
+        },
+        {
+          "id": "legacy-retire.q-cutover-plan",
+          "title": "切換步驟與停寫窗口",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊版直連 Supabase；遷移期間不能有人寫舊資料",
+          "detail": "選項：A 公告時段，先把 Supabase 的寫入權限收回（revoke），遷移，核對，再開新版；B 先遷移一次試跑（舊版仍可用），正式切換時再跑增量；C 一次性夜間切換。另需決定回復方案（舊版保持唯讀多久）與使用者在舊站瀏覽器 localStorage 中的未儲存草稿與衝突備份怎麼辦（要在切換前請使用者匯出案件檔，見 legacy-serve 的 origin-local-data）。\n取捨：停機時間 對 風險。舊版能否切成唯讀（只改 Supabase 權限，不改舊版檔案）要先驗證。"
+        },
+        {
+          "id": "legacy-retire.q-supabase-decommission",
+          "title": "Supabase 專案何時關閉",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "舊資料與備援",
+          "detail": "舊版有 keepalive 工作流程避免免費專案 7 天沒使用被暫停（.github/workflows/supabase-keepalive.yml）。選項：A 遷移核對後保留唯讀 N 個月再關閉，並先做一份完整 dump 放進備份位置；B 核對後立即關閉；C 關閉 keepalive 讓它自然暫停（暫停後多久被刪除未驗證）。\n取捨：可回復性 對 清理。也要決定 GitHub secret SUPABASE_SECRET_KEY 與 repo 內寫死的專案網址（workflows）何時清除。"
+        }
+      ]
+    },
+    {
+      "id": "legacy-serve",
+      "title": "過渡期：新後端在 /legacy/ 提供舊版單頁",
+      "status": "done",
+      "ordinal": 2,
+      "dependsOn": [
+        "foundation"
+      ],
+      "updated": "2026-11-07",
+      "summary": "image build 時執行 tools/build.py，把 generator.html 放進 runtime image，由後端掛在 /legacy/（保留前綴）；舊版照常直連 Supabase；不改舊版檔案；新版畫面完成後再切入口",
+      "detail": "rearch/main 8babfac",
+      "notes": [
+        "before finish: 範圍（做）：過渡期讓新後端在 /legacy/ 提供舊版單頁，使用者可繼續用舊版直連 Supabase，直到新版畫面完成。\n - Dockerfile build 階段執行 `python3 tools/build.py <輸出資料夾>`（tools/build.py 把 core/calc.js、data.js（內嵌 data_j.txt）、model.js、survey.js、app1.js、report.js、app2.js、app3.js、cases.js、cloud.js 串成一個 script，輸出 generator.html 與 index.html，各約 460 KB，以及 all.js）；把 generator.html 複製進 runtime image；後端把它掛在 /legacy/（保留前綴；/legacy 補斜線導向 /legacy/）。\n - 不改舊版任何檔案（tools/build.py 也不改）。\n範圍（不做）：搬移資料、改 Supabase 設定（上游負責）、新版畫面。\n限制與已知事實：foundation 保留的路徑是 /api /mcp /healthz /readyz /assets，前端 SPA 後備路由不可攔截 /legacy/；舊版載入外部資源：cdn.jsdelivr.net 的 supabase-js@2.45.4 與 docx@9.5.1、fonts.googleapis.com（若新版加 CSP 要放行）；舊版重設密碼連結的 redirectTo 是 location.origin + location.pathname（core/cloud.js 第 58 行），所以 https://<新網域>/legacy/ 必須在 Supabase Auth 的 Redirect URLs 白名單內；build context 與 .dockerignore 要放行 core/ 與 tools/。\n完成訊號：GET /legacy/ 回 200 且內容等於 build.py 的輸出；/legacy 導向 /legacy/；SPA 後備路由不攔截 /legacy/（有測試）；build.py 失敗時 image build 失敗；上游確認白名單後，在真瀏覽器用新網域登入舊版並收到重設密碼信。\n交給 host-deploy：可驗證的 /legacy/ 入口。交給 legacy-retire：要移除的 Dockerfile 段落與路由。"
+      ]
+    },
+    {
+      "id": "host-deploy",
+      "title": "部署到本機反向代理（子網域）",
+      "status": "done",
+      "ordinal": 3,
+      "dependsOn": [
+        "foundation",
+        "legacy-serve"
+      ],
+      "updated": "2026-11-07",
+      "summary": "正式 stack 接上 local-bridge 的 nginx-proxy + acme；本機 .env 設 VIRTUAL_HOST / LETSENCRYPT_HOST / PROXY_NETWORK；網域只放 .env，不進 repo；使用者先建子網域 DNS",
+      "detail": "主目錄 rearch/main b417c3e 以 compose.yaml + compose.prod.yaml 部署；.env 只在主機；https://<正式網域>/legacy/ 對外可用",
+      "notes": [
+        "before finish: 範圍（做）：把正式 stack 接到本機反向代理（主機上的 reverse-proxy 專案：jwilder/nginx-proxy + letsencrypt-nginx-proxy-companion，用 rootless podman socket /run/user/1000/podman/podman.sock，外部網路 local-bridge，ACME 預設信箱已設，全域 client_max_body_size 2048m，每站設定放 ./data/vhost.d/<VIRTUAL_HOST>）。\n - 本機 .env 設 VIRTUAL_HOST、LETSENCRYPT_HOST、PROXY_NETWORK（＝local-bridge）、PUBLIC_BASE_URL、SECRET_KEY、POSTGRES_PASSWORD（換掉範本的開發密碼）、之後的 ANTHROPIC_API_KEY、SMTP_*、各登入提供者的 client id / secret；網域只放 .env，不進 repo。\n - 正式 compose 讓 app 加入 local-bridge；postgres 不開對外 port（foundation NFR-S3）；app 只提供 plain HTTP，TLS 由代理處理。\n - 使用者先建子網域的 DNS 記錄（子網域）。\n - 驗證：https 網址的 /healthz、/readyz、/legacy/、首頁都正常；重啟後自動恢復；啟動時 Alembic 升級成功。\n範圍（不做）：修改 reverse-proxy 專案本身的映像或憑證流程（若需要 vhost.d 設定，只加該站的檔案）。\n限制：祕密只放 .env；app 要正確辨識對外是 https（代理轉送 X-Forwarded-*）；SSE 與 AI 串流需要代理關閉緩衝並加長讀取逾時（見問題）。\n完成訊號：外部瀏覽器用 https 打開新網域，憑證有效；/legacy/ 可登入舊版；重新建立容器後資料仍在；有備份方式（見問題）。\n交給後續：固定的對外網址（OAuth 提供者的 redirect URI 與 MCP client 都要用）。"
+      ]
+    }
+  ]
+}

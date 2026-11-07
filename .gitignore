@@ -23,3 +23,15 @@ test/out/
 # 由 tools/sync-mcp.js 從 core/、lib/ 複製產生
 mcp/core/
 mcp/server/engine.js
+
+# 允許提交設定範本（上面的 .env.* 規則會擋掉它）
+!.env.example
+
+# Python 快取
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# TanStack Router plugin 的快取
+.tanstack/

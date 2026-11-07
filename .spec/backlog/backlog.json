@@ -1,0 +1,108 @@
+{
+  "tickets": [
+    {
+      "id": "bl-0912f5",
+      "title": "法定門檻下限只在滑桿與 MCP 檢查",
+      "type": "tech-debt",
+      "date": "2026-11-07",
+      "source": "roadmap hand-off survey 2026-11-07",
+      "feature": "calc-engine"
+    },
+    {
+      "id": "bl-1ee892",
+      "title": "舊版簽名的檢查只在瀏覽器，簽名時間用瀏覽器時鐘",
+      "type": "bug",
+      "date": "2026-11-07",
+      "source": "roadmap hand-off survey 2026-11-07",
+      "feature": "case-api"
+    },
+    {
+      "id": "bl-2ef9ec",
+      "title": "根目錄 package.json 有沒用到的 pdfjs-dist",
+      "type": "tech-debt",
+      "date": "2026-11-07",
+      "source": "roadmap hand-off survey 2026-11-07",
+      "feature": "legacy-retire"
+    },
+    {
+      "id": "bl-2f9384",
+      "title": "舊版計算在價格日期空白時讀取目前時間",
+      "type": "tech-debt",
+      "date": "2026-11-07",
+      "source": "roadmap hand-off survey 2026-11-07",
+      "feature": "calc-engine"
+    },
+    {
+      "id": "bl-36f933",
+      "title": "舊版 MCP 的報告永遠是敘述式",
+      "type": "bug",
+      "date": "2026-11-07",
+      "source": "roadmap hand-off survey 2026-11-07",
+      "feature": "report-gen"
+    },
+    {
+      "id": "bl-3e1c6e",
+      "title": "舊版案號前綴寫死 '115-'",
+      "type": "tech-debt",
+      "date": "2026-11-07",
+      "source": "roadmap hand-off survey 2026-11-07",
+      "feature": "case-api"
+    },
+    {
+      "id": "bl-59cb59",
+      "title": "舊版估價模型與事務所設定沒有身分限制也沒有版本欄位",
+      "type": "tech-debt",
+      "date": "2026-11-07",
+      "source": "roadmap hand-off survey 2026-11-07",
+      "feature": "accounts-domain"
+    },
+    {
+      "id": "bl-68baa2",
+      "title": "新案件預設的簽證人是假名「林○○」",
+      "type": "tech-debt",
+      "date": "2026-11-07",
+      "source": "roadmap hand-off survey 2026-11-07",
+      "feature": "case-api"
+    },
+    {
+      "id": "bl-829026",
+      "title": "golden 示範案件沒涵蓋的計算分支",
+      "type": "tech-debt",
+      "date": "2026-11-07",
+      "source": "roadmap hand-off survey 2026-11-07",
+      "feature": "calc-engine"
+    },
+    {
+      "id": "bl-a4e60a",
+      "title": "SQL 檔含個人 email",
+      "type": "tech-debt",
+      "date": "2026-11-07",
+      "source": "roadmap hand-off survey 2026-11-07",
+      "feature": "legacy-retire"
+    },
+    {
+      "id": "bl-a9e50a",
+      "title": "摘要式報告沒有 golden snapshot",
+      "type": "tech-debt",
+      "date": "2026-11-07",
+      "source": "roadmap hand-off survey 2026-11-07",
+      "feature": "report-gen"
+    },
+    {
+      "id": "bl-cb5d5d",
+      "title": "舊版同步把「略過」也記成成功",
+      "type": "bug",
+      "date": "2026-11-07",
+      "source": "roadmap hand-off survey 2026-11-07",
+      "feature": "lvr-sync"
+    },
+    {
+      "id": "bl-e37c81",
+      "title": "deepMerge 在 core 與 MCP 各有一份",
+      "type": "tech-debt",
+      "date": "2026-11-07",
+      "source": "roadmap hand-off survey 2026-11-07",
+      "feature": "calc-engine"
+    }
+  ]
+}

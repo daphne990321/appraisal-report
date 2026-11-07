@@ -1,0 +1,40 @@
+# 開發：沒有 -f 時 compose 會自動合併這個檔案
+services:
+  postgres:
+    ports:
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432"
+
+  app:
+    build:
+      target: dev
+    volumes:
+      - ./backend:/app
+      - dev_venv:/opt/venv
+      - dev_cache:/cache
+    environment:
+      WATCHFILES_FORCE_POLLING: ${DEV_USE_POLLING:-}
+    ports:
+      - "127.0.0.1:${APP_HOST_PORT:-8000}:8000"
+
+  # 沒有 depends_on：compose run --rm web pnpm test 不需要啟動 app 與 postgres
+  web:
+    build:
+      context: .
+      target: web-dev
+    volumes:
+      - ./frontend:/app
+      - web_node_modules:/app/node_modules
+      - pnpm_store:/pnpm/store
+    environment:
+      DEV_USE_POLLING: ${DEV_USE_POLLING:-}
+      DEV_HMR_CLIENT_PORT: ${WEB_HOST_PORT:-5173}
+    ports:
+      - "127.0.0.1:${WEB_HOST_PORT:-5173}:5173"
+    networks:
+      - backend
+
+volumes:
+  dev_venv:
+  dev_cache:
+  web_node_modules:
+  pnpm_store:
