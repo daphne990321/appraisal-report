@@ -50,7 +50,7 @@
 
 以下決定由主 agent 在審查中做出（advisor 未啟用），等使用者在 Spec Briefing 確認或推翻。
 
-- **A1 compose 拆成三個檔案** `[main-agent-resolved · pending your review]`（D1 Bug A）
+- **A1 compose 拆成三個檔案** `[user-confirmed 2026-11-07 · 要求寫進 README]`（D1 Bug A）
   - 選項：(1) `compose.yaml` + `compose.dev.yaml`，dev 覆寫 proxy network；(2) `.env` 設 `COMPOSE_FILE` 切換；(3) `compose.yaml` 基底 + `compose.override.yaml`（開發，自動合併）+ `compose.prod.yaml`（正式，明確 `-f`）。
   - 決定：(3)。(1) 在主機已有 `local-bridge` 時會撞名或接上真正的反向代理；(2) podman-compose 可能在讀 `.env` 前就決定 compose 檔。代價：正式環境忘記 `-f` 會起 dev stack（只綁 127.0.0.1）。steering 的 compose 檔案組成同步更新。（main agent, 2026-11-07）
 - **A2 SPA fallback 用 404 handler，不用 catch-all route** `[main-agent-resolved · pending your review]`（D1 Bug C 修正後的追加決定）
