@@ -4,7 +4,7 @@
     "把單一 HTML + Supabase 的估價報告產生器，改成 Python FastAPI 後端 + PostgreSQL + React SPA 的自架平台（podman compose），並加入可操作案件的 AI 助理。新版放在舊版旁邊，最後一段才搬資料並移除舊版。每一段送一個 PR 給 upstream。"
   ],
   "now": [
-    "正在做 foundation：steering 已提交；platform-foundation 的 design 已審查收斂，正在補 spec 完整性檢查的缺口，之後 Spec Briefing → 實作。"
+    "正在做 foundation：platform-foundation spec 已審查收斂並通過兩個 verifier，等使用者確認 Spec Briefing 後開始實作。"
   ],
   "children": [
     {
