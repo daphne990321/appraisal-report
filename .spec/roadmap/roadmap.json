@@ -31,6 +31,9 @@
       "updated": "2026-11-07",
       "summary": "配色、字型、版面；含案件頁三欄與 AI 浮動泡泡",
       "detail": "範圍（做）：用 /design 在 .spec/design 畫出所有畫面的桌面版與手機版：登入頁（提供者按鈕、忘記密碼、受邀設定密碼）、案件清單與看板（7 個篩選、期限與狀態 chip）、7 步驟案件頁、工作流程列與交接面板、確認儲存列（未儲存 N 處、取消修改）、版本衝突畫面、報告預覽紙張、估價模型與事務所設定、資料來源面板、歷程、成員與邀請管理、AI 浮動泡泡與三欄（案件內容 / 對照報告 / AI 面板）。\n範圍（不做）：實作程式；元件庫已由 steering 決定（shadcn/ui + Tailwind 4 + lucide-react）。\n舊版參考（只看不搬）：core/head.html 的 CSS（Noto Sans TC / Noto Serif TC / IBM Plex Mono、「估」印章）；畫面內容見 core/cases.js（tabCases、caseState、caseFilters）、core/app3.js（stepContent、handoffBar、handoffSheet、saveBox、render 的版面）、core/app2.js（tabParams 10 個子面板）；手機斷點 760px（isM）。\n限制：steering product「說人話」與民國年；AI 動作用一般人看得懂的一句話；舊的 9 分頁版面不重做。更換帳號造成 artifacts 無法存取時，重新發布本地版本。\n完成訊號：使用者批准每個畫面的桌面與手機稿；三欄的釘選與取消釘選狀態都有畫；設計 token（色、字、間距）可直接對應成 Tailwind theme。\n交給 frontend-app：畫布檔、token 清單、各畫面的狀態清單（空、載入、錯誤、唯讀、已簽名）。",
+      "notes": [
+        "2026-11-07 初稿：.spec/design/project（7 張：token、登入、案件清單、案件頁浮動泡泡、三欄釘選、手機清單、手機案件頁＋AI 底部面板），Artifact https://claude.ai/artifact/HMVyb8mvnnkgQXeyFjyVVt。主色地籍藍 #2747A0，朱紅只用於已簽名；未沿用舊版青綠印章配色。尚缺：看板、交接面板、版本衝突、報告全頁、模型與設定、成員與邀請、歷程、資料來源。"
+      ],
       "children": [
         {
           "id": "visual-design.q-brand-continuity",

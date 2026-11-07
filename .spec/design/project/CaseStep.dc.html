@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<title>案件頁：試算</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=Noto+Serif+TC:wght@600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="position: relative; min-height: 960px; background: #F4F5F7; color: #161B26; font-family: 'Noto Sans TC', system-ui, sans-serif; display: flex; flex-direction: column">
+  <header style="min-height: 56px; background: #FFFFFF; border-bottom: 1px solid #D9DDE4; display: flex; align-items: center; gap: 16px; padding: 0 24px; flex-wrap: wrap">
+    <a href="CaseList.dc.html" style="display: flex; align-items: center; gap: 6px; color: #3A4253; font-size: 14px; text-decoration: none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>案件</a>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #5C6475">115-0142</span>
+    <h1 style="margin: 0; font-size: 17px; font-weight: 700">大安區信義路四段 公寓 5 樓</h1>
+    <span style="font-size: 13px; font-weight: 500; padding: 4px 10px; border-radius: 999px; background: #E6EBF7; color: #1E3A85">進行中</span>
+    <div style="flex: 1"></div>
+    <span style="font-size: 13px; color: #3A4253">第 5／7 步・還差 <strong style="color: #9A2818">3</strong> 項可簽名</span>
+    <span style="font-size: 13px; color: #7A4A00; font-weight: 500">11/9 到期</span>
+    <button type="button" style="height: 36px; padding: 0 14px; border: 1px solid #D9DDE4; border-radius: 6px; background: #FFFFFF; font: inherit; font-size: 14px; color: #161B26">交給…</button>
+    <button type="button" style="height: 36px; padding: 0 14px; border: 0; border-radius: 6px; background: #161B26; color: #FFFFFF; font: inherit; font-size: 14px">送估價師確認</button>
+  </header>
+
+  <nav aria-label="案件步驟" style="background: #FFFFFF; border-bottom: 1px solid #D9DDE4; padding: 0 24px; display: flex; gap: 4px; overflow-x: auto">
+    <sc-for list="{{steps}}" as="s" hint-placeholder-count="7">
+      <a href="#" aria-current="{{s.current}}" style="{{s.style}}"><span style="{{s.dotStyle}}">{{s.mark}}</span>{{s.label}}</a>
+    </sc-for>
+  </nav>
+
+  <div style="flex: 1; display: flex; flex-wrap: wrap; align-items: stretch; gap: 0">
+    <section aria-label="試算" style="flex: 999 1 520px; min-width: 0; box-sizing: border-box; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 700">試算</h2>
+        <div role="tablist" aria-label="估價方法" style="display: flex; gap: 4px; background: #EDEFF3; padding: 4px; border-radius: 8px">
+          <button type="button" role="tab" aria-selected="true" style="height: 32px; padding: 0 12px; border: 0; border-radius: 6px; background: #FFFFFF; color: #161B26; font: inherit; font-size: 14px; font-weight: 500">比較法</button>
+          <button type="button" role="tab" aria-selected="false" style="height: 32px; padding: 0 12px; border: 0; border-radius: 6px; background: transparent; color: #3A4253; font: inherit; font-size: 14px">收益法</button>
+          <button type="button" role="tab" aria-selected="false" style="height: 32px; padding: 0 12px; border: 0; border-radius: 6px; background: transparent; color: #3A4253; font: inherit; font-size: 14px">成本法</button>
+          <button type="button" role="tab" aria-selected="false" style="height: 32px; padding: 0 12px; border: 0; border-radius: 6px; background: transparent; color: #3A4253; font: inherit; font-size: 14px">土地開發分析</button>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 10px; overflow-x: auto">
+        <table style="width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px">
+          <thead>
+            <tr style="text-align: left; color: #5C6475; font-size: 13px">
+              <th style="padding: 10px 14px; font-weight: 500; border-bottom: 1px solid #D9DDE4">比較標的</th>
+              <th style="padding: 10px 14px; font-weight: 500; border-bottom: 1px solid #D9DDE4; text-align: right">成交單價（元/坪）</th>
+              <th style="padding: 10px 14px; font-weight: 500; border-bottom: 1px solid #D9DDE4; text-align: right">調整率</th>
+              <th style="padding: 10px 14px; font-weight: 500; border-bottom: 1px solid #D9DDE4; text-align: right">試算單價</th>
+              <th style="padding: 10px 14px; font-weight: 500; border-bottom: 1px solid #D9DDE4; text-align: right">權重</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{comps}}" as="c" hint-placeholder-count="4">
+              <tr>
+                <td style="padding: 12px 14px; border-bottom: 1px solid #EDEFF3"><span style="font-weight: 500">{{c.name}}</span><div style="font-size: 12px; color: #5C6475">{{c.meta}}</div></td>
+                <td style="padding: 12px 14px; border-bottom: 1px solid #EDEFF3; text-align: right; font-family: 'IBM Plex Mono', monospace">{{c.price}}</td>
+                <td style="padding: 12px 14px; border-bottom: 1px solid #EDEFF3; text-align: right; font-family: 'IBM Plex Mono', monospace; {{c.adjStyle}}">{{c.adj}}</td>
+                <td style="padding: 12px 14px; border-bottom: 1px solid #EDEFF3; text-align: right; font-family: 'IBM Plex Mono', monospace">{{c.result}}</td>
+                <td style="padding: 12px 14px; border-bottom: 1px solid #EDEFF3; text-align: right; font-family: 'IBM Plex Mono', monospace">{{c.w}}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+        <div style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 10px; padding: 14px 16px"><div style="font-size: 13px; color: #5C6475">比較價格</div><div style="font-size: 20px; font-weight: 500; font-family: 'IBM Plex Mono', monospace">612,300</div><div style="font-size: 12px; color: #5C6475">元/坪</div></div>
+        <div style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 10px; padding: 14px 16px"><div style="font-size: 13px; color: #5C6475">總價</div><div style="font-size: 20px; font-weight: 500; font-family: 'IBM Plex Mono', monospace">28,640,000</div><div style="font-size: 12px; color: #5C6475">元（46.78 坪）</div></div>
+        <div style="background: #FBE5E1; border: 1px solid #E8B3A9; border-radius: 10px; padding: 14px 16px"><div style="font-size: 13px; color: #9A2818; font-weight: 500">簽名前必須修正</div><div style="font-size: 14px; color: #7A1F12; line-height: 1.6">標的 C 的區位調整超過 15%，要在報告中說明理由（技術規則 §26）</div></div>
+      </div>
+    </section>
+
+    <section aria-label="對照報告" style="flex: 1 1 420px; min-width: 0; box-sizing: border-box; padding: 24px; background: #EDEFF3; border-left: 1px solid #D9DDE4; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; align-items: center; justify-content: space-between">
+        <h2 style="margin: 0; font-size: 15px; font-weight: 700">對照報告</h2>
+        <span style="font-size: 13px; color: #5C6475">敘述式・第 9 頁</span>
+      </div>
+      <article style="background: #FFFFFF; box-shadow: 0 1px 3px rgba(22,27,38,0.12); padding: 40px 36px; font-family: 'Noto Serif TC', serif; font-size: 14px; line-height: 2; color: #161B26">
+        <h3 style="margin: 0 0 12px; font-size: 16px">柒、比較法</h3>
+        <p style="margin: 0 0 12px">本案選取鄰近 4 件成交案例作為比較標的，經區域因素、個別因素調整後，比較價格為每坪 <mark style="background: #E6EBF7; color: #161B26; padding: 0 2px">612,300 元</mark>。</p>
+        <p style="margin: 0 0 12px">標的 C 位於巷內，區位調整率為 −17%，理由：<span style="color: #9A2818; background: #FBE5E1; padding: 0 2px">⟦待填：區位調整超過 15% 的理由⟧</span>。</p>
+        <p style="margin: 0; color: #3A4253">比較價格乘以面積 46.78 坪，得比較法總價 28,640,000 元。</p>
+      </article>
+    </section>
+
+    <sc-if value="{{pinned}}" hint-placeholder-val="{{false}}">
+      <aside aria-label="AI 助理" style="flex: 0 1 380px; min-width: 300px; box-sizing: border-box; background: #FFFFFF; border-left: 1px solid #D9DDE4; display: flex; flex-direction: column">
+        <div style="height: 52px; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 16px; border-bottom: 1px solid #D9DDE4">
+          <span style="font-size: 15px; font-weight: 700; flex: 1">AI 助理</span>
+          <span style="font-size: 12px; color: #5C6475">只處理本案</span>
+          <button type="button" aria-label="取消釘選" aria-pressed="true" onClick="{{togglePin}}" style="width: 36px; height: 36px; border: 0; border-radius: 6px; background: #E6EBF7; color: #1E3A85; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17v5"></path><path d="M9 3h6l-1 6 3 3v2H7v-2l3-3z"></path></svg></button>
+        </div>
+        <div style="flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 14px; font-size: 14px; line-height: 1.7">
+          <div style="align-self: flex-end; max-width: 85%; background: #2747A0; color: #FFFFFF; padding: 10px 14px; border-radius: 12px 12px 4px 12px">幫我從實價登錄找信義路四段附近、近一年的公寓成交，挑 4 件當比較標的。</div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #3A4253"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D6B43" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-11"></path></svg>查詢實價登錄（找到 23 件）</div>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #3A4253"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D6B43" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-11"></path></svg>新增 4 件比較標的</div>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #3A4253"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D6B43" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-11"></path></svg>重新試算比較法</div>
+          </div>
+          <div style="max-width: 92%; color: #161B26">已加入 4 件，比較價格是每坪 612,300 元。標的 C 在巷內，區位調整 −17%，超過 15%，報告裡要寫理由。要我先草擬一段嗎？</div>
+          <div style="font-size: 12px; color: #5C6475">以上變更記錄為「AI 代表 林估價師」，按「確認儲存」後才送出。</div>
+        </div>
+        <form style="margin: 0; padding: 12px; border-top: 1px solid #D9DDE4; display: flex; gap: 8px">
+          <label for="ai-in" style="position: absolute; left: -9999px">給 AI 的訊息</label>
+          <input id="ai-in" type="text" placeholder="問 AI，或請它幫忙填資料" style="flex: 1; min-width: 0; height: 40px; padding: 0 12px; border: 1px solid #C9CED8; border-radius: 6px; font: inherit; font-size: 14px">
+          <button type="submit" aria-label="送出" style="width: 40px; height: 40px; border: 0; border-radius: 6px; background: #2747A0; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></button>
+        </form>
+      </aside>
+    </sc-if>
+  </div>
+
+  <div role="region" aria-label="儲存" style="position: sticky; bottom: 0; background: #161B26; color: #FFFFFF; display: flex; align-items: center; gap: 16px; padding: 12px 24px; flex-wrap: wrap">
+    <span style="font-size: 14px">未儲存的修改 <strong style="font-family: 'IBM Plex Mono', monospace">3</strong> 處</span>
+    <span style="font-size: 13px; color: #B9C0CC">重新整理也不會消失</span>
+    <div style="flex: 1"></div>
+    <button type="button" style="height: 38px; padding: 0 16px; border: 1px solid #4A5468; border-radius: 6px; background: transparent; color: #FFFFFF; font: inherit; font-size: 14px">取消修改</button>
+    <button type="button" style="height: 38px; padding: 0 18px; border: 0; border-radius: 6px; background: #FFFFFF; color: #161B26; font: inherit; font-size: 14px; font-weight: 700">確認儲存</button>
+  </div>
+
+  <sc-if value="{{floatingOpen}}" hint-placeholder-val="{{false}}">
+    <div role="dialog" aria-label="AI 助理" style="position: absolute; right: 24px; bottom: 148px; width: 380px; max-width: calc(100% - 32px); background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; box-shadow: 0 12px 32px rgba(22,27,38,0.18); display: flex; flex-direction: column">
+      <div style="height: 52px; display: flex; align-items: center; gap: 8px; padding: 0 8px 0 16px; border-bottom: 1px solid #D9DDE4">
+        <span style="font-size: 15px; font-weight: 700; flex: 1">AI 助理</span>
+        <button type="button" aria-label="釘選成第三欄" aria-pressed="false" onClick="{{togglePin}}" style="width: 36px; height: 36px; border: 0; border-radius: 6px; background: transparent; color: #3A4253; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17v5"></path><path d="M9 3h6l-1 6 3 3v2H7v-2l3-3z"></path></svg></button>
+        <button type="button" aria-label="關閉" onClick="{{toggleOpen}}" style="width: 36px; height: 36px; border: 0; border-radius: 6px; background: transparent; color: #3A4253; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+      </div>
+      <div style="padding: 16px; font-size: 14px; line-height: 1.7; display: flex; flex-direction: column; gap: 10px">
+        <div style="color: #3A4253">我可以讀謄本、查法條、找比較標的、填資料和試算。只處理這件案子。</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <button type="button" style="height: 32px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 999px; background: #FFFFFF; font: inherit; font-size: 13px; color: #161B26">找比較標的</button>
+          <button type="button" style="height: 32px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 999px; background: #FFFFFF; font: inherit; font-size: 13px; color: #161B26">還差哪些才能簽名</button>
+          <button type="button" style="height: 32px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 999px; background: #FFFFFF; font: inherit; font-size: 13px; color: #161B26">草擬調整理由</button>
+        </div>
+      </div>
+      <form style="margin: 0; padding: 12px; border-top: 1px solid #D9DDE4; display: flex; gap: 8px">
+        <label for="ai-float" style="position: absolute; left: -9999px">給 AI 的訊息</label>
+        <input id="ai-float" type="text" placeholder="問 AI，或請它幫忙填資料" style="flex: 1; min-width: 0; height: 40px; padding: 0 12px; border: 1px solid #C9CED8; border-radius: 6px; font: inherit; font-size: 14px">
+        <button type="submit" aria-label="送出" style="width: 40px; height: 40px; border: 0; border-radius: 6px; background: #2747A0; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></button>
+      </form>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{showBubble}}" hint-placeholder-val="{{true}}">
+    <button type="button" aria-label="打開 AI 助理" aria-expanded="{{openLabel}}" onClick="{{toggleOpen}}" style="position: absolute; right: 24px; bottom: 80px; width: 56px; height: 56px; border: 0; border-radius: 50%; background: #2747A0; color: #FFFFFF; box-shadow: 0 6px 18px rgba(39,71,160,0.35); display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path><path d="M9 10h6"></path></svg></button>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"pinned":{"editor":"boolean","default":false},"open":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const pinned = s.pinned ?? (this.props.pinned ?? false);
+    const open = s.open ?? (this.props.open ?? true);
+    const labels = ['接案', '調資料', '現勘', '比較標的', '試算', '決定價格', '簽名交付'];
+    const steps = labels.map((label, i) => {
+      const done = i < 4, cur = i === 4;
+      return {
+        label,
+        mark: done ? '✓' : String(i + 1),
+        current: cur ? 'step' : 'false',
+        style: 'display: flex; align-items: center; gap: 8px; padding: 12px 12px; font-size: 14px; white-space: nowrap; text-decoration: none; border-bottom: 2px solid ' + (cur ? '#2747A0; color: #161B26; font-weight: 700' : 'transparent; color: #3A4253'),
+        dotStyle: 'width: 22px; height: 22px; border-radius: 50%; font-size: 12px; display: flex; align-items: center; justify-content: center; font-family: \'IBM Plex Mono\', monospace; ' + (cur ? 'background: #2747A0; color: #FFFFFF' : done ? 'background: #E6EBF7; color: #1E3A85' : 'background: #EDEFF3; color: #5C6475')
+      };
+    });
+    const neg = 'color: #9A2818', pos = 'color: #161B26';
+    const comps = [
+      { name: '標的 A・信義路四段 1 巷', meta: '114/12 成交・公寓 4 樓・距 120 m', price: '598,000', adj: '+3%', adjStyle: pos, result: '615,900', w: '30%' },
+      { name: '標的 B・安和路一段', meta: '115/02 成交・公寓 3 樓・距 260 m', price: '640,500', adj: '−5%', adjStyle: neg, result: '608,500', w: '30%' },
+      { name: '標的 C・信義路四段 30 巷', meta: '115/05 成交・公寓 5 樓・距 310 m', price: '742,000', adj: '−17%', adjStyle: neg + '; font-weight: 700', result: '615,900', w: '20%' },
+      { name: '標的 D・敦化南路二段', meta: '114/10 成交・公寓 2 樓・距 480 m', price: '583,000', adj: '+4%', adjStyle: pos, result: '606,300', w: '20%' }
+    ];
+    return {
+      steps, comps, pinned,
+      floatingOpen: !pinned && open,
+      showBubble: !pinned,
+      openLabel: open ? 'true' : 'false',
+      togglePin: () => this.setState({ pinned: !pinned, open: false }),
+      toggleOpen: () => this.setState({ open: !open })
+    };
+  }
+}
+</script>
+</body>
+</html>

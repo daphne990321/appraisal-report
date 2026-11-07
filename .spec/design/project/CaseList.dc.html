@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<title>案件清單</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2747A0}a:hover{color:#1E3A85}
+</style>
+</helmet>
+<div style="min-height: 900px; background: #F4F5F7; color: #161B26; font-family: 'Noto Sans TC', system-ui, sans-serif; display: flex; flex-direction: column">
+  <header style="height: 56px; background: #FFFFFF; border-bottom: 1px solid #D9DDE4; display: flex; align-items: center; gap: 24px; padding: 0 24px; flex-wrap: wrap">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <div style="width: 28px; height: 28px; border-radius: 6px; background: #2747A0; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"></path><path d="M5 21V9l7-5 7 5v12"></path></svg></div>
+      <span style="font-size: 15px; font-weight: 700">估價報告系統</span>
+    </div>
+    <nav style="display: flex; gap: 4px; flex: 1">
+      <a href="#" style="padding: 8px 12px; border-radius: 6px; background: #E6EBF7; color: #1E3A85; font-size: 14px; font-weight: 500; text-decoration: none">案件</a>
+      <a href="#" style="padding: 8px 12px; border-radius: 6px; color: #3A4253; font-size: 14px; text-decoration: none">估價模型</a>
+      <a href="#" style="padding: 8px 12px; border-radius: 6px; color: #3A4253; font-size: 14px; text-decoration: none">實價登錄</a>
+      <a href="#" style="padding: 8px 12px; border-radius: 6px; color: #3A4253; font-size: 14px; text-decoration: none">事務所設定</a>
+    </nav>
+    <button type="button" aria-label="帳號選單：林估價師" style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 10px; border: 1px solid #D9DDE4; border-radius: 999px; background: #FFFFFF; font: inherit; font-size: 14px; color: #161B26"><span aria-hidden="true" style="width: 24px; height: 24px; border-radius: 50%; background: #2747A0; color: #FFFFFF; font-size: 12px; display: flex; align-items: center; justify-content: center">林</span>林估價師</button>
+  </header>
+
+  <main style="width: 100%; max-width: 1280px; margin: 0 auto; box-sizing: border-box; padding: 28px 24px; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 700">案件</h1>
+        <p style="margin: 0; font-size: 14px; color: #5C6475">進行中 12 件・待我確認 2 件・3 天內到期 3 件</p>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center">
+        <div role="group" aria-label="顯示方式" style="display: flex; border: 1px solid #D9DDE4; border-radius: 6px; overflow: hidden">
+          <button type="button" aria-pressed="true" style="height: 36px; padding: 0 14px; border: 0; background: #161B26; color: #FFFFFF; font: inherit; font-size: 14px">清單</button>
+          <button type="button" aria-pressed="false" style="height: 36px; padding: 0 14px; border: 0; background: #FFFFFF; color: #3A4253; font: inherit; font-size: 14px">看板</button>
+        </div>
+        <button type="button" style="height: 40px; padding: 0 16px; border: 0; border-radius: 6px; background: #2747A0; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 500">新增案件</button>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center">
+      <sc-for list="{{filters}}" as="f" hint-placeholder-count="7">
+        <button type="button" aria-pressed="{{f.on}}" style="{{f.style}}">{{f.label}}<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; opacity: 0.8">{{f.n}}</span></button>
+      </sc-for>
+      <div style="flex: 1"></div>
+      <label for="q" style="position: absolute; left: -9999px">搜尋案件</label>
+      <input id="q" type="search" placeholder="搜尋案號、地址、委託人" style="height: 36px; width: 260px; max-width: 100%; padding: 0 12px; border: 1px solid #C9CED8; border-radius: 6px; font: inherit; font-size: 14px; background: #FFFFFF">
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 10px; overflow-x: auto">
+      <table style="width: 100%; min-width: 880px; border-collapse: collapse; font-size: 14px">
+        <thead>
+          <tr style="text-align: left; color: #5C6475; font-size: 13px">
+            <th style="padding: 12px 16px; font-weight: 500; border-bottom: 1px solid #D9DDE4">案號</th>
+            <th style="padding: 12px 16px; font-weight: 500; border-bottom: 1px solid #D9DDE4">標的</th>
+            <th style="padding: 12px 16px; font-weight: 500; border-bottom: 1px solid #D9DDE4">進度</th>
+            <th style="padding: 12px 16px; font-weight: 500; border-bottom: 1px solid #D9DDE4">負責人</th>
+            <th style="padding: 12px 16px; font-weight: 500; border-bottom: 1px solid #D9DDE4">狀態</th>
+            <th style="padding: 12px 16px; font-weight: 500; border-bottom: 1px solid #D9DDE4">期限</th>
+          </tr>
+        </thead>
+        <tbody>
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="7">
+            <tr>
+              <td style="padding: 14px 16px; border-bottom: 1px solid #EDEFF3; font-family: 'IBM Plex Mono', monospace; color: #3A4253">{{r.no}}</td>
+              <td style="padding: 14px 16px; border-bottom: 1px solid #EDEFF3"><a href="CaseStep.dc.html" style="color: #161B26; font-weight: 500; text-decoration: none">{{r.name}}</a><div style="font-size: 13px; color: #5C6475">{{r.kind}}・{{r.client}}</div></td>
+              <td style="padding: 14px 16px; border-bottom: 1px solid #EDEFF3">
+                <div style="display: flex; align-items: center; gap: 10px">
+                  <div style="width: 84px; height: 6px; border-radius: 3px; background: #EDEFF3"><div style="height: 6px; border-radius: 3px; background: #2747A0; width: {{r.pct}}"></div></div>
+                  <span style="font-size: 13px; color: #3A4253">{{r.step}}</span>
+                </div>
+              </td>
+              <td style="padding: 14px 16px; border-bottom: 1px solid #EDEFF3; color: #3A4253">{{r.owner}}</td>
+              <td style="padding: 14px 16px; border-bottom: 1px solid #EDEFF3"><span style="{{r.chip}}">{{r.status}}</span></td>
+              <td style="padding: 14px 16px; border-bottom: 1px solid #EDEFF3"><span style="{{r.dueStyle}}">{{r.due}}</span></td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pill = 'font-size: 13px; font-weight: 500; padding: 4px 10px; border-radius: 999px; white-space: nowrap; ';
+    const chips = {
+      run: pill + 'background: #E6EBF7; color: #1E3A85',
+      wait: pill + 'background: #FDF0D8; color: #7A4A00',
+      back: pill + 'background: #FBE5E1; color: #9A2818',
+      pause: pill + 'background: #EDEFF3; color: #3A4253',
+      signed: pill + 'background: #B4381F; color: #FFFFFF'
+    };
+    const due = 'font-size: 13px; white-space: nowrap; ';
+    const dues = {
+      ok: due + 'color: #3A4253',
+      soon: due + 'color: #7A4A00; font-weight: 500',
+      late: due + 'color: #9A2818; font-weight: 700'
+    };
+    const fBase = 'height: 34px; display: flex; align-items: center; gap: 6px; padding: 0 12px; border-radius: 999px; font: inherit; font-size: 14px; ';
+    const filters = [['進行中', 12, true], ['我負責的', 5], ['待我確認', 2], ['3 天內到期', 3], ['已逾期', 1], ['已交付', 48], ['全部', 63]]
+      .map(([label, n, on]) => ({ label, n, on: on ? 'true' : 'false', style: fBase + (on ? 'border: 1px solid #2747A0; background: #2747A0; color: #FFFFFF' : 'border: 1px solid #D9DDE4; background: #FFFFFF; color: #3A4253') }));
+    const rows = [
+      { no: '115-0142', name: '大安區信義路四段 公寓 5 樓', kind: '區分所有建物', client: '第一銀行', step: '5/7 試算', pct: '71%', owner: '林估價師', status: '進行中', chip: chips.run, due: '11/9（剩 2 天）', dueStyle: dues.soon },
+      { no: '115-0139', name: '新店區安康路 透天厝', kind: '透天厝', client: '陳先生', step: '6/7 決定價格', pct: '86%', owner: '林估價師', status: '待確認', chip: chips.wait, due: '11/12', dueStyle: dues.ok },
+      { no: '115-0137', name: '桃園市蘆竹區 工業用地', kind: '工業用地', client: '合作金庫', step: '4/7 比較標的', pct: '57%', owner: '王助理', status: '退回修改', chip: chips.back, due: '已逾期 2 天', dueStyle: dues.late },
+      { no: '115-0135', name: '中山區南京東路 商辦 12 樓', kind: '商辦／商場', client: '國泰人壽', step: '3/7 現勘', pct: '43%', owner: '張助理', status: '進行中', chip: chips.run, due: '11/10（剩 3 天）', dueStyle: dues.soon },
+      { no: '115-0131', name: '淡水區中正路 旅館', kind: '旅館', client: '某資產管理公司', step: '2/7 調資料', pct: '29%', owner: '王助理', status: '暫停', chip: chips.pause, due: '11/28', dueStyle: dues.ok },
+      { no: '115-0128', name: '板橋區文化路 公寓 3 樓', kind: '區分所有建物', client: '台北富邦', step: '1/7 接案', pct: '14%', owner: '張助理', status: '進行中', chip: chips.run, due: '11/20', dueStyle: dues.ok },
+      { no: '115-0120', name: '內湖區瑞光路 廠房', kind: '廠房', client: '中國信託', step: '7/7 已交付', pct: '100%', owner: '林估價師', status: '已簽名', chip: chips.signed, due: '11/3 交付', dueStyle: dues.ok }
+    ];
+    return { filters, rows };
+  }
+}
+</script>
+</body>
+</html>
