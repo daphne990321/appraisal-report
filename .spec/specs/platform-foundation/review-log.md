@@ -62,7 +62,7 @@
 - **A5 e2e 驗證步驟放在各 Phase 結束時，由主 agent 執行** `[user-confirmed 2026-11-07]`（tasks 對齊檢查）
   - 不集中到最後一個 Phase；runtime image 內容檢查在 Phase 2 結束時先做，CI 之後重跑。（main agent, 2026-11-07）
 
-- **A6 shadcn/ui 底層用 Radix（new-york），不用 Base UI** `[main-agent-resolved · pending your review]`（I1 Decision F）
+- **A6 shadcn/ui 底層用 Radix（style `radix-nova`），不用 Base UI** `[user-confirmed 2026-11-07]`（I1 Decision F）
   - 選項：(1) 維持 init 預設的 Base UI（base-nova）；(2) 改用 Radix。
   - 決定：(2)。assistant-ui 的 shadcn 元件與大多數第三方範例建立在 Radix 上；目前還沒有產生任何元件，現在切換沒有成本。視覺預設交給 /design。（main agent, 2026-11-07）
 
