@@ -124,6 +124,8 @@ appraisal-report/
 | 前端 route 路徑 | kebab-case | `/cases/$caseId/report` |
 | MCP 工具名稱 | `snake_case`，名詞在前 | `case_get`、`comps_add`、`report_docx` |
 
+**保留的頂層路徑**：後端端點只能放在保留的第一段路徑之下：`api`、`mcp`、`healthz`、`readyz`、`assets`、`legacy`。這些路徑找不到時回 JSON 404；其他路徑交給前端，回 `index.html`。新增頂層路徑（例如 `/oauth`）時，必須同時加進 `appraisal.api.spa` 的 `RESERVED_PREFIXES`，否則找不到時會回網頁，不會回 JSON。前端 route 不可使用這些名稱開頭。
+
 ### 領域用詞
 
 - 程式識別字用英文，沿用現有的領域名稱：`comparison`、`income`、`cost`、`land`、`final`、`parcels`、`comps`、`signed`、`modelSnapshot`。
