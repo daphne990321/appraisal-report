@@ -55,7 +55,7 @@
   - 決定：(3)。(1) 在主機已有 `local-bridge` 時會撞名或接上真正的反向代理；(2) podman-compose 可能在讀 `.env` 前就決定 compose 檔。代價：正式環境忘記 `-f` 會起 dev stack（只綁 127.0.0.1）。steering 的 compose 檔案組成同步更新。（main agent, 2026-11-07）
 - **A2 SPA fallback 用 404 handler，不用 catch-all route** `[user-confirmed 2026-11-07]`（D1 Bug C 修正後的追加決定）
   - catch-all route 會讓既有 API 用錯 method 時回 404 而不是 405。改成「沒有路由對上」時才判斷是否回 `index.html`；保留前綴（api、mcp、healthz、readyz、assets）一律 JSON。（main agent, 2026-11-07）
-- **A3 正式環境密碼更換改由 README 要求，不由程式強制** `[main-agent-resolved · pending your review]`（D2 Smell U）
+- **A3 正式環境密碼更換改由 README 要求，不由程式強制** `[user-confirmed 2026-11-07]`（D2 Smell U）
   - 資料庫在正式環境不發布 port；程式強制需要寫死範本密碼字串。（main agent, 2026-11-07）
 - **A4 dev image 用 `uv sync --frozen`，嚴格檢查只在 runtime 建置與 CI** `[main-agent-resolved · pending your review]`（D3 Smell X）
   - 讓 lock 過期時開發環境仍可建置並在容器內修 lock。（main agent, 2026-11-07）
