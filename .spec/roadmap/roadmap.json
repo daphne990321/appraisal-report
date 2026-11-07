@@ -135,6 +135,17 @@
       ],
       "updated": "2026-11-07",
       "summary": "搬 offices / members / cases / models / settings；移除 core/ lib/ mcp/ tools/ test/ supabase/ workflows"
+    },
+    {
+      "id": "host-deploy",
+      "title": "部署到本機反向代理（子網域）",
+      "status": "planned",
+      "ordinal": 2,
+      "dependsOn": [
+        "foundation"
+      ],
+      "updated": "2026-11-07",
+      "summary": "正式 stack 接上 local-bridge 的 nginx-proxy + acme；本機 .env 設 VIRTUAL_HOST / LETSENCRYPT_HOST / PROXY_NETWORK；網域只放 .env，不進 repo；使用者先建子網域 DNS"
     }
   ]
 }
