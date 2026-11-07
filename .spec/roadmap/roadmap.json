@@ -4,7 +4,7 @@
     "把單一 HTML + Supabase 的估價報告產生器，改成 Python FastAPI 後端 + PostgreSQL + React SPA 的自架平台（podman compose），並加入可操作案件的 AI 助理。新版放在舊版旁邊，最後一段才搬資料並移除舊版。每一段送一個 PR 給 upstream。"
   ],
   "now": [
-    "正在做 foundation：platform-foundation spec 已審查收斂並通過兩個 verifier，等使用者確認 Spec Briefing 後開始實作。"
+    "正在實作 foundation（platform-foundation spec 已確認）。"
   ],
   "children": [
     {
@@ -59,7 +59,7 @@
         "calc-engine"
       ],
       "updated": "2026-11-07",
-      "summary": "案件 CRUD、流程欄位與交接、簽名鎖定、草稿計算端點、SSE 即時更新"
+      "summary": "案件 CRUD、複製本案、案件檔匯出／匯入（相容舊版 v5 案件檔）、流程欄位與交接、簽名鎖定、草稿計算端點、SSE 即時更新"
     },
     {
       "id": "report-gen",
@@ -81,7 +81,7 @@
         "accounts-domain"
       ],
       "updated": "2026-11-07",
-      "summary": "行程內排程取代 GitHub Actions；篩選、評分、行情統計"
+      "summary": "行程內排程取代 GitHub Actions；手動匯入實價登錄 CSV（同步範圍外的縣市）；篩選、評分、行情統計"
     },
     {
       "id": "frontend-app",
@@ -94,7 +94,11 @@
         "report-gen",
         "lvr-sync"
       ],
-      "updated": "2026-11-07"
+      "updated": "2026-11-07",
+      "summary": "案件清單／看板、7 步驟案件頁（步驟可自由點選、試算可切換採用的方法，不做鎖定式精靈；不保留舊的 9 分頁版面）、確認儲存、複製本案、案件檔匯出匯入、拖入實價登錄 CSV",
+      "notes": [
+        "2026-11-07 決定：不保留「原本的分頁」切換；7 步驟版已可自由跳步驟與切換方法，功能相同。"
+      ]
     },
     {
       "id": "mcp-endpoint",
