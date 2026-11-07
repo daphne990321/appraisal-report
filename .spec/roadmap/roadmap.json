@@ -706,39 +706,16 @@
     {
       "id": "legacy-serve",
       "title": "過渡期：新後端在 /legacy/ 提供舊版單頁",
-      "status": "planned",
+      "status": "done",
       "ordinal": 2,
       "dependsOn": [
         "foundation"
       ],
       "updated": "2026-11-07",
       "summary": "image build 時執行 tools/build.py，把 generator.html 放進 runtime image，由後端掛在 /legacy/（保留前綴）；舊版照常直連 Supabase；不改舊版檔案；新版畫面完成後再切入口",
-      "detail": "範圍（做）：過渡期讓新後端在 /legacy/ 提供舊版單頁，使用者可繼續用舊版直連 Supabase，直到新版畫面完成。\n - Dockerfile build 階段執行 `python3 tools/build.py <輸出資料夾>`（tools/build.py 把 core/calc.js、data.js（內嵌 data_j.txt）、model.js、survey.js、app1.js、report.js、app2.js、app3.js、cases.js、cloud.js 串成一個 script，輸出 generator.html 與 index.html，各約 460 KB，以及 all.js）；把 generator.html 複製進 runtime image；後端把它掛在 /legacy/（保留前綴；/legacy 補斜線導向 /legacy/）。\n - 不改舊版任何檔案（tools/build.py 也不改）。\n範圍（不做）：搬移資料、改 Supabase 設定（上游負責）、新版畫面。\n限制與已知事實：foundation 保留的路徑是 /api /mcp /healthz /readyz /assets，前端 SPA 後備路由不可攔截 /legacy/；舊版載入外部資源：cdn.jsdelivr.net 的 supabase-js@2.45.4 與 docx@9.5.1、fonts.googleapis.com（若新版加 CSP 要放行）；舊版重設密碼連結的 redirectTo 是 location.origin + location.pathname（core/cloud.js 第 58 行），所以 https://<新網域>/legacy/ 必須在 Supabase Auth 的 Redirect URLs 白名單內；build context 與 .dockerignore 要放行 core/ 與 tools/。\n完成訊號：GET /legacy/ 回 200 且內容等於 build.py 的輸出；/legacy 導向 /legacy/；SPA 後備路由不攔截 /legacy/（有測試）；build.py 失敗時 image build 失敗；上游確認白名單後，在真瀏覽器用新網域登入舊版並收到重設密碼信。\n交給 host-deploy：可驗證的 /legacy/ 入口。交給 legacy-retire：要移除的 Dockerfile 段落與路由。",
-      "children": [
-        {
-          "id": "legacy-serve.q-supabase-redirect-allowlist",
-          "title": "Supabase 的 redirect URL 白名單由誰、何時加",
-          "status": "open",
-          "updated": "2026-11-07",
-          "summary": "舊版重設密碼信的 redirectTo 是 location.origin + location.pathname",
-          "detail": "新網域 https://<host>/legacy/ 沒在 Supabase Auth 的 Redirect URLs 白名單時，重設密碼連結會被導回預設網址而失敗。Supabase 專案由上游（Daphne）持有。選項：A 上游在部署前先加，本節點只列出要加的完整網址；B 部署後測到失敗再加；C 舊版改成不用密碼重設（改為管理者重設），但這要改舊版檔案，違反本節點限制。\n取捨：A 最安全，需要跨人協調。未驗證：Supabase CORS 設定是否也需放行新網域。"
-        },
-        {
-          "id": "legacy-serve.q-origin-local-data",
-          "title": "換網域後使用者瀏覽器的本機資料",
-          "status": "open",
-          "updated": "2026-11-07",
-          "summary": "localStorage 綁定網域；舊版目前的網址與新網域不同時，使用者的未儲存草稿、衝突備份和離線資料看不到",
-          "detail": "舊版把狀態存在 localStorage（appraisal-generator-v5、appraisal-conflict-backup、appraisal-model-conflict-backup），且支援不登入的純本機模式。如果舊站目前網址（未知，build.py 註解提到 Render 靜態網站）與 /legacy/ 的 origin 不同，這些資料不會跟著過來。選項：A 公告使用者先在舊站匯出案件檔，再到新站匯入；B 保留舊站網址一段時間並行；C 在舊站放一個一次性的轉移頁。\n取捨：使用者負擔 對 資料遺失風險。要先確認舊站目前實際網址與使用者數量。"
-        },
-        {
-          "id": "legacy-serve.q-csp-and-caching",
-          "title": "安全標頭與快取",
-          "status": "open",
-          "updated": "2026-11-07",
-          "summary": "舊版是單一檔案內嵌 JS，並載入外部 CDN 資源",
-          "detail": "選項：A 不設 CSP，/legacy/ 回應 Cache-Control: no-cache（舊版改版時使用者立刻拿到新檔）；B 全站 CSP，/legacy/ 另外放寬（允許 cdn.jsdelivr.net 的 script、fonts.googleapis.com 的樣式、Supabase 網域的 connect）；C 全站 CSP 一視同仁，舊版無法運作則接受。\n取捨：新版的安全預設 對 過渡期舊版可用。要看 foundation 有沒有已加 CSP；若有，本節點需要為 /legacy/ 開例外。"
-        }
+      "detail": "rearch/main 8babfac",
+      "notes": [
+        "before finish: 範圍（做）：過渡期讓新後端在 /legacy/ 提供舊版單頁，使用者可繼續用舊版直連 Supabase，直到新版畫面完成。\n - Dockerfile build 階段執行 `python3 tools/build.py <輸出資料夾>`（tools/build.py 把 core/calc.js、data.js（內嵌 data_j.txt）、model.js、survey.js、app1.js、report.js、app2.js、app3.js、cases.js、cloud.js 串成一個 script，輸出 generator.html 與 index.html，各約 460 KB，以及 all.js）；把 generator.html 複製進 runtime image；後端把它掛在 /legacy/（保留前綴；/legacy 補斜線導向 /legacy/）。\n - 不改舊版任何檔案（tools/build.py 也不改）。\n範圍（不做）：搬移資料、改 Supabase 設定（上游負責）、新版畫面。\n限制與已知事實：foundation 保留的路徑是 /api /mcp /healthz /readyz /assets，前端 SPA 後備路由不可攔截 /legacy/；舊版載入外部資源：cdn.jsdelivr.net 的 supabase-js@2.45.4 與 docx@9.5.1、fonts.googleapis.com（若新版加 CSP 要放行）；舊版重設密碼連結的 redirectTo 是 location.origin + location.pathname（core/cloud.js 第 58 行），所以 https://<新網域>/legacy/ 必須在 Supabase Auth 的 Redirect URLs 白名單內；build context 與 .dockerignore 要放行 core/ 與 tools/。\n完成訊號：GET /legacy/ 回 200 且內容等於 build.py 的輸出；/legacy 導向 /legacy/；SPA 後備路由不攔截 /legacy/（有測試）；build.py 失敗時 image build 失敗；上游確認白名單後，在真瀏覽器用新網域登入舊版並收到重設密碼信。\n交給 host-deploy：可驗證的 /legacy/ 入口。交給 legacy-retire：要移除的 Dockerfile 段落與路由。"
       ]
     },
     {
