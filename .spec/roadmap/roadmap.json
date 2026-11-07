@@ -136,6 +136,28 @@
           "updated": "2026-11-07",
           "summary": "舊版 office_settings.data 裡的 own 與 imported 是無上限的陣列，整塊一起存",
           "detail": "舊版 office_settings.data = {own, imported, hideBuiltin}，任何一筆改動都是整塊覆寫，兩人同時改只能整塊衝突（core/cloud.js cloudSettingsConflict）。選項：A 沿用 JSONB 一塊加版本號（簡單，衝突粒度粗）；B own 拆成 office_comparables 資料表（每筆有 id、版本、可逐筆編輯）；C own 拆表、imported 另由 lvr-sync 的手動匯入決定。\n取捨：簡單 對 逐筆編輯與衝突粒度。與 lvr-sync 的 manual-import-storage 相關。"
+        },
+        {
+          "id": "accounts-domain.q-forwarded-headers-trust",
+          "title": "app 如何知道對外是 https",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "OAuth redirect URI、Secure cookie、MCP 的 metadata 網址都要正確的 scheme 與 host",
+          "detail": "選項：A 以 .env 的 PUBLIC_BASE_URL 組出所有對外網址，完全不信任請求標頭；B 信任代理送的 X-Forwarded-Proto / Host（uvicorn --proxy-headers 與 forwarded-allow-ips 限於 local-bridge 網段）；C 兩者並用，不一致時啟動失敗。\n取捨：A 最不易出錯，但開發環境要另外設值；B 方便但標頭被偽造風險取決於網路隔離。steering 的環境變數表已有 PUBLIC_BASE_URL。",
+          "notes": [
+            "目前 uvicorn 信任 forwarded headers（FORWARDED_ALLOW_IPS 預設 *），實測 /legacy 的導向網址是 https。要不要改用 PUBLIC_BASE_URL 跟 OAuth redirect URI 一起決定，移到 accounts-domain。"
+          ]
+        },
+        {
+          "id": "accounts-domain.q-backup-strategy",
+          "title": "資料庫備份",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "正式 stack 的 postgres 資料在 volume；路線圖沒有備份節點",
+          "detail": "選項：A 排程容器每日 pg_dump 到 主機的備份資料夾（已存在的備份資料夾）並保留 N 天；B 把 volume 快照交給主機的既有備份機制；C 暫時不做（風險：遷移後這是唯一資料來源）。需要決定保留天數、還原演練與加密。\n取捨：簡單 對 資料安全。遷移後舊 Supabase 資料不再更新，備份就變成必要。",
+          "notes": [
+            "部署時新資料庫還沒有使用者資料（舊版仍用 Supabase）。第一個寫入正式資料的是 accounts-domain，移到那裡，在它上線前決定。"
+          ]
         }
       ]
     },
@@ -345,6 +367,17 @@
           "updated": "2026-11-07",
           "summary": "舊版把事務所全部案件一次讀到瀏覽器再篩選與計數（core/cloud.js cloudPull、core/cases.js tabCases）",
           "detail": "steering：數百件進行中案件要順暢。選項：A 一次回傳全部案件摘要（不含文件）、前端篩選與計數；B 伺服器端篩選、排序、分頁，另有計數端點（篩選 chip 與看板各階段都需要數量）；C B 加上看板每階段分別分頁。\n取捨：實作簡單 對 規模成長。因為看板與 7 個篩選 chip 都要數量，B 要設計計數的呼叫方式。"
+        },
+        {
+          "id": "case-api.q-streaming-timeouts",
+          "title": "SSE 與 AI 串流穿過代理",
+          "status": "open",
+          "updated": "2026-11-07",
+          "summary": "nginx-proxy 預設緩衝回應且讀取逾時 60 秒",
+          "detail": "SSE（case-api）與 AI 串流（ai-assistant）需要不緩衝、較長的逾時。選項：A 應用程式回應加 X-Accel-Buffering: no，並在 reverse-proxy/data/vhost.d/<VIRTUAL_HOST> 加 proxy_read_timeout 與 proxy_buffering off；B 只靠應用程式的心跳（每 15–30 秒）避免逾時；C 兩者都做。\n取捨：vhost.d 在 reverse-proxy 專案裡，不是本 repo，要協調；只靠心跳不用改代理，但不保證緩衝已關。這個問題在 case-api 與 ai-assistant 完成前就要解。",
+          "notes": [
+            "部署時還沒有串流端點，移到 case-api：SSE 是第一個需要它的功能。"
+          ]
         }
       ]
     },
@@ -721,7 +754,7 @@
     {
       "id": "host-deploy",
       "title": "部署到本機反向代理（子網域）",
-      "status": "planned",
+      "status": "done",
       "ordinal": 3,
       "dependsOn": [
         "foundation",
@@ -729,40 +762,9 @@
       ],
       "updated": "2026-11-07",
       "summary": "正式 stack 接上 local-bridge 的 nginx-proxy + acme；本機 .env 設 VIRTUAL_HOST / LETSENCRYPT_HOST / PROXY_NETWORK；網域只放 .env，不進 repo；使用者先建子網域 DNS",
-      "detail": "範圍（做）：把正式 stack 接到本機反向代理（主機上的 reverse-proxy 專案：jwilder/nginx-proxy + letsencrypt-nginx-proxy-companion，用 rootless podman socket /run/user/1000/podman/podman.sock，外部網路 local-bridge，ACME 預設信箱已設，全域 client_max_body_size 2048m，每站設定放 ./data/vhost.d/<VIRTUAL_HOST>）。\n - 本機 .env 設 VIRTUAL_HOST、LETSENCRYPT_HOST、PROXY_NETWORK（＝local-bridge）、PUBLIC_BASE_URL、SECRET_KEY、POSTGRES_PASSWORD（換掉範本的開發密碼）、之後的 ANTHROPIC_API_KEY、SMTP_*、各登入提供者的 client id / secret；網域只放 .env，不進 repo。\n - 正式 compose 讓 app 加入 local-bridge；postgres 不開對外 port（foundation NFR-S3）；app 只提供 plain HTTP，TLS 由代理處理。\n - 使用者先建子網域的 DNS 記錄（子網域）。\n - 驗證：https 網址的 /healthz、/readyz、/legacy/、首頁都正常；重啟後自動恢復；啟動時 Alembic 升級成功。\n範圍（不做）：修改 reverse-proxy 專案本身的映像或憑證流程（若需要 vhost.d 設定，只加該站的檔案）。\n限制：祕密只放 .env；app 要正確辨識對外是 https（代理轉送 X-Forwarded-*）；SSE 與 AI 串流需要代理關閉緩衝並加長讀取逾時（見問題）。\n完成訊號：外部瀏覽器用 https 打開新網域，憑證有效；/legacy/ 可登入舊版；重新建立容器後資料仍在；有備份方式（見問題）。\n交給後續：固定的對外網址（OAuth 提供者的 redirect URI 與 MCP client 都要用）。",
-      "children": [
-        {
-          "id": "host-deploy.q-dns-and-acme-reachability",
-          "title": "子網域與憑證取得方式",
-          "status": "open",
-          "updated": "2026-11-07",
-          "summary": "reverse-proxy 使用 letsencrypt-nginx-proxy-companion（預設 HTTP-01，需要外部能連到本機 80 與 443）",
-          "detail": "選項：A 公開 DNS A 記錄指向本機對外 IP，HTTP-01 簽發（最簡單）；B 只在內網可達：公開 DNS 指向內網 IP 但憑證需 DNS-01（companion 需設定 DNS 提供者，目前沒有）；C 先用內部 DNS 記錄與內部 CA 憑證。需要決定：子網域名稱、公開或內部、DNS 由誰建立。\n取捨：外部登入提供者（Google、Entra、Meta）的 redirect URI 必須是公開可達的 https 網址，所以 A 對 OAuth 較容易。要先確認本機對外 80/443 是否真的開著（未驗證）。"
-        },
-        {
-          "id": "host-deploy.q-streaming-timeouts",
-          "title": "SSE 與 AI 串流穿過代理",
-          "status": "open",
-          "updated": "2026-11-07",
-          "summary": "nginx-proxy 預設緩衝回應且讀取逾時 60 秒",
-          "detail": "SSE（case-api）與 AI 串流（ai-assistant）需要不緩衝、較長的逾時。選項：A 應用程式回應加 X-Accel-Buffering: no，並在 reverse-proxy/data/vhost.d/<VIRTUAL_HOST> 加 proxy_read_timeout 與 proxy_buffering off；B 只靠應用程式的心跳（每 15–30 秒）避免逾時；C 兩者都做。\n取捨：vhost.d 在 reverse-proxy 專案裡，不是本 repo，要協調；只靠心跳不用改代理，但不保證緩衝已關。這個問題在 case-api 與 ai-assistant 完成前就要解。"
-        },
-        {
-          "id": "host-deploy.q-backup-strategy",
-          "title": "資料庫備份",
-          "status": "open",
-          "updated": "2026-11-07",
-          "summary": "正式 stack 的 postgres 資料在 volume；路線圖沒有備份節點",
-          "detail": "選項：A 排程容器每日 pg_dump 到 主機的備份資料夾（已存在的備份資料夾）並保留 N 天；B 把 volume 快照交給主機的既有備份機制；C 暫時不做（風險：遷移後這是唯一資料來源）。需要決定保留天數、還原演練與加密。\n取捨：簡單 對 資料安全。遷移後舊 Supabase 資料不再更新，備份就變成必要。"
-        },
-        {
-          "id": "host-deploy.q-forwarded-headers-trust",
-          "title": "app 如何知道對外是 https",
-          "status": "open",
-          "updated": "2026-11-07",
-          "summary": "OAuth redirect URI、Secure cookie、MCP 的 metadata 網址都要正確的 scheme 與 host",
-          "detail": "選項：A 以 .env 的 PUBLIC_BASE_URL 組出所有對外網址，完全不信任請求標頭；B 信任代理送的 X-Forwarded-Proto / Host（uvicorn --proxy-headers 與 forwarded-allow-ips 限於 local-bridge 網段）；C 兩者並用，不一致時啟動失敗。\n取捨：A 最不易出錯，但開發環境要另外設值；B 方便但標頭被偽造風險取決於網路隔離。steering 的環境變數表已有 PUBLIC_BASE_URL。"
-        }
+      "detail": "主目錄 rearch/main b417c3e 以 compose.yaml + compose.prod.yaml 部署；.env 只在主機；https://<正式網域>/legacy/ 對外可用",
+      "notes": [
+        "before finish: 範圍（做）：把正式 stack 接到本機反向代理（主機上的 reverse-proxy 專案：jwilder/nginx-proxy + letsencrypt-nginx-proxy-companion，用 rootless podman socket /run/user/1000/podman/podman.sock，外部網路 local-bridge，ACME 預設信箱已設，全域 client_max_body_size 2048m，每站設定放 ./data/vhost.d/<VIRTUAL_HOST>）。\n - 本機 .env 設 VIRTUAL_HOST、LETSENCRYPT_HOST、PROXY_NETWORK（＝local-bridge）、PUBLIC_BASE_URL、SECRET_KEY、POSTGRES_PASSWORD（換掉範本的開發密碼）、之後的 ANTHROPIC_API_KEY、SMTP_*、各登入提供者的 client id / secret；網域只放 .env，不進 repo。\n - 正式 compose 讓 app 加入 local-bridge；postgres 不開對外 port（foundation NFR-S3）；app 只提供 plain HTTP，TLS 由代理處理。\n - 使用者先建子網域的 DNS 記錄（子網域）。\n - 驗證：https 網址的 /healthz、/readyz、/legacy/、首頁都正常；重啟後自動恢復；啟動時 Alembic 升級成功。\n範圍（不做）：修改 reverse-proxy 專案本身的映像或憑證流程（若需要 vhost.d 設定，只加該站的檔案）。\n限制：祕密只放 .env；app 要正確辨識對外是 https（代理轉送 X-Forwarded-*）；SSE 與 AI 串流需要代理關閉緩衝並加長讀取逾時（見問題）。\n完成訊號：外部瀏覽器用 https 打開新網域，憑證有效；/legacy/ 可登入舊版；重新建立容器後資料仍在；有備份方式（見問題）。\n交給後續：固定的對外網址（OAuth 提供者的 redirect URI 與 MCP client 都要用）。"
       ]
     }
   ]
