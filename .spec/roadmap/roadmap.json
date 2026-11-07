@@ -229,6 +229,21 @@
       ]
     },
     {
+      "id": "models-settings-api",
+      "title": "估價模型與事務所設定 API（版本衝突、權限）",
+      "status": "planned",
+      "ordinal": 3,
+      "dependsOn": [
+        "accounts-domain",
+        "calc-engine"
+      ],
+      "updated": "2026-11-07",
+      "summary": "models / office_settings 的讀寫 API 與後端版本檢查；誰能改模型與設定；法定門檻下限在後端強制；內建模型作為起點",
+      "notes": [
+        "2026-11-07 新增：交接盤點發現舊版 models、office_settings 由 core/cloud.js 整份同步，原本沒有節點負責；問題 q-models-api-home、q-model-settings-permissions 改由本節點處理。"
+      ]
+    },
+    {
       "id": "case-api",
       "title": "案件 API、版本衝突與 SSE",
       "status": "planned",
@@ -387,7 +402,8 @@
       ],
       "ordinal": 3,
       "dependsOn": [
-        "accounts-domain"
+        "accounts-domain",
+        "calc-engine"
       ],
       "updated": "2026-11-07",
       "summary": "行程內排程取代 GitHub Actions；手動匯入實價登錄 CSV（同步範圍外的縣市）；篩選、評分、行情統計",
@@ -444,7 +460,8 @@
         "visual-design",
         "case-api",
         "report-gen",
-        "lvr-sync"
+        "lvr-sync",
+        "models-settings-api"
       ],
       "updated": "2026-11-07",
       "summary": "案件清單／看板、7 步驟案件頁（步驟可自由點選、試算可切換採用的方法，不做鎖定式精靈；不保留舊的 9 分頁版面）、確認儲存、複製本案、案件檔匯出匯入、拖入實價登錄 CSV",
@@ -511,7 +528,8 @@
       "dependsOn": [
         "case-api",
         "report-gen",
-        "lvr-sync"
+        "lvr-sync",
+        "models-settings-api"
       ],
       "updated": "2026-11-07",
       "summary": "案件工具、法規查詢、謄本讀取；外部 MCP client 連線",
