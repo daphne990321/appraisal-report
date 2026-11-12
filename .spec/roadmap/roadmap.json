@@ -303,6 +303,9 @@
       "updated": "2026-11-07",
       "summary": "案件 CRUD、複製本案、案件檔匯出／匯入（相容舊版 v5 案件檔）、流程欄位與交接、簽名鎖定、草稿計算端點、SSE 即時更新",
       "detail": "範圍（做）：services/、repositories/、api/ 的案件部分：\n - 案件 CRUD 與版本檢查（版本不同回 409，不寫入）；案件清單與篩選（舊版 core/cases.js caseFilters 的 7 種：進行中、我負責的、待我確認、3 天內到期、已逾期、已交付、全部；搜尋案號、地址、委託人；依標的種類與負責人；排序 caseSort＝期限近者先、再案號新者先）。\n - 流程欄位與交接（後寫入為準、不動案件版本）：完成這一步、交給…、送估價師確認、確認繼續、退回修改（core/app3.js handoffBar、handoffSheet；留言 ≤ 500 字，退回必填；預設留言「送估價師確認」「交給 X」「已確認」）。\n - 簽名：只有 appraiser；伺服器自己跑 validate，bl 非空就拒絕；把當時模型複製進 modelSnapshot；signedAt 由伺服器填；簽名後內容寫入一律拒絕。舊版 core/app3.js act==='sign' 只在瀏覽器檢查（見 backlog）。\n - 複製本案（core/app3.js dupCase：新案號、signed=false、清 modelSnapshot、模型不存在就改用第一個）、案件檔匯出與匯入（exportCase；core/model.js importCaseFile：模型同代號不同內容就另存為「-imp-」模型、案號重複就換號、以 blankCase 補齊缺欄）。\n - 草稿計算端點（不寫入，回傳計算、檢查、報告區塊）。\n - 案件編號由後端產生；SSE（單 process 內的訂閱者清單，同事務所推送）；歷程查詢（舊版 core/cloud.js cloudHistory 讀 audit_log）。\n範圍（不做）：資料表定義與身分規則的基底（accounts-domain）、計算與報告本身（calc-engine、report-gen）、前端工作副本。\n限制：Service 丟領域錯誤，API 層轉 404 / 403 / 409 / 422；REST 與 MCP 共用同一個 Service；每個寫入端點至少一個「別的事務所」與「身分不符」拒絕測試；已簽名案件任何路徑都不能寫；稽核紀錄寫「誰、哪個事務所、哪件案子、做了什麼」。\n完成訊號：隔離、身分、版本衝突、簽名鎖定四類測試涵蓋每個寫入端點；同時改同一案件時後寫者 100% 得到 409；草稿計算對示範案件小於 1 秒；匯入舊版 v5 案件檔後計算結果與舊版相同（用 test/interop.js 的案例改寫）。\n交給下游：Service 層全部入口（frontend-app、mcp-endpoint 使用）、SSE 事件、草稿計算端點、OpenAPI（前端型別產生）。\n注意：路線圖目前沒有節點負責估價模型與事務所設定的 API（舊版 models、office_settings 的讀寫與衝突），見下方問題 models-api-home。",
+      "notes": [
+        "2026-11-12 使用者決定：案件加「目標價格」（接案時填，屬案件內容）。不出現在報告書；案件檔匯出與 MCP 都帶這個欄位（AI 需要它）；事務所內所有身分都看得到（主 agent 預設，可推翻）。"
+      ],
       "children": [
         {
           "id": "case-api.q-draft-calc-payload",
@@ -420,6 +423,9 @@
       "updated": "2026-11-07",
       "summary": "python-docx；同一條路徑給網頁與 MCP",
       "detail": "範圍（做）：domain/report，產生與格式無關的區塊（blocks），再轉成 HTML 與 Word。\n - 敘述式：core/report.js build()（15 項必載事項、SECT 章節、parcelTable、compSection、incomeSection、costSection、landSection、specialSection）。\n - 摘要式：core/report.js buildSummary()（itemTxt、groupRows、groupKV、lienLine、compTable、incomeTable、costTable）與 core/survey.js（SURVEY 題庫、AREA_ROWS、LIEN_COLS、chkShown、surveyGroups、surveyDisclosures）。\n - 格式選擇：core/survey.js reportFormat()（auto：估價目的「抵押權設定」且標的為 unit 或 house 且未勾高價宅 → 摘要式；使用者可指定）。\n - 輸出：toHTML()、toDocx()（改用 python-docx；舊版用 docx.js，字型標楷體 + Times New Roman、A4、邊界 1418、頁首「事務所 案號」、頁尾頁碼）。區塊種類：cover、letter、h1、h2、h3、p、amount、list、kv、table、pb。待填欄位 ⟦…⟧（舊版 V()、roc()、amtTxt()）。\n - 報告脈絡 ctx：kind、cn（中文大寫金額 cnAmount）、inds、exp、selText、marketStats、capName（舊版在 core/app3.js reportCtx）。\n範圍（不做）：計算與檢查（calc-engine）、REST 端點與 MCP 工具的包裝（case-api、mcp-endpoint）。\n限制：網頁預覽、下載與 MCP 走同一條路徑；數字格式要與畫面逐字相同（舊版用 toLocaleString('zh-TW') 與 toFixed，負號用「−」U+2212）；資料不足的欄位一定要標 ⟦…⟧，不可留白。\n完成訊號：6 組 golden 的 blocks 與 html 逐字相同（test/snapshots/cases.json）；另補摘要式的 golden（舊版 snapshot 只涵蓋 REPORT.build）；docx 用 python-docx 讀回，標題、表格與段落文字與 blocks 相同；同一案件 REST 與 MCP 報告內容相同（跨入口測試）。\n交給下游：build_report()、render_html()、render_docx()（case-api、mcp-endpoint 使用）；摘要式題庫定義（frontend-app 的表單可能要用，見問題）。",
+      "notes": [
+        "2026-11-12：目標價格屬案件內容，但報告書（敘述式、摘要式、Word、HTML 預覽）一律不輸出。"
+      ],
       "children": [
         {
           "id": "report-gen.q-docx-style-source",
@@ -530,7 +536,8 @@
       "detail": "範圍（做）：frontend/ 的 React SPA。\n - 案件清單與看板（core/cases.js：tabCases、caseFilters、caseState、caseDots、caseSort、dueChip）；手機卡片（ccards）。\n - 7 步驟案件頁（STAGES：intake 接案、docs 調資料、survey 現勘、comps 比較標的、calc 試算、decide 決定價格、deliver 簽名交付；每步內容見 core/app3.js stepContent；步驟可自由點選；試算頁可切換採用的方法；顯示「第 n／7 步・還差 N 項可簽名」）。不保留舊的 9 分頁版面與 localStorage 的版面切換（CASE_LAYOUT_KEY、DATA_LAYOUT_KEY）。\n - 工作流程列與交接（metabar、handoffBar、handoffSheet、noteBox）。\n - 確認儲存：工作副本放 Zustand 並存在瀏覽器；舊版是 core/app1.js caseBaseline / isDirty / dirtyCount / markSaved / revertCase 與 A.saved；顯示「有 N 處未儲存」與「取消修改」。\n - 草稿計算：呼叫草稿計算端點（防抖），顯示計算、檢查、報告區塊；前端不自己計算。\n - 版本衝突（舊版 cloudConflict：載入最新版、自己的版本備份最多 20 份到 localStorage、conflictRestore 另存為新案件）。\n - 報告預覽與 Word 下載、複製本案、案件檔匯出與匯入、拖入實價登錄 CSV、資料來源面板（本所案例、同步狀態）、估價模型編輯（core/app2.js tabParams：model、select、adjust、weights、income、lda、sources、cost、texts、check）、歷程、登入與邀請相關頁面、SSE 連線（取代舊版輪詢 cloudPoll）。\n範圍（不做）：AI 面板（ai-assistant，但本節點要留三欄版面的位置）、任何提供者 SDK、計算與法規檢查。\n限制：伺服器資料只透過 api/ 的 TanStack Query hooks；元件不直接 fetch；型別由後端 OpenAPI 產生；前端隱藏按鈕只是方便，權限由後端判斷；日期用民國年；視覺依 visual-design 的畫布。\n完成訊號：Vitest 覆蓋工作副本（編輯、重新整理後還原、取消修改、確認儲存）、衝突畫面、依身分停用欄位；畫面上的數字只來自 API；用 3 種身分（appraiser、assistant、manager）手動走完一件案子的 7 步驟。\n交給 ai-assistant：三欄版面容器與「目前案件」的狀態來源（工作副本與已存版本）。",
       "notes": [
         "2026-11-07 決定：不保留「原本的分頁」切換；7 步驟版已可自由跳步驟與切換方法，功能相同。",
-        "2026-11-12 估價師訪談：一位估價師同時處理一二十件案件，工作排程要整合進案件管理。案件清單除了清單與看板，加一個月曆 view，顯示每件案子的期限與排程日期（例如現勘日）。"
+        "2026-11-12 估價師訪談：一位估價師同時處理一二十件案件，工作排程要整合進案件管理。案件清單除了清單與看板，加一個月曆 view，顯示每件案子的期限與排程日期（例如現勘日）。",
+        "2026-11-12：接案步驟加目標價格欄位；試算與決定價格步驟顯示「試算結果 vs 目標價格」的差距。"
       ],
       "children": [
         {
@@ -668,6 +675,9 @@
       "updated": "2026-11-07",
       "summary": "Claude Agent SDK + assistant-ui；對話存 DB；AI 寫入與未儲存草稿的處理",
       "detail": "範圍（做）：\n - 後端 agent/：Claude Agent SDK 設定（內建檔案與 shell 工具全關；唯一工具是本後端 MCP 的案件工具）、短期憑證（綁成員與目前打開的案件）、AG-UI 事件轉換、對話與訊息資料表（綁案件與成員，可重開舊對話）、只有執行中那一輪放 process 記憶體、模型 API key 取自 .env ANTHROPIC_API_KEY。\n - 前端 features/assistant：assistant-ui 對話；每個案件頁的浮動泡泡（快速開關）；可釘選成 3 欄（案件內容、即時報告預覽、AI 面板）；AI 動作在面板上用一句一般語言顯示（例如「新增 4 件比較標的」），不顯示原始參數與結果（動作摘要由另外的程式產生）。\n - 稽核：AI 的每次寫入記為「AI 代表某某人」。\n舊版參考：core/app3.js askAIText() / askAIHtml()（把一條檢核問題做成提示詞，複製後開 claude.ai；act 'askCopy'）。新版保留「問 AI 這條檢核」當作起始入口。\n範圍（不做）：MCP 工具本身（mcp-endpoint）、外部 MCP client。\n限制：AI 是 Service 層的一個使用者，權限等於它代表的成員；只處理目前這件案子；已簽名案件唯讀；AI 不能簽名；MCP 結果與面板摘要分開；單一 worker（正在執行的對話輪次在記憶體中）。\n完成訊號：CI 用假模型（不連 Anthropic）測：AI 憑證不能讀別案與別的事務所；已簽名案件寫入被拒；稽核有 AI 來源；動作摘要產生器有單元測試；釘選與取消釘選的版面測試。\n交給 legacy-retire：無（葉節點）；完成後舊版才可移除。",
+      "notes": [
+        "2026-11-12 使用者決定：AI 參考目標價格，在法規門檻與資料合理範圍內調整比較標的與參數，讓結果盡量接近；每次要說明差距多少、為什麼無法再接近（例如哪個調整率已到上限、哪些比較標的不能用）。結果一律由估價師評估後採用。"
+      ],
       "children": [
         {
           "id": "ai-assistant.q-ai-write-vs-draft",
