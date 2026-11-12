@@ -34,7 +34,8 @@
       "notes": [
         "2026-11-07 初稿：.spec/design/project（7 張：token、登入、案件清單、案件頁浮動泡泡、三欄釘選、手機清單、手機案件頁＋AI 底部面板），Artifact https://claude.ai/artifact/5a6YFqSqFw5DhRfQDgUPsh。主色地籍藍 #2747A0，朱紅只用於已簽名；未沿用舊版青綠印章配色。尚缺：看板、交接面板、版本衝突、報告全頁、模型與設定、成員與邀請、歷程、資料來源。",
         "上面的初稿只是範例，正式的視覺設計由 Daphne 接手，可整份重做；本節點維持未認領（planned），3 個待決問題仍由設計者決定。",
-        "2026-11-12：範圍加入案件清單的月曆 view（估價師訪談：同時一二十件案件，排程要整合進案件管理）。"
+        "2026-11-12：範圍加入案件清單的月曆 view（估價師訪談：同時一二十件案件，排程要整合進案件管理）。",
+        "2026-11-12：開放自行註冊，登入頁要加註冊入口與 email 驗證流程；範例畫布的登入頁仍寫「不開放自行註冊」，已過時。"
       ],
       "children": [
         {
@@ -85,6 +86,9 @@
       "updated": "2026-11-07",
       "summary": "offices / members / identities / invitations / cases / models / settings / audit schema；可外掛的登入提供者（本系統帳號、Google、M365、Meta）、session、邀請、重設密碼；事務所隔離與身分規則",
       "detail": "範圍（做）：Alembic schema 與 Repository / Service 基礎：offices、members（role appraiser|assistant|manager、active、display_name、cert_no）、identities（提供者 + subject）、invitations、sessions、password_resets、cases（文件 JSONB + 流程欄位 + version + signed）、models、office_settings、audit_logs（MCP 的 OAuth client 與 token 表由 mcp-endpoint 加，AI 對話表由 ai-assistant 加）；登入流程（local argon2id、Google、Entra、Meta 為各一個提供者檔案）、HttpOnly session cookie、邀請、重設密碼（SMTP）、email_verified 才可用 email 連結身分。\n範圍（不做）：案件端點與流程規則的 REST 入口（case-api）、登入畫面（frontend-app）、MCP 的 OAuth（mcp-endpoint）。\n搬移來源：supabase/001_init.sql（offices、members、cases、models、office_settings、audit_log）、006_case_mgmt.sql（manager 身分、active、assignee、appraiser、stage、status、due_date、version）、008_handoff.sql（handoff_note 500 字、handoff_by、handoff_at）。把這些 DB 觸發器與 RLS 改成 Service 層規則：guard_case（簽名後不可改不可刪；只有 appraiser 可簽；不可換事務所；manager 不可改 data、case_no、kind、signed，不可新增與刪除；assignee 必須同事務所；appraiser 必須是同事務所的 appraiser）、stamp_row（updated_by、updated_at；version 只在 data 或 signed 改變時加 1）、stamp_handoff（handoff_by 取自 actor、handoff_at 由伺服器填）、log_case（記錄 assignee、appraiser、stage、status、due_date、note、data 的前後值；什麼都沒變不記）。\n限制：不使用 RLS；每個 Repository 方法必帶 office_id；Service 第一個參數是 actor；舊的 members.user_id 是 PK（一人一所）；稽核紀錄只新增；時間欄位 timestamptz；命名依 structure.md。\n完成訊號：每個 Repository 方法有「別的事務所」拒絕測試；每條身分規則（上面 guard_case 各條）有 Service 測試；提供者核心流程不含 if provider == ...，測試用一個假提供者證明；Alembic 升級可重複執行。\n交給下游：Actor / CurrentUser 依賴、Repository 基底（強制 office 條件）、全部資料表、session 與 token 驗證、稽核寫入函式（case-api、lvr-sync、mcp-endpoint 使用）。",
+      "notes": [
+        "2026-11-12 使用者決定：分個人版與企業版，同一套資料模型，差別是事務所上的功能開關；開放自行註冊，註冊時建立只有一人的個人版事務所（見 steering product.md、tech.md）。"
+      ],
       "children": [
         {
           "id": "accounts-domain.q-multi-office-person",
@@ -174,6 +178,30 @@
           "notes": [
             "部署時新資料庫還沒有使用者資料（舊版仍用 Supabase）。第一個寫入正式資料的是 accounts-domain，移到那裡，在它上線前決定。"
           ]
+        },
+        {
+          "id": "accounts-domain.q-signup-abuse",
+          "title": "自行註冊怎麼防濫用",
+          "status": "open",
+          "updated": "2026-11-12",
+          "summary": "開放註冊後，任何人都能建帳號與事務所",
+          "detail": "選項：A 只要 email 驗證；B 加人機驗證（例如 Cloudflare Turnstile）與每個 IP 的註冊速率限制；C 註冊後先進待審核狀態，由系統管理員開通。取捨：A 最順但擋不住大量假帳號；C 最安全但使用者要等。AI 與實價登錄查詢會產生成本，濫用帳號的代價比一般網站高。"
+        },
+        {
+          "id": "accounts-domain.q-appraiser-license",
+          "title": "個人版要不要驗證估價師資格",
+          "status": "open",
+          "updated": "2026-11-12",
+          "summary": "個人版註冊者的身分直接是估價師，可以簽名",
+          "detail": "選項：A 不驗證，簽名的法律責任在使用者；B 註冊時填估價師證書字號，簽名前要先通過人工或資料比對；C 未驗證前不能簽名，其他功能可用。取捨：A 最簡單；C 兼顧試用與簽名責任。"
+        },
+        {
+          "id": "accounts-domain.q-edition-upgrade",
+          "title": "個人版怎麼升級成企業版",
+          "status": "open",
+          "updated": "2026-11-12",
+          "summary": "個人版事務所只有一人；升級後要能邀請成員、上傳歷史案例",
+          "detail": "選項：A 系統管理員手動切換事務所的版本；B 使用者自己在設定中申請，付款後自動切換（要先有計費）；C 個人版的人被邀請加入企業版事務所時，原本的個人版案件怎麼辦也要一起決定（搬過去、保留、或封存）。"
         }
       ]
     },
