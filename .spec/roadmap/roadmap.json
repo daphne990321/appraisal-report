@@ -15,7 +15,7 @@
       "ordinal": 1,
       "updated": "2026-11-07",
       "summary": "第一個 PR：方向提案加可跑的骨架，不改現有功能",
-      "detail": "e33f7a0 platform-foundation（rearch/main）",
+      "detail": "f0e0bd4 platform-foundation（PR #1 合併進 main）",
       "notes": [
         "before finish: 範圍：Dockerfile 多 target、compose.yaml / compose.dev.yaml、FastAPI 空殼（/healthz /readyz /api/v1 擴充點）、Alembic 命名慣例、pytest 真 PostgreSQL 與 CI。\n限制：不改舊版功能；保留路徑 /api /mcp /healthz /readyz /assets（/legacy/ 不在清單內，見 legacy-serve）。設定只讀 process 環境變數。\n完成訊號與細節：見 spec platform-foundation（requirements / design / tasks）。\n交給後續節點：單一 DB session 來源（測試可回滾）、/api/v1 前綴、設定範本 .env.example、CI 指令。"
       ]
@@ -32,8 +32,9 @@
       "summary": "配色、字型、版面；含案件頁三欄與 AI 浮動泡泡",
       "detail": "範圍（做）：用 /design 在 .spec/design 畫出所有畫面的桌面版與手機版：登入頁（提供者按鈕、忘記密碼、受邀設定密碼）、案件清單與看板（7 個篩選、期限與狀態 chip）、7 步驟案件頁、工作流程列與交接面板、確認儲存列（未儲存 N 處、取消修改）、版本衝突畫面、報告預覽紙張、估價模型與事務所設定、資料來源面板、歷程、成員與邀請管理、AI 浮動泡泡與三欄（案件內容 / 對照報告 / AI 面板）。\n範圍（不做）：實作程式；元件庫已由 steering 決定（shadcn/ui + Tailwind 4 + lucide-react）。\n舊版參考（只看不搬）：core/head.html 的 CSS（Noto Sans TC / Noto Serif TC / IBM Plex Mono、「估」印章）；畫面內容見 core/cases.js（tabCases、caseState、caseFilters）、core/app3.js（stepContent、handoffBar、handoffSheet、saveBox、render 的版面）、core/app2.js（tabParams 10 個子面板）；手機斷點 760px（isM）。\n限制：steering product「說人話」與民國年；AI 動作用一般人看得懂的一句話；舊的 9 分頁版面不重做。更換帳號造成 artifacts 無法存取時，重新發布本地版本。\n完成訊號：使用者批准每個畫面的桌面與手機稿；三欄的釘選與取消釘選狀態都有畫；設計 token（色、字、間距）可直接對應成 Tailwind theme。\n交給 frontend-app：畫布檔、token 清單、各畫面的狀態清單（空、載入、錯誤、唯讀、已簽名）。",
       "notes": [
-        "2026-11-07 初稿：.spec/design/project（7 張：token、登入、案件清單、案件頁浮動泡泡、三欄釘選、手機清單、手機案件頁＋AI 底部面板），Artifact https://claude.ai/artifact/HMVyb8mvnnkgQXeyFjyVVt。主色地籍藍 #2747A0，朱紅只用於已簽名；未沿用舊版青綠印章配色。尚缺：看板、交接面板、版本衝突、報告全頁、模型與設定、成員與邀請、歷程、資料來源。",
-        "上面的初稿只是範例，正式的視覺設計由 Daphne 接手，可整份重做；本節點維持未認領（planned），3 個待決問題仍由設計者決定。"
+        "2026-11-07 初稿：.spec/design/project（7 張：token、登入、案件清單、案件頁浮動泡泡、三欄釘選、手機清單、手機案件頁＋AI 底部面板），Artifact https://claude.ai/artifact/5a6YFqSqFw5DhRfQDgUPsh。主色地籍藍 #2747A0，朱紅只用於已簽名；未沿用舊版青綠印章配色。尚缺：看板、交接面板、版本衝突、報告全頁、模型與設定、成員與邀請、歷程、資料來源。",
+        "上面的初稿只是範例，正式的視覺設計由 Daphne 接手，可整份重做；本節點維持未認領（planned），3 個待決問題仍由設計者決定。",
+        "2026-11-12：範圍加入案件清單的月曆 view（估價師訪談：同時一二十件案件，排程要整合進案件管理）。"
       ],
       "children": [
         {
@@ -66,7 +67,7 @@
           "status": "done",
           "updated": "2026-11-07",
           "summary": "7 張示範畫面，用來示範 /design 畫布的做法與存放位置；配色、版面都可以推翻",
-          "detail": "2ce0d09 .spec/design/project；Artifact https://claude.ai/artifact/HMVyb8mvnnkgQXeyFjyVVt"
+          "detail": "7760272 .spec/design/project；Artifact https://claude.ai/artifact/5a6YFqSqFw5DhRfQDgUPsh"
         }
       ]
     },
@@ -147,7 +148,10 @@
           "status": "open",
           "updated": "2026-11-07",
           "summary": "舊版 office_settings.data 裡的 own 與 imported 是無上限的陣列，整塊一起存",
-          "detail": "舊版 office_settings.data = {own, imported, hideBuiltin}，任何一筆改動都是整塊覆寫，兩人同時改只能整塊衝突（core/cloud.js cloudSettingsConflict）。選項：A 沿用 JSONB 一塊加版本號（簡單，衝突粒度粗）；B own 拆成 office_comparables 資料表（每筆有 id、版本、可逐筆編輯）；C own 拆表、imported 另由 lvr-sync 的手動匯入決定。\n取捨：簡單 對 逐筆編輯與衝突粒度。與 lvr-sync 的 manual-import-storage 相關。"
+          "detail": "舊版 office_settings.data = {own, imported, hideBuiltin}，任何一筆改動都是整塊覆寫，兩人同時改只能整塊衝突（core/cloud.js cloudSettingsConflict）。選項：A 沿用 JSONB 一塊加版本號（簡單，衝突粒度粗）；B own 拆成 office_comparables 資料表（每筆有 id、版本、可逐筆編輯）；C own 拆表、imported 另由 lvr-sync 的手動匯入決定。\n取捨：簡單 對 逐筆編輯與衝突粒度。與 lvr-sync 的 manual-import-storage 相關。",
+          "notes": [
+            "2026-11-12 估價師訪談：每個事務所的估價方法不同，要能上傳自己的歷史案例，讓 AI 學出該所的方法。這一題的答案會影響 office-history-import 與 office-methods-ai，偏向 B（逐筆的資料表）。"
+          ]
         },
         {
           "id": "accounts-domain.q-forwarded-headers-trust",
@@ -390,6 +394,14 @@
           "notes": [
             "部署時還沒有串流端點，移到 case-api：SSE 是第一個需要它的功能。"
           ]
+        },
+        {
+          "id": "case-api.q-schedule-fields",
+          "title": "案件要記哪些排程日期",
+          "status": "open",
+          "updated": "2026-11-12",
+          "summary": "訪談：工作排程要整合進案件管理；月曆 view 需要資料來源",
+          "detail": "目前只有「期限」。選項：A 固定欄位：現勘日、交件日（流程欄位，不進案件文件）；B 每個步驟可設預計完成日；C 自由的排程項目清單（日期、類型、說明）。這些日期屬於流程欄位：不受簽名鎖定、以後寫入的為準、經營管理可以改。取捨：A 簡單、好查詢；C 彈性最大但月曆與篩選比較複雜。"
         }
       ]
     },
@@ -513,11 +525,12 @@
         "lvr-sync",
         "models-settings-api"
       ],
-      "updated": "2026-11-07",
-      "summary": "案件清單／看板、7 步驟案件頁（步驟可自由點選、試算可切換採用的方法，不做鎖定式精靈；不保留舊的 9 分頁版面）、確認儲存、複製本案、案件檔匯出匯入、拖入實價登錄 CSV",
+      "updated": "2026-11-12",
+      "summary": "案件清單／看板／月曆、7 步驟案件頁（步驟可自由點選、試算可切換採用的方法，不做鎖定式精靈；不保留舊的 9 分頁版面）、確認儲存、複製本案、案件檔匯出匯入、拖入實價登錄 CSV",
       "detail": "範圍（做）：frontend/ 的 React SPA。\n - 案件清單與看板（core/cases.js：tabCases、caseFilters、caseState、caseDots、caseSort、dueChip）；手機卡片（ccards）。\n - 7 步驟案件頁（STAGES：intake 接案、docs 調資料、survey 現勘、comps 比較標的、calc 試算、decide 決定價格、deliver 簽名交付；每步內容見 core/app3.js stepContent；步驟可自由點選；試算頁可切換採用的方法；顯示「第 n／7 步・還差 N 項可簽名」）。不保留舊的 9 分頁版面與 localStorage 的版面切換（CASE_LAYOUT_KEY、DATA_LAYOUT_KEY）。\n - 工作流程列與交接（metabar、handoffBar、handoffSheet、noteBox）。\n - 確認儲存：工作副本放 Zustand 並存在瀏覽器；舊版是 core/app1.js caseBaseline / isDirty / dirtyCount / markSaved / revertCase 與 A.saved；顯示「有 N 處未儲存」與「取消修改」。\n - 草稿計算：呼叫草稿計算端點（防抖），顯示計算、檢查、報告區塊；前端不自己計算。\n - 版本衝突（舊版 cloudConflict：載入最新版、自己的版本備份最多 20 份到 localStorage、conflictRestore 另存為新案件）。\n - 報告預覽與 Word 下載、複製本案、案件檔匯出與匯入、拖入實價登錄 CSV、資料來源面板（本所案例、同步狀態）、估價模型編輯（core/app2.js tabParams：model、select、adjust、weights、income、lda、sources、cost、texts、check）、歷程、登入與邀請相關頁面、SSE 連線（取代舊版輪詢 cloudPoll）。\n範圍（不做）：AI 面板（ai-assistant，但本節點要留三欄版面的位置）、任何提供者 SDK、計算與法規檢查。\n限制：伺服器資料只透過 api/ 的 TanStack Query hooks；元件不直接 fetch；型別由後端 OpenAPI 產生；前端隱藏按鈕只是方便，權限由後端判斷；日期用民國年；視覺依 visual-design 的畫布。\n完成訊號：Vitest 覆蓋工作副本（編輯、重新整理後還原、取消修改、確認儲存）、衝突畫面、依身分停用欄位；畫面上的數字只來自 API；用 3 種身分（appraiser、assistant、manager）手動走完一件案子的 7 步驟。\n交給 ai-assistant：三欄版面容器與「目前案件」的狀態來源（工作副本與已存版本）。",
       "notes": [
-        "2026-11-07 決定：不保留「原本的分頁」切換；7 步驟版已可自由跳步驟與切換方法，功能相同。"
+        "2026-11-07 決定：不保留「原本的分頁」切換；7 步驟版已可自由跳步驟與切換方法，功能相同。",
+        "2026-11-12 估價師訪談：一位估價師同時處理一二十件案件，工作排程要整合進案件管理。案件清單除了清單與看板，加一個月曆 view，顯示每件案子的期限與排程日期（例如現勘日）。"
       ],
       "children": [
         {
@@ -567,6 +580,14 @@
           "updated": "2026-11-07",
           "summary": "steering：前端隱藏按鈕只是方便，權限在後端",
           "detail": "舊版前端用 isManager()、A.role、L()、D() 重複實作規則（core/app1.js）。選項：A 前端複製一份規則（簡單，但會不同步）；B 後端在 /me 與案件回應中回傳 allowed_actions（例如 can_edit、can_sign、can_hand_off），前端只讀；C 前端先按預設行為，被 403 再提示。\n取捨：B 讓規則只有一份，但每個案件回應要多算一次權限。"
+        },
+        {
+          "id": "frontend-app.q-calendar-view",
+          "title": "月曆 view 顯示什麼、能做什麼",
+          "status": "open",
+          "updated": "2026-11-12",
+          "summary": "訪談：同時一二十件案件，排程要整合進案件管理",
+          "detail": "選項：A 只顯示：期限與排程日期標在月曆上，點進案件；B 可拖曳改日期（等於改流程欄位，權限照流程欄位規則）；C 再加個人行事曆匯出（iCal 訂閱）。要先決定「排程日期」有哪幾種（見 case-api.q-schedule-fields）。取捨：A 最簡單；B 符合排程用途但要處理權限與版本；C 方便但多一個對外的網址與 token。"
         }
       ]
     },
@@ -691,6 +712,52 @@
       ]
     },
     {
+      "id": "office-history-import",
+      "title": "事務所歷史案例匯入",
+      "status": "planned",
+      "ordinal": 4,
+      "dependsOn": [
+        "accounts-domain",
+        "case-api"
+      ],
+      "updated": "2026-11-12",
+      "summary": "事務所上傳自己過去的估價案例（舊版案件檔、Word 報告、試算表），整理成可查詢的本所案例；只有該所看得到",
+      "detail": "來源：2026-11-12 估價師訪談。各事務所的估價方法不同，多半是資深估價師帶出來的；過去案例是最好的參考。\n範圍（做）：上傳與解析歷史案例（至少支援本系統與舊版的案件檔；Word 報告與試算表的解析深度待決）；存成本所案例（見 accounts-domain.q-own-cases-storage）；查詢與篩選；刪除。\n限制：事務所隔離照 steering，查詢一律帶事務所條件；歷史案例可能含委託人個資，存放與刪除規則要先定。\n完成訊號：一個事務所上傳的案例，另一個事務所的任何 API、MCP 工具、AI 操作都讀不到（有自動測試）。\n交給 office-methods-ai：結構化的本所案例。",
+      "children": [
+        {
+          "id": "office-history-import.q-source-formats",
+          "title": "歷史案例要支援哪些檔案",
+          "status": "open",
+          "updated": "2026-11-12",
+          "summary": "舊案多半是 Word 報告與 Excel 試算表，不是結構化資料",
+          "detail": "選項：A 只收本系統／舊版的案件檔（JSON），最可靠；B 加上 Word 報告，用 AI 抽出比較標的、調整率、價格（結果要人確認）；C 再加 Excel 試算表。取捨：B、C 最貼近實際，但抽取有錯誤率，要有人工確認畫面。"
+        },
+        {
+          "id": "office-history-import.q-personal-data",
+          "title": "歷史案例中的個資怎麼處理",
+          "status": "open",
+          "updated": "2026-11-12",
+          "summary": "舊報告含委託人、所有權人姓名與地址",
+          "detail": "選項：A 原樣存放，靠事務所隔離保護；B 上傳時去識別化（姓名遮蔽），只保留估價相關欄位；C 讓事務所選。要一併決定：保存多久、刪除後 AI 已學到的內容怎麼處理。"
+        }
+      ]
+    },
+    {
+      "id": "office-methods-ai",
+      "title": "AI 依本所案例產生事務所的估價方法與報告範本",
+      "status": "planned",
+      "ordinal": 6,
+      "dependsOn": [
+        "office-history-import",
+        "models-settings-api",
+        "ai-assistant",
+        "report-gen"
+      ],
+      "updated": "2026-11-12",
+      "summary": "AI 從本所歷史案例歸納出該所的調整項目、比率習慣與報告文字，產生估價模型與範本的草稿，由估價師審核後採用；絕不跨事務所",
+      "detail": "來源：2026-11-12 估價師訪談。不同事務所方法不同，AI 要學出各所自己的方法。\n範圍（做）：AI 只讀本所案例；產出估價模型草稿（調整項目、比率、權重）與報告文字範本草稿；估價師審核、修改後才存成本所模型（走 models-settings-api 的版本檢查與權限）。\n限制：AI 的檢索、上下文與產出都不能用到別的事務所的資料；AI 產生的草稿不能直接生效；法定門檻下限仍由後端強制。\n待使用者決定（會改 steering）：AI 是雲端 API 還是地端模型；個人版／企業版的分法。\n完成訊號：隔離測試證明 A 所的案例不會出現在 B 所的 AI 回應或草稿中；草稿要經估價師確認才生效。"
+    },
+    {
       "id": "legacy-retire",
       "title": "從 Supabase 搬資料並移除舊版",
       "status": "planned",
@@ -758,7 +825,7 @@
       ],
       "updated": "2026-11-07",
       "summary": "image build 時執行 tools/build.py，把 generator.html 放進 runtime image，由後端掛在 /legacy/（保留前綴）；舊版照常直連 Supabase；不改舊版檔案；新版畫面完成後再切入口",
-      "detail": "rearch/main 8babfac",
+      "detail": "02a34db（PR #1 合併進 main）",
       "notes": [
         "before finish: 範圍（做）：過渡期讓新後端在 /legacy/ 提供舊版單頁，使用者可繼續用舊版直連 Supabase，直到新版畫面完成。\n - Dockerfile build 階段執行 `python3 tools/build.py <輸出資料夾>`（tools/build.py 把 core/calc.js、data.js（內嵌 data_j.txt）、model.js、survey.js、app1.js、report.js、app2.js、app3.js、cases.js、cloud.js 串成一個 script，輸出 generator.html 與 index.html，各約 460 KB，以及 all.js）；把 generator.html 複製進 runtime image；後端把它掛在 /legacy/（保留前綴；/legacy 補斜線導向 /legacy/）。\n - 不改舊版任何檔案（tools/build.py 也不改）。\n範圍（不做）：搬移資料、改 Supabase 設定（上游負責）、新版畫面。\n限制與已知事實：foundation 保留的路徑是 /api /mcp /healthz /readyz /assets，前端 SPA 後備路由不可攔截 /legacy/；舊版載入外部資源：cdn.jsdelivr.net 的 supabase-js@2.45.4 與 docx@9.5.1、fonts.googleapis.com（若新版加 CSP 要放行）；舊版重設密碼連結的 redirectTo 是 location.origin + location.pathname（core/cloud.js 第 58 行），所以 https://<新網域>/legacy/ 必須在 Supabase Auth 的 Redirect URLs 白名單內；build context 與 .dockerignore 要放行 core/ 與 tools/。\n完成訊號：GET /legacy/ 回 200 且內容等於 build.py 的輸出；/legacy 導向 /legacy/；SPA 後備路由不攔截 /legacy/（有測試）；build.py 失敗時 image build 失敗；上游確認白名單後，在真瀏覽器用新網域登入舊版並收到重設密碼信。\n交給 host-deploy：可驗證的 /legacy/ 入口。交給 legacy-retire：要移除的 Dockerfile 段落與路由。"
       ]
@@ -774,7 +841,7 @@
       ],
       "updated": "2026-11-07",
       "summary": "正式 stack 接上 local-bridge 的 nginx-proxy + acme；本機 .env 設 VIRTUAL_HOST / LETSENCRYPT_HOST / PROXY_NETWORK；網域只放 .env，不進 repo；使用者先建子網域 DNS",
-      "detail": "主目錄 rearch/main b417c3e 以 compose.yaml + compose.prod.yaml 部署；.env 只在主機；https://<正式網域>/legacy/ 對外可用",
+      "detail": "主目錄 main（PR #1 合併後；部署時為 5e2be74）以 compose.yaml + compose.prod.yaml 部署；.env 只在主機；https://<正式網域>/legacy/ 對外可用",
       "notes": [
         "before finish: 範圍（做）：把正式 stack 接到本機反向代理（主機上的 reverse-proxy 專案：jwilder/nginx-proxy + letsencrypt-nginx-proxy-companion，用 rootless podman socket /run/user/1000/podman/podman.sock，外部網路 local-bridge，ACME 預設信箱已設，全域 client_max_body_size 2048m，每站設定放 ./data/vhost.d/<VIRTUAL_HOST>）。\n - 本機 .env 設 VIRTUAL_HOST、LETSENCRYPT_HOST、PROXY_NETWORK（＝local-bridge）、PUBLIC_BASE_URL、SECRET_KEY、POSTGRES_PASSWORD（換掉範本的開發密碼）、之後的 ANTHROPIC_API_KEY、SMTP_*、各登入提供者的 client id / secret；網域只放 .env，不進 repo。\n - 正式 compose 讓 app 加入 local-bridge；postgres 不開對外 port（foundation NFR-S3）；app 只提供 plain HTTP，TLS 由代理處理。\n - 使用者先建子網域的 DNS 記錄（子網域）。\n - 驗證：https 網址的 /healthz、/readyz、/legacy/、首頁都正常；重啟後自動恢復；啟動時 Alembic 升級成功。\n範圍（不做）：修改 reverse-proxy 專案本身的映像或憑證流程（若需要 vhost.d 設定，只加該站的檔案）。\n限制：祕密只放 .env；app 要正確辨識對外是 https（代理轉送 X-Forwarded-*）；SSE 與 AI 串流需要代理關閉緩衝並加長讀取逾時（見問題）。\n完成訊號：外部瀏覽器用 https 打開新網域，憑證有效；/legacy/ 可登入舊版；重新建立容器後資料仍在；有備份方式（見問題）。\n交給後續：固定的對外網址（OAuth 提供者的 redirect URI 與 MCP client 都要用）。"
       ]
