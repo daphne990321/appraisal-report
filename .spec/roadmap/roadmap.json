@@ -4,7 +4,7 @@
     "把單一 HTML + Supabase 的估價報告產生器，改成 Python FastAPI 後端 + PostgreSQL + React SPA 的自架平台（podman compose），並加入可操作案件的 AI 助理。新版放在舊版旁邊，最後一段才搬資料並移除舊版。每一段送一個 PR 給 upstream。"
   ],
   "now": [
-    "正在實作 foundation（platform-foundation spec 已確認）。"
+    "2026-11-09 估價師訪談的結論已併入路線圖（新增 office-workload、intake-estimate、office-templates、office-case-library、office-ai-calibration、editions）。正在做 calc-engine 的前置：用舊版補齊 golden。全部節點由 Claude（建構師）負責。"
   ],
   "children": [
     {
@@ -28,12 +28,12 @@
       "dependsOn": [
         "foundation"
       ],
-      "updated": "2026-11-07",
+      "updated": "2026-11-13",
       "summary": "配色、字型、版面；含案件頁三欄與 AI 浮動泡泡",
       "detail": "範圍（做）：用 /design 在 .spec/design 畫出所有畫面的桌面版與手機版：登入頁（提供者按鈕、忘記密碼、受邀設定密碼）、案件清單與看板（7 個篩選、期限與狀態 chip）、7 步驟案件頁、工作流程列與交接面板、確認儲存列（未儲存 N 處、取消修改）、版本衝突畫面、報告預覽紙張、估價模型與事務所設定、資料來源面板、歷程、成員與邀請管理、AI 浮動泡泡與三欄（案件內容 / 對照報告 / AI 面板）。\n範圍（不做）：實作程式；元件庫已由 steering 決定（shadcn/ui + Tailwind 4 + lucide-react）。\n舊版參考（只看不搬）：core/head.html 的 CSS（Noto Sans TC / Noto Serif TC / IBM Plex Mono、「估」印章）；畫面內容見 core/cases.js（tabCases、caseState、caseFilters）、core/app3.js（stepContent、handoffBar、handoffSheet、saveBox、render 的版面）、core/app2.js（tabParams 10 個子面板）；手機斷點 760px（isM）。\n限制：steering product「說人話」與民國年；AI 動作用一般人看得懂的一句話；舊的 9 分頁版面不重做。更換帳號造成 artifacts 無法存取時，重新發布本地版本。\n完成訊號：使用者批准每個畫面的桌面與手機稿；三欄的釘選與取消釘選狀態都有畫；設計 token（色、字、間距）可直接對應成 Tailwind theme。\n交給 frontend-app：畫布檔、token 清單、各畫面的狀態清單（空、載入、錯誤、唯讀、已簽名）。",
       "notes": [
         "2026-11-07 初稿：.spec/design/project（7 張：token、登入、案件清單、案件頁浮動泡泡、三欄釘選、手機清單、手機案件頁＋AI 底部面板），Artifact https://claude.ai/artifact/HMVyb8mvnnkgQXeyFjyVVt。主色地籍藍 #2747A0，朱紅只用於已簽名；未沿用舊版青綠印章配色。尚缺：看板、交接面板、版本衝突、報告全頁、模型與設定、成員與邀請、歷程、資料來源。",
-        "上面的初稿只是範例，正式的視覺設計由 Daphne 接手，可整份重做；本節點維持未認領（planned），3 個待決問題仍由設計者決定。"
+        "上面的初稿只是範例，正式的視覺設計由 Claude（建構師）負責，Daphne 審核；3 個待決問題依訪談結果決定。"
       ],
       "children": [
         {
@@ -48,9 +48,9 @@
           "id": "visual-design.q-mobile-scope",
           "title": "手機版做到什麼程度",
           "status": "open",
-          "updated": "2026-11-07",
+          "updated": "2026-11-13",
           "summary": "手機版是完整編輯，還是只做查看、交接與確認",
-          "detail": "舊版手機完整可用（ccards、mchips、760px 斷點）。選項：A 全功能手機版（現勘時可填資料）；B 手機只做清單、查看報告、交接與確認，編輯在桌面；C 手機做現勘與拍照記錄相關步驟。\n取捨：現勘在現場常用手機（survey 步驟），但比較標的與試算表在手機上很難用。"
+          "detail": "舊版手機完整可用（ccards、mchips、760px 斷點）。選項：A 全功能手機版（現勘時可填資料）；B 手機只做清單、查看報告、交接與確認，編輯在桌面；C 手機做現勘與拍照記錄相關步驟。\n取捨：現勘在現場常用手機（survey 步驟），但比較標的與試算表在手機上很難用。\n訪談（2026-11-09）：7 階段確認，③ 現勘在現場用手機；手機需要的範圍仍待下次訪談。"
         },
         {
           "id": "visual-design.q-three-column-breakpoints",
@@ -81,7 +81,7 @@
       "dependsOn": [
         "foundation"
       ],
-      "updated": "2026-11-07",
+      "updated": "2026-11-13",
       "summary": "offices / members / identities / invitations / cases / models / settings / audit schema；可外掛的登入提供者（本系統帳號、Google、M365、Meta）、session、邀請、重設密碼；事務所隔離與身分規則",
       "detail": "範圍（做）：Alembic schema 與 Repository / Service 基礎：offices、members（role appraiser|assistant|manager、active、display_name、cert_no）、identities（提供者 + subject）、invitations、sessions、password_resets、cases（文件 JSONB + 流程欄位 + version + signed）、models、office_settings、audit_logs（MCP 的 OAuth client 與 token 表由 mcp-endpoint 加，AI 對話表由 ai-assistant 加）；登入流程（local argon2id、Google、Entra、Meta 為各一個提供者檔案）、HttpOnly session cookie、邀請、重設密碼（SMTP）、email_verified 才可用 email 連結身分。\n範圍（不做）：案件端點與流程規則的 REST 入口（case-api）、登入畫面（frontend-app）、MCP 的 OAuth（mcp-endpoint）。\n搬移來源：supabase/001_init.sql（offices、members、cases、models、office_settings、audit_log）、006_case_mgmt.sql（manager 身分、active、assignee、appraiser、stage、status、due_date、version）、008_handoff.sql（handoff_note 500 字、handoff_by、handoff_at）。把這些 DB 觸發器與 RLS 改成 Service 層規則：guard_case（簽名後不可改不可刪；只有 appraiser 可簽；不可換事務所；manager 不可改 data、case_no、kind、signed，不可新增與刪除；assignee 必須同事務所；appraiser 必須是同事務所的 appraiser）、stamp_row（updated_by、updated_at；version 只在 data 或 signed 改變時加 1）、stamp_handoff（handoff_by 取自 actor、handoff_at 由伺服器填）、log_case（記錄 assignee、appraiser、stage、status、due_date、note、data 的前後值；什麼都沒變不記）。\n限制：不使用 RLS；每個 Repository 方法必帶 office_id；Service 第一個參數是 actor；舊的 members.user_id 是 PK（一人一所）；稽核紀錄只新增；時間欄位 timestamptz；命名依 structure.md。\n完成訊號：每個 Repository 方法有「別的事務所」拒絕測試；每條身分規則（上面 guard_case 各條）有 Service 測試；提供者核心流程不含 if provider == ...，測試用一個假提供者證明；Alembic 升級可重複執行。\n交給下游：Actor / CurrentUser 依賴、Repository 基底（強制 office 條件）、全部資料表、session 與 token 驗證、稽核寫入函式（case-api、lvr-sync、mcp-endpoint 使用）。",
       "children": [
@@ -170,6 +170,14 @@
           "notes": [
             "部署時新資料庫還沒有使用者資料（舊版仍用 Supabase）。第一個寫入正式資料的是 accounts-domain，移到那裡，在它上線前決定。"
           ]
+        },
+        {
+          "id": "accounts-domain.q-nas-login",
+          "title": "能不能用事務所 NAS 的帳號登入",
+          "status": "open",
+          "updated": "2026-11-13",
+          "summary": "訪談：事務所資料放 NAS、用 NAS 權限系統，希望沿用 NAS 帳號",
+          "detail": "選項：A 接 NAS 的 LDAP（Synology、QNAP 等多數支援）當成一個登入提供者；B 只用系統自己的帳號與 Google／Microsoft；C 先 B，企業版再加 A。\n要先知道：事務所 NAS 的品牌與型號、是否開了 LDAP、伺服器能否連到 NAS。\n取捨：沿用既有帳號（少記一組密碼）對 多一個提供者與網路依賴。提供者核心不含 if provider，所以 A 是加一個提供者檔案。"
         }
       ]
     },
@@ -498,6 +506,143 @@
           "updated": "2026-11-07",
           "summary": "舊版 cron 每月 5 日；in-process 排程在 app 停機時會直接漏掉",
           "detail": "選項：A 啟動時檢查最近一次成功同步時間，超過 N 天就補跑；B 每天檢查一次，條件是本月尚未成功；C 只固定時間跑，漏了靠手動觸發。同時要決定手動觸發的入口（管理端點或 CLI）。\n取捨：簡單 對 不漏資料。單 worker 已保證不會重複跑。"
+        }
+      ]
+    },
+    {
+      "id": "office-workload",
+      "title": "工作排程：月曆檢視、每人案件量、批次建案、委託人期望價格",
+      "status": "planned",
+      "ordinal": 4,
+      "dependsOn": [
+        "case-api"
+      ],
+      "updated": "2026-11-13",
+      "summary": "訪談：一位估價師同時 10～20 件、資產評估一次幾十件、年底旺季；99% 的案子一開始就有期望價格",
+      "detail": "範圍（做）：\n - 案件加欄位：委託人期望價格（金額，可空白；只供事務所內部參考，不進報告）、現勘日期、交件日期；期限每件自己填（訪談 Q1：每件個別談，不做自動規則）。\n - 月曆檢視：依期限、現勘日期、交件日期顯示；可依負責人篩選。\n - 每人案件量：每位成員手上進行中的案件數與 7 天內到期數，接案前可看餘力。\n - 批次建案：一次建立多件（資產評估整包進來），共用委託人、估價目的、價格日期、期限。\n - 試算結果與期望價格的差距（金額與 %）顯示在試算與決定價格步驟。\n範圍（不做）：前端畫面本身由 frontend-app 實作（本節點提供 API 與規則）；收款管理。\n限制：系統與 AI 不得為了接近期望價格自動調整比率、權重或計算結果（CLAUDE.md：AI 不得修改數值、權重或計算結果）；期望價格欄位不出現在報告、Word、MCP 報告輸出；差距大時只提醒估價師說明理由。\n完成訊號：期望價格不出現在任何報告輸出（測試）；批次建案與單件建案走同一個 Service；月曆與案件量 API 有事務所隔離測試。",
+      "children": [
+        {
+          "id": "office-workload.q-target-price-boundary",
+          "title": "期望價格欄位的界線",
+          "status": "open",
+          "updated": "2026-11-13",
+          "summary": "建議：只供內部參考、不進報告、AI 不朝目標價調整",
+          "detail": "建構師建議：A 欄位只在事務所內部可見，不進報告與匯出；系統與 AI 不朝目標價調整；差距超過門檻（事務所設定）時提醒估價師寫理由。待 Daphne 確認。"
+        }
+      ]
+    },
+    {
+      "id": "intake-estimate",
+      "title": "接案初估與報價",
+      "status": "planned",
+      "ordinal": 5,
+      "dependsOn": [
+        "calc-engine",
+        "lvr-sync",
+        "case-api"
+      ],
+      "updated": "2026-11-13",
+      "summary": "訪談：接案（初估）約佔個人房貸整案時間的 80%，是最大痛點；報價用 Excel 常殘留上一件資料",
+      "detail": "範圍（做）：\n - 初估：輸入地址或地號、標的種類、面積等少量資料，用實價登錄（lvr-sync）與該事務所歷史案例（office-case-library，有的話）算出價格範圍與參考成交，給估價師判斷；結果標明是初估，不是估價報告。\n - 報價單：依事務所設定的報價規則產生報價單（Word），每次由空白範本產生，不會殘留上一件資料。\n - 初估通過後一鍵建立正式案件，帶入已填資料。\n - 企業金融案件的接案問題清單（訪談：消金與企金要問的問題不同）。\n範圍（不做）：正式估價計算（calc-engine）。\n限制：初估方法與報價規則放事務所設定，不寫死；初估不得冒充估價報告（不簽名、不出報告書）。\n完成訊號：同一份輸入在不同事務所設定下得到各自的結果（隔離測試）；報價單每次從空白產生（測試：連續產生兩份，第二份不含第一份的資料）。",
+      "children": [
+        {
+          "id": "intake-estimate.q-estimate-method",
+          "title": "初估用什麼方法",
+          "status": "open",
+          "updated": "2026-11-13",
+          "summary": "實價登錄行情區間？該所歷史案例？AI？",
+          "detail": "選項：A 用實價登錄同區、同類型的單價分位數（P25～P75）乘面積；B 加上該所歷史案例的加權；C 由 AI 依歷史案例提出草稿。需要再訪談估價師平常怎麼初估。"
+        },
+        {
+          "id": "intake-estimate.q-quote-rules",
+          "title": "報價規則",
+          "status": "open",
+          "updated": "2026-11-13",
+          "summary": "報價怎麼算（依金額級距、案件類型、急件）",
+          "detail": "待訪談。規則放事務所設定。"
+        }
+      ]
+    },
+    {
+      "id": "office-templates",
+      "title": "事務所自訂報告範本",
+      "status": "planned",
+      "ordinal": 6,
+      "dependsOn": [
+        "report-gen",
+        "models-settings-api"
+      ],
+      "updated": "2026-11-13",
+      "summary": "訪談：各所以公會敘述式範本為基礎各自修改，範本是 know-how，不提供給我們（2026-11-13 確認拿不到）",
+      "detail": "範圍（做）：系統內建通用範本（以公會敘述式範本與第十四號公報摘要式範本為基礎）；事務所可以上傳自己的 Word 範本，或在系統內修改章節文字、表格與順序；範本設定後固定使用，簽名時和估價模型一起凍結進案件。\n範圍（不做）：AI 依歷史案例改寫範本（office-ai-calibration）。\n限制：範本只屬於上傳的事務所（隔離測試）；必載事項由系統檢查，範本不能拿掉法定必載的章節；報告計算數字仍只有一份（calc-engine）。\n完成訊號：同一案件用兩個事務所的範本產生不同的報告，但數字相同；範本缺必載章節時拒絕存檔並說明法條。",
+      "children": [
+        {
+          "id": "office-templates.q-template-format",
+          "title": "範本用什麼格式上傳",
+          "status": "open",
+          "updated": "2026-11-13",
+          "summary": "Word 檔加欄位標記？還是系統內編輯？",
+          "detail": "選項：A 上傳 .docx，用 {{欄位}} 標記放資料；B 只在系統內編輯章節文字；C 兩者都支援。和 report-gen.q-docx-style-source 一起決定。"
+        }
+      ]
+    },
+    {
+      "id": "office-case-library",
+      "title": "事務所歷史案例庫",
+      "status": "planned",
+      "ordinal": 7,
+      "dependsOn": [
+        "accounts-domain",
+        "case-api"
+      ],
+      "updated": "2026-11-13",
+      "summary": "訪談：各所有大量過去案例可以參考；不能跨所使用",
+      "detail": "範圍（做）：事務所上傳自己的歷史案例（舊報告的結構化資料：標的、日期、價格、比較標的、調整、權重），只有該事務所能讀；舊版「本所案例」（ownCases）搬進來；在找比較標的與初估時可以使用。\n範圍（不做）：AI 學習（office-ai-calibration）。\n限制：每個 Repository 方法必帶 office_id；個資欄位（委託人、所有權人）預設不收或遮蔽；匯入檔不放進 git。\n完成訊號：跨所讀取一律拒絕（每個端點有測試）；刪除事務所資料時案例一併刪除。",
+      "children": []
+    },
+    {
+      "id": "office-ai-calibration",
+      "title": "AI 依該所案例建議估價模型與報告文字",
+      "status": "planned",
+      "ordinal": 8,
+      "dependsOn": [
+        "office-case-library",
+        "ai-assistant",
+        "office-templates"
+      ],
+      "updated": "2026-11-13",
+      "summary": "訪談：希望 AI 校準憑經驗訂的調整項目；考慮地端 AI（安全、成本）",
+      "detail": "範圍（做）：AI 讀該事務所的歷史案例，整理出常用的調整比率、權重與報告文字寫法，產生估價模型與範本的「建議草稿」；估價師逐項確認後才寫入事務所設定。\n限制：AI 只讀該所資料，結果只給該所（隔離測試）；AI 產出一律是草稿，不得直接改數值、權重或計算結果；每次建議記錄依據的案例數與期間。\n完成訊號：兩個事務所的案例互不影響彼此的建議（測試）；未經確認的建議不會改變任何計算結果。",
+      "children": [
+        {
+          "id": "office-ai-calibration.q-ai-hosting",
+          "title": "AI 放在地端還是雲端",
+          "status": "open",
+          "updated": "2026-11-13",
+          "summary": "事務所想要地端 AI；目前架構用 Claude API（公司付費）",
+          "detail": "選項：A 雲端 Claude API ＋ 嚴格事務所隔離與不保留資料；B 企業版用事務所自己的地端模型（效果較弱、要硬體）；C 介面抽象化，兩者都可接。建構師會做比較研究（效果、成本、安全）後再請 Daphne 決定。"
+        }
+      ]
+    },
+    {
+      "id": "editions",
+      "title": "個人版與企業版",
+      "status": "planned",
+      "ordinal": 9,
+      "dependsOn": [
+        "accounts-domain"
+      ],
+      "updated": "2026-11-13",
+      "summary": "訪談結論：個人版用通用方法；企業版可上傳歷史案例與調整範本；不做一般消費者版",
+      "detail": "範圍（做）：事務所層級的版本欄位（personal、enterprise）與功能開關；個人版用內建通用估價模型與範本；企業版開放 office-templates、office-case-library、office-ai-calibration。\n限制：版本只控制功能，不放寬隔離；計算只有一份。\n完成訊號：個人版呼叫企業版功能被拒絕（測試）。",
+      "children": [
+        {
+          "id": "editions.q-edition-split",
+          "title": "哪些功能只在企業版",
+          "status": "open",
+          "updated": "2026-11-13",
+          "summary": "試用從哪一版開始",
+          "detail": "待 Daphne 決定。"
         }
       ]
     },
