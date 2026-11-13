@@ -1,0 +1,2589 @@
+{
+ "name": "cost-dep-declining",
+ "description": "成本法折舊採定率法（declining），殘餘價格率 10%。",
+ "case": {
+  "id": "115-0431",
+  "kind": "hotel",
+  "signed": false,
+  "signedAt": "",
+  "modelId": "m1",
+  "modelSnapshot": null,
+  "subjFlags": {},
+  "parcels": [
+   {
+    "section": "○○段",
+    "no": "1628",
+    "zone": "第五種商業區",
+    "areaM2": 438,
+    "share": 1,
+    "annVal": 150000,
+    "prevVal": 120000,
+    "prevDate": "2015-06",
+    "cpi": 110,
+    "priceMode": "manual",
+    "adjPct": 0,
+    "annPct": 100,
+    "unit": 0,
+    "note": ""
+   }
+  ],
+  "buildings": [],
+  "special": {
+   "enabled": false,
+   "label": "都市更新完成後",
+   "far": 0,
+   "years": 0,
+   "rateMode": "wacc",
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "prem": {
+    "liquidity": 0.9,
+    "risk": 0.9,
+    "growth": 0.9,
+    "mgmt": 1.2
+   },
+   "rateInput": 5,
+   "w": {
+    "comparison": 50,
+    "land": 50
+   }
+  },
+  "report": {
+   "caseNo": "",
+   "docNo": "",
+   "leader": "",
+   "surveyRefs": "登記謄本、地籍圖、都市計畫圖、現場照片",
+   "surveyConclusion": "",
+   "dataSources": "",
+   "otherBurden": "無",
+   "market": "",
+   "marketSupply": "",
+   "marketDemand": "",
+   "marketPrice": "",
+   "regionChecks": {},
+   "methodReason": "",
+   "notUsed": {}
+  },
+  "basic": {
+   "county": "高雄市",
+   "district": "前金區",
+   "road": "○○路",
+   "addr": "高雄市前金區○○路○號（○○飯店）",
+   "bldgNo": "○○段 2111～2122 建號",
+   "landNo": "○○段 1628 地號",
+   "zone": "第五種商業區",
+   "btype": "其他",
+   "area": 1821.17,
+   "landShare": 132.49,
+   "floorNum": 0,
+   "totalFloors": 11,
+   "completed": "2000-08-28",
+   "floorDesc": "鋼筋混凝土造地上 11 層、地下 2 層，客房 115 間",
+   "owner": "○○開發股份有限公司（權利範圍全部）",
+   "encumbrance": "最高限額抵押權 2 筆（○○銀行，合計擔保債權 33,000 萬元）",
+   "purpose": "買賣參考",
+   "priceDate": "2026-09-30",
+   "surveyDate": "2026-09-30",
+   "priceType": "正常價格",
+   "conditions": "以價格日期當時旅館營運現況、不考慮經營權與所有權分屬不同主體之影響為估價條件。",
+   "normalPrice": "",
+   "client": "○○國際股份有限公司",
+   "fee": "150000",
+   "contractDate": "2026-09-20",
+   "scope": "勘估標的房地正常價格估價"
+  },
+  "survey": {
+   "led": true,
+   "indoor": true,
+   "photos": 12,
+   "useStatus": "旅館營業中，地下 2 層為會議室、地下 1 層為餐廳、1 樓大廳、2～11 樓客房 115 間，維護良好。",
+   "illegal": "none",
+   "notes": "領勘人為飯店人員，提供最近兩年營業收入與費用報表。",
+   "d": {
+    "traffic": "臨 30 公尺主要道路，鄰近捷運站",
+    "life": "商圈成熟",
+    "school": "",
+    "nuisance": "無重大嫌惡設施",
+    "floor": "",
+    "view": "",
+    "light": "",
+    "layout": "",
+    "cond": "建物 2015 年全面整修",
+    "mgmt": "自營"
+   }
+  },
+  "analysis": {
+   "general": "國旅與入境旅客回升，觀光旅館住房率回到疫情前水準。（示意文字）",
+   "region": "勘估標的所在近鄰地區，交通：臨 30 公尺主要道路，鄰近捷運站；生活機能：商圈成熟；嫌惡設施：無重大嫌惡設施。",
+   "indiv": "土地三面臨路，面前道路寬約 30 公尺，長方形，地勢平坦；第五種商業區，建蔽率 70%、容積率 840%。",
+   "hbu": "勘估標的依現況作旅館使用，符合最有效使用。",
+   "confirmed": true
+  },
+  "methods": {
+   "comparison": false,
+   "income": true,
+   "cost": true,
+   "land": false,
+   "singleReason": ""
+  },
+  "comp": {
+   "method": "pct",
+   "inputMode": "grade",
+   "regVars": [
+    "age",
+    "floor",
+    "area",
+    "months"
+   ],
+   "volumeBasis": false,
+   "subjFar": 0
+  },
+  "comps": [],
+  "income": {
+   "method": "dcf",
+   "revMode": "hotel",
+   "rooms": 115,
+   "adr": 2300,
+   "occ": 67,
+   "otherPct": 5,
+   "opexPct": 60,
+   "mgmtPct": 1,
+   "rent": 0,
+   "rentSource": "客房數 115 間 × 平均房價 2,300 元 × 住房率 67%，參考同區同級旅館與觀光署統計",
+   "vacMonths": 1,
+   "incomes": [],
+   "exp": [
+    {
+     "name": "地價稅",
+     "amt": 305529
+    },
+    {
+     "name": "房屋稅",
+     "amt": 1875282
+    },
+    {
+     "name": "保險費",
+     "amt": 210384
+    },
+    {
+     "name": "維修費",
+     "amt": 643126
+    },
+    {
+     "name": "重置提撥費",
+     "amt": 1607816
+    }
+   ],
+   "costSource": "cost",
+   "manualCost": 0,
+   "life": 50,
+   "salvage": 0,
+   "threeYears": true,
+   "capMode": "input",
+   "cap": 1.25,
+   "risk": {
+    "base": 1.6,
+    "liquidity": 0.2,
+    "risk": 0.3,
+    "growth": -0.6,
+    "mgmt": 0.1
+   },
+   "extract": [],
+   "wacc": [
+    {
+     "name": "自有資金",
+     "w": 40,
+     "k": 2
+    },
+    {
+     "name": "借貸資金",
+     "w": 60,
+     "k": 2.5
+    }
+   ],
+   "dcr": {
+    "dcr": 1.2,
+    "rate": 2.5,
+    "years": 30,
+    "ltv": 70
+   },
+   "egim": {
+    "nir": 70,
+    "egim": 55
+   },
+   "dcf": {
+    "years": 10,
+    "rentGrowth": 2.5,
+    "rentGrowth2": 1,
+    "switchYear": 5,
+    "expGrowth": 0,
+    "disc": 3.18,
+    "termCap": 4.28,
+    "sellCost": 1,
+    "deductDep": false
+   }
+  },
+  "cost": {
+   "conMethod": "unit",
+   "unitCost": 21.94,
+   "indexPct": 103.09,
+   "extraLand": 2728000,
+   "unitCostNote": "全聯會營造或施工費標準表（高雄市 11 層 RC 38,700 元/㎡），另加旅館設備 4,000 元/㎡",
+   "items": [],
+   "design": 2,
+   "extras": [
+    {
+     "name": "旅館裝修裝潢（2015 年完成）",
+     "amt": 50432490,
+     "depPct": 2
+    }
+   ],
+   "adSell": 5,
+   "mgmt": 4,
+   "tax": 1,
+   "interest": 2.99,
+   "profit": 20,
+   "depMethod": "declining",
+   "sinkRate": 2,
+   "life": 50,
+   "salvage": 10,
+   "ageManual": true,
+   "age": 26,
+   "landUnit": 148.4
+  },
+  "land": {
+   "mode": "simple",
+   "sales": [
+    {
+     "name": "住宅",
+     "ping": 0,
+     "unit": 0
+    }
+   ],
+   "floorArea": 0,
+   "conUnit": 11.2,
+   "conIndex": 100,
+   "design": 2,
+   "adSell": 6,
+   "mgmt": 4.5,
+   "tax": 1,
+   "profit": 20,
+   "iMode": "table",
+   "annualRate": 2.5,
+   "landRatio": 60,
+   "years": 3,
+   "iInput": 5,
+   "site": 0,
+   "far": 0,
+   "bonus": 0,
+   "freeFactor": 1.3,
+   "floorsAbove": 12,
+   "floorsBelow": 2,
+   "digRate": 60,
+   "saleFactor": 1.75,
+   "firstFloorRatio": 0.88,
+   "baseUnit": 0,
+   "baseFloor": 4,
+   "util1F": 200,
+   "utilStep": 1,
+   "utils": {},
+   "cars": 0,
+   "pingPerCar": 18,
+   "carPrice": 150,
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "buildMonths": 28,
+   "landMonths": 34
+  },
+  "final": {
+   "useModelWeights": true,
+   "w": {
+    "comparison": 0,
+    "income": 50,
+    "cost": 50,
+    "land": 0
+   },
+   "reviewed": true,
+   "reason": "成本價格反映土地與建物重建成本，收益價格反映旅館營運收益能力，考量現況條件、未來性及市場發展，兩者賦予相同權重。"
+  },
+  "other": "",
+  "appraiser": {
+   "name": "林○○",
+   "certNo": "[估價師證書字號]",
+   "licenseNo": "[開業證書字號]",
+   "licenseExp": "2028-03-31",
+   "office": "○○不動產估價師事務所",
+   "guild": "[縣市]不動產估價師公會",
+   "guildNo": "[公會會員證書字號]"
+  }
+ },
+ "modelId": "m1",
+ "expected": {
+  "calc": {
+   "comp": {
+    "rows": [],
+    "usedCount": 0,
+    "gap": 0,
+    "wSum": 0,
+    "unitRaw": null,
+    "unit": null
+   },
+   "reg": null,
+   "cost": {
+    "idx": 1.0309,
+    "extrasDep": 1008649.8,
+    "extraLand": 2728000,
+    "construction": 411911247.1682,
+    "design": 8238224.943364,
+    "extras": 50432490,
+    "fees": 66359524.43992549,
+    "interest": 16054550.44788954,
+    "profit": 110599207.39987583,
+    "T": 663595244.3992549,
+    "age": 26,
+    "dep": 463192684.40184206,
+    "depNote": "",
+    "building": 199393910.19741285,
+    "land": 199343160,
+    "price": 398737070.19741285,
+    "unitRaw": 21.894555159453144,
+    "unit": 21.9
+   },
+   "inc": {
+    "hotel": true,
+    "roomRev": 64683475,
+    "rent": 0,
+    "other": 0,
+    "gross": 67917648.75,
+    "loss": 0,
+    "egi": 67917648.75,
+    "expSum": 44131398.4875,
+    "expRaw": 4642137,
+    "expMult": 1,
+    "pctPart": 39489261.4875,
+    "buildCost": 663595244.3992549,
+    "dep": 13271904.8879851,
+    "noi": 10514345.374514904,
+    "cap": 1.25,
+    "price": 701917682.0066655,
+    "flows": [
+     {
+      "k": 1,
+      "egi": 67917648.75,
+      "exp": 44131398.4875,
+      "dep": 0,
+      "cf": 23786250.262500003,
+      "pv": 23053159.781449895
+     },
+     {
+      "k": 2,
+      "egi": 69615589.96875,
+      "exp": 45118630.0246875,
+      "dep": 0,
+      "cf": 24496959.9440625,
+      "pv": 23010239.816801578
+     },
+     {
+      "k": 3,
+      "egi": 71355979.71796875,
+      "exp": 46130542.350304686,
+      "dep": 0,
+      "cf": 25225437.36766406,
+      "pv": 22964243.028318945
+     },
+     {
+      "k": 4,
+      "egi": 73139879.21091796,
+      "exp": 47167752.4840623,
+      "dep": 0,
+      "cf": 25972126.726855665,
+      "pv": 22915293.23880974
+     },
+     {
+      "k": 5,
+      "egi": 74968376.19119091,
+      "exp": 48230892.87116385,
+      "dep": 0,
+      "cf": 26737483.32002706,
+      "pv": 22863510.263780374
+     },
+     {
+      "k": 6,
+      "egi": 75718059.95310283,
+      "exp": 48666780.4298755,
+      "dep": 0,
+      "cf": 27051279.523227327,
+      "pv": 22418919.151394375
+     },
+     {
+      "k": 7,
+      "egi": 76475240.55263385,
+      "exp": 49107026.86417425,
+      "dep": 0,
+      "cf": 27368213.688459605,
+      "pv": 21982535.711536687
+     },
+     {
+      "k": 8,
+      "egi": 77239992.95816019,
+      "exp": 49551675.762816004,
+      "dep": 0,
+      "cf": 27688317.195344187,
+      "pv": 21554223.07479151
+     },
+     {
+      "k": 9,
+      "egi": 78012392.88774179,
+      "exp": 50000771.15044416,
+      "dep": 0,
+      "cf": 28011621.73729763,
+      "pv": 21133846.13727488
+     },
+     {
+      "k": 10,
+      "egi": 78792516.8166192,
+      "exp": 50454357.49194859,
+      "dep": 0,
+      "cf": 28338159.324670613,
+      "pv": 20721271.558043502
+     }
+    ],
+    "terminal": {
+     "value": 655485461.0145772,
+     "pv": 479300440.24446404,
+     "pvFlows": 222617241.7622015
+    },
+    "unitRaw": 38.542128522140466,
+    "unit": 38.5
+   },
+   "land": {
+    "S": 0,
+    "C": 0,
+    "design": 0,
+    "saleFees": 0,
+    "M": 0,
+    "i": 0.06000000000000001,
+    "R": 0.2,
+    "V": 0,
+    "unitRaw": 0,
+    "unit": 0
+   },
+   "fin": {
+    "methods": [
+     {
+      "key": "income",
+      "name": "收益法",
+      "unit": 38.5,
+      "w": 50
+     },
+     {
+      "key": "cost",
+      "name": "成本法",
+      "unit": 21.9,
+      "w": 50
+     }
+    ],
+    "diff": 54.966887417218544,
+    "wSum": 100,
+    "unit": 30.2,
+    "totalWan": 54999,
+    "yuan": 549990000
+   },
+   "mc": 2,
+   "P": {
+    "w": {
+     "comparison": 80,
+     "income": 20,
+     "cost": 0,
+     "land": 0
+    },
+    "capFloor": 0,
+    "expMult": 1
+   },
+   "M": {
+    "id": "m1",
+    "name": "本所標準模型",
+    "updated": "2026-10-24",
+    "note": "本所一般案件使用。",
+    "settings": {
+     "dateMode": "auto",
+     "monthlyRate": 0.3,
+     "weightMode": "manual",
+     "totalMode": "abs",
+     "lim15": 15,
+     "lim30": 30,
+     "gapLim": 20,
+     "minComps": 3,
+     "diffThreshold": 20,
+     "unitDec": 1,
+     "totalDec": 0,
+     "unitDisplay": "wan"
+    },
+    "indicators": [
+     {
+      "id": "r1",
+      "group": "region",
+      "cat": "交通運輸",
+      "name": "交通",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "r2",
+      "group": "region",
+      "cat": "公共設施",
+      "name": "生活機能",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "r3",
+      "group": "region",
+      "cat": "公共設施",
+      "name": "學區",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "r4",
+      "group": "region",
+      "cat": "公共設施",
+      "name": "公共設施",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "r5",
+      "group": "region",
+      "cat": "自然條件",
+      "name": "嫌惡設施",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "r6",
+      "group": "region",
+      "cat": "發展潛力",
+      "name": "發展趨勢",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": false
+     },
+     {
+      "id": "i1",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "樓層",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i2",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "景觀",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i3",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "面積",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i4",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "屋齡",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i5",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "採光通風",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i6",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "格局",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i7",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "屋況",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i8",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "管理",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i9",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "公設比",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": false
+     },
+     {
+      "id": "i10",
+      "group": "indiv",
+      "cat": "道路條件",
+      "name": "臨路寬度",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": false
+     },
+     {
+      "id": "i11",
+      "group": "indiv",
+      "cat": "宗地條件",
+      "name": "總價與單價關係",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": false
+     }
+    ],
+    "indicatorSets": {
+     "bldg": [
+      {
+       "id": "r1",
+       "group": "region",
+       "cat": "交通運輸",
+       "name": "交通",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "r2",
+       "group": "region",
+       "cat": "公共設施",
+       "name": "生活機能",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "r3",
+       "group": "region",
+       "cat": "公共設施",
+       "name": "學區",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "r4",
+       "group": "region",
+       "cat": "公共設施",
+       "name": "公共設施",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "r5",
+       "group": "region",
+       "cat": "自然條件",
+       "name": "嫌惡設施",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "r6",
+       "group": "region",
+       "cat": "發展潛力",
+       "name": "發展趨勢",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": false
+      },
+      {
+       "id": "i1",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "樓層",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i2",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "景觀",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i3",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "面積",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i4",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "屋齡",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i5",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "採光通風",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i6",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "格局",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i7",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "屋況",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i8",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "管理",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i9",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "公設比",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": false
+      },
+      {
+       "id": "i10",
+       "group": "indiv",
+       "cat": "道路條件",
+       "name": "臨路寬度",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": false
+      },
+      {
+       "id": "i11",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "總價與單價關係",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": false
+      }
+     ],
+     "land": [
+      {
+       "id": "L_r1",
+       "group": "region",
+       "cat": "交通運輸",
+       "name": "主要道路",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r2",
+       "group": "region",
+       "cat": "交通運輸",
+       "name": "捷運、公車便利性",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r3",
+       "group": "region",
+       "cat": "交通運輸",
+       "name": "鐵路、交流道接近程度",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r4",
+       "group": "region",
+       "cat": "自然條件",
+       "name": "景觀",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r5",
+       "group": "region",
+       "cat": "自然條件",
+       "name": "排水、地勢、災害影響",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r6",
+       "group": "region",
+       "cat": "公共設施",
+       "name": "學校、市場",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r7",
+       "group": "region",
+       "cat": "公共設施",
+       "name": "公園、服務性設施",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r8",
+       "group": "region",
+       "cat": "發展潛力",
+       "name": "重大建設",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r9",
+       "group": "region",
+       "cat": "發展潛力",
+       "name": "發展趨勢、生活圈",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i1",
+       "group": "indiv",
+       "cat": "道路條件",
+       "name": "道路寬度",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i2",
+       "group": "indiv",
+       "cat": "道路條件",
+       "name": "道路鋪裝、種別",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i3",
+       "group": "indiv",
+       "cat": "接近條件",
+       "name": "接近車站、學校、市場",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i4",
+       "group": "indiv",
+       "cat": "接近條件",
+       "name": "接近公園、停車場、商圈",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i5",
+       "group": "indiv",
+       "cat": "週邊環境",
+       "name": "地勢、日照",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i6",
+       "group": "indiv",
+       "cat": "週邊環境",
+       "name": "嫌惡設施、鄰地使用",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i7",
+       "group": "indiv",
+       "cat": "行政條件",
+       "name": "使用分區、建蔽率",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i8",
+       "group": "indiv",
+       "cat": "行政條件",
+       "name": "容積率、禁限建",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i9",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "面積",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i10",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "面寬、深度",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i11",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "形狀",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i12",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "臨路情形",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i13",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "總價與單價關係",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i14",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "規劃可行性",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      }
+     ],
+     "ind": [
+      {
+       "id": "G_r1",
+       "group": "region",
+       "cat": "交通運輸",
+       "name": "主要道路、交流道",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_r2",
+       "group": "region",
+       "cat": "交通運輸",
+       "name": "港口、鐵路",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_r3",
+       "group": "region",
+       "cat": "公共設施",
+       "name": "電力、產業用水",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_r4",
+       "group": "region",
+       "cat": "公共設施",
+       "name": "污廢水、廢棄物處理",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_r5",
+       "group": "region",
+       "cat": "發展潛力",
+       "name": "產業聚集、上下游",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_r6",
+       "group": "region",
+       "cat": "發展潛力",
+       "name": "擴廠可能性、勞工來源",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i1",
+       "group": "indiv",
+       "cat": "道路條件",
+       "name": "道路寬度",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i2",
+       "group": "indiv",
+       "cat": "道路條件",
+       "name": "道路種別",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i3",
+       "group": "indiv",
+       "cat": "道路條件",
+       "name": "貨車進出便利性",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i4",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "面積",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i5",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "形狀",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i6",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "臨路面數",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i7",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "土壤污染",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i8",
+       "group": "indiv",
+       "cat": "行政條件",
+       "name": "使用變更、轉用",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i9",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "廠房結構、樓高",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": false
+      }
+     ]
+    },
+    "exp": [
+     {
+      "id": "e1",
+      "name": "路沖",
+      "group": "indiv",
+      "pct": -3,
+      "on": true,
+      "sets": [
+       "bldg",
+       "land"
+      ]
+     },
+     {
+      "id": "e2",
+      "name": "臨公園、綠地",
+      "group": "region",
+      "pct": 2,
+      "on": true,
+      "sets": [
+       "bldg",
+       "land"
+      ]
+     },
+     {
+      "id": "e3",
+      "name": "邊間",
+      "group": "indiv",
+      "pct": 1.5,
+      "on": true,
+      "sets": [
+       "bldg"
+      ]
+     },
+     {
+      "id": "e4",
+      "name": "頂樓",
+      "group": "indiv",
+      "pct": -2,
+      "on": true,
+      "sets": [
+       "bldg"
+      ]
+     },
+     {
+      "id": "e5",
+      "name": "鄰近高壓電塔、變電所",
+      "group": "region",
+      "pct": -5,
+      "on": true,
+      "sets": [
+       "bldg",
+       "land",
+       "ind"
+      ]
+     },
+     {
+      "id": "e6",
+      "name": "臨 15 公尺以上道路",
+      "group": "region",
+      "pct": 2,
+      "on": true,
+      "sets": [
+       "bldg",
+       "land",
+       "ind"
+      ]
+     },
+     {
+      "id": "e7",
+      "name": "無電梯四樓以上",
+      "group": "indiv",
+      "pct": -4,
+      "on": true,
+      "sets": [
+       "bldg"
+      ]
+     },
+     {
+      "id": "e8",
+      "name": "雙面臨路（角地）",
+      "group": "indiv",
+      "pct": 3,
+      "on": true,
+      "sets": [
+       "land",
+       "ind"
+      ]
+     },
+     {
+      "id": "e9",
+      "name": "位法定山坡地",
+      "group": "indiv",
+      "pct": -5,
+      "on": true,
+      "sets": [
+       "land"
+      ]
+     },
+     {
+      "id": "e10",
+      "name": "畸零地、難以單獨開發",
+      "group": "indiv",
+      "pct": -10,
+      "on": true,
+      "sets": [
+       "land"
+      ]
+     }
+    ],
+    "select": {
+     "sameCounty": true,
+     "sameDistrict": true,
+     "sameType": true,
+     "sameZone": true,
+     "months": 24,
+     "ageTol": 10,
+     "areaTolPct": 40,
+     "floorTol": 10,
+     "excludeSpecial": true,
+     "excludePresale": true,
+     "keyword": "",
+     "autoN": 3,
+     "wDate": 30,
+     "wAge": 25,
+     "wArea": 20,
+     "wFloor": 15,
+     "wRoad": 10
+    },
+    "rentSelect": {
+     "sameCounty": true,
+     "sameDistrict": true,
+     "sameType": false,
+     "months": 12,
+     "areaTolPct": 60,
+     "onlyWhole": true,
+     "excludeFurnished": false
+    },
+    "purpose": {
+     "買賣參考": {
+      "w": {
+       "comparison": 80,
+       "income": 20,
+       "cost": 0,
+       "land": 0
+      },
+      "capFloor": 0,
+      "expMult": 1
+     },
+     "抵押權設定": {
+      "w": {
+       "comparison": 70,
+       "income": 30,
+       "cost": 0,
+       "land": 0
+      },
+      "capFloor": 1.6,
+      "expMult": 1.2
+     },
+     "資產價值證明": {
+      "w": {
+       "comparison": 80,
+       "income": 20,
+       "cost": 0,
+       "land": 0
+      },
+      "capFloor": 0,
+      "expMult": 1
+     },
+     "繼承、贈與": {
+      "w": {
+       "comparison": 80,
+       "income": 20,
+       "cost": 0,
+       "land": 0
+      },
+      "capFloor": 0,
+      "expMult": 1
+     },
+     "法院訴訟": {
+      "w": {
+       "comparison": 70,
+       "income": 30,
+       "cost": 0,
+       "land": 0
+      },
+      "capFloor": 0,
+      "expMult": 1
+     },
+     "都市更新權利變換": {
+      "w": {
+       "comparison": 60,
+       "income": 0,
+       "cost": 0,
+       "land": 40
+      },
+      "capFloor": 0,
+      "expMult": 1
+     },
+     "企業資產評價": {
+      "w": {
+       "comparison": 50,
+       "income": 50,
+       "cost": 0,
+       "land": 0
+      },
+      "capFloor": 0,
+      "expMult": 1
+     }
+    },
+    "kindWeights": {
+     "unit": null,
+     "house": {
+      "comparison": 60,
+      "income": 0,
+      "cost": 40,
+      "land": 0
+     },
+     "land": {
+      "comparison": 50,
+      "income": 0,
+      "cost": 0,
+      "land": 50
+     },
+     "industrial": {
+      "comparison": 100,
+      "income": 0,
+      "cost": 0,
+      "land": 0
+     },
+     "hotel": {
+      "comparison": 0,
+      "income": 50,
+      "cost": 50,
+      "land": 0
+     },
+     "commercial": {
+      "comparison": 40,
+      "income": 40,
+      "cost": 20,
+      "land": 0
+     },
+     "factory": {
+      "comparison": 50,
+      "income": 0,
+      "cost": 50,
+      "land": 0
+     }
+    },
+    "income": {
+     "vacMonths": 1,
+     "cap": 1.25
+    },
+    "sources": {
+     "lvr": true,
+     "own": true
+    },
+    "lda": {
+     "profit": 20,
+     "design": 2,
+     "adSell": 6,
+     "mgmt": 4.5,
+     "tax": 1,
+     "ownRatio": 50,
+     "ownRate": 1.7,
+     "loanRate": 3.27,
+     "freeFactor": 1.3,
+     "saleFactor": 1.75,
+     "firstFloorRatio": 0.88,
+     "util1F": 200,
+     "utilStep": 1,
+     "baseFloor": 4,
+     "pingPerCar": 18
+    },
+    "texts": {
+     "validMonths": 6,
+     "stance": [
+      "本事務所以公正第三人立場進行客觀評估。",
+      "本事務所與委託人及受勘估單位僅為單純業務往來關係。",
+      "本事務所及本所估價師與委託人、不動產所有權人或交易雙方，並無國際會計準則第 24 號（IAS 24）所定之關係人或實質關係人之情事。",
+      "本報告書所載內容絕無虛偽或隱匿之情事，事實描述具真實確切性。",
+      "本報告書之分析意見及結論，係基於報告書所載假設及限制條件下成立，屬估價師中立之專業評論。",
+      "本事務所對勘估標的無現有或可預期之利益；對勘估標的之權利關係人亦無個人私利或偏見。",
+      "本事務所收取之報酬係專業勞務之正當報酬，不為不正當之競價，亦不刻意扭曲合理之估價結果。",
+      "本報告書內容遵循不動產估價師法及不動產估價技術規則，並依中華民國不動產估價師公會全國聯合會「敘述式估價報告書範本」格式製作。"
+     ],
+     "assumptions": [
+      "除報告書另有聲明外，勘估標的之所有權視為正常狀態且具市場性。",
+      "除報告書另有聲明外，評估結論未考慮抵押權或其他權利設定之影響。",
+      "報告書引用他人提供之資訊，經估價師盡力查證後認為確實可靠。",
+      "勘估標的之土地及其地上物視為一般正常情形，無隱藏或一般勘察無法發現之影響價值條件。",
+      "除報告書另有聲明外，勘估標的視為符合環境保護相關法規，未受限制。",
+      "勘估標的可能存在之危險因子（如土壤或地下水污染、石棉等）不在估價師勘察範圍內，本報告假設不存在此類影響價值之因素；如有需要，使用者應另聘專家分析。"
+     ],
+     "limits": [
+      "本報告書之持有人無出版本報告書之權利。",
+      "未經估價師書面同意，報告書全部或部分內容（尤其估價結論、估價師身分及事務所）不得經由廣告、公共關係、新聞或其他媒體公開。",
+      "評估結果僅適用於整體勘估標的；除報告書另有聲明，將總值按權利比例或其他方式劃分所得之結果均屬無效。",
+      "報告書之預測係基於當前市場條件、短期供需與穩定經濟基礎，將隨未來條件改變而變動。",
+      "評估結果僅供報告書所載估價目的參考，估價目的變更可能使估價金額改變。",
+      "評估結果係在報告書所載估價條件下形成，使用者應了解估價條件以免誤用。",
+      "評估結果僅具不動產價值參考性質，不必然為委託人或使用人之最後決定金額。",
+      "報告書使用者使用本報告書致違反個人資料保護法者，應自負法律責任。"
+     ]
+    },
+    "cost": {
+     "unitCost": 11.2,
+     "design": 2.5,
+     "adSell": 4,
+     "mgmt": 2,
+     "tax": 1,
+     "interest": 2,
+     "profit": 10,
+     "life": 50,
+     "salvage": 0,
+     "table": [
+      {
+       "name": "加強磚造 1–3 層",
+       "unit": 7.6
+      },
+      {
+       "name": "鋼筋混凝土造 4–5 層",
+       "unit": 9.8
+      },
+      {
+       "name": "鋼筋混凝土造 6–10 層",
+       "unit": 11.2
+      },
+      {
+       "name": "鋼筋混凝土造 11–15 層",
+       "unit": 12.6
+      },
+      {
+       "name": "鋼骨鋼筋混凝土造 16–25 層",
+       "unit": 15.8
+      },
+      {
+       "name": "鋼骨造 26 層以上",
+       "unit": 19.5
+      }
+     ]
+    }
+   },
+   "W": {
+    "comparison": 0,
+    "income": 50,
+    "cost": 50,
+    "land": 0
+   },
+   "S": {
+    "dateMode": "auto",
+    "monthlyRate": 0.3,
+    "weightMode": "manual",
+    "totalMode": "abs",
+    "lim15": 15,
+    "lim30": 30,
+    "gapLim": 20,
+    "minComps": 3,
+    "diffThreshold": 20,
+    "unitDec": 1,
+    "totalDec": 0,
+    "unitDisplay": "wan"
+   },
+   "parcels": {
+    "rows": [
+     {
+      "p": {
+       "section": "○○段",
+       "no": "1628",
+       "zone": "第五種商業區",
+       "areaM2": 438,
+       "share": 1,
+       "annVal": 150000,
+       "prevVal": 120000,
+       "prevDate": "2015-06",
+       "cpi": 110,
+       "priceMode": "manual",
+       "adjPct": 0,
+       "annPct": 100,
+       "unit": 0,
+       "note": ""
+      },
+      "ping": 132.49480457016327,
+      "unit": 0,
+      "total": 0,
+      "vat": {
+       "cur": 65700000,
+       "prev": 57816000,
+       "inc": 7884000,
+       "ratio": 0.13636363636363635,
+       "tax": 1576800
+      }
+     }
+    ],
+    "ping": 132.49480457016327,
+    "m2": 438,
+    "total": 0,
+    "tax": 1576800
+   },
+   "special": null,
+   "area": 1821.17,
+   "isLand": false
+  },
+  "validate": {
+   "bl": [],
+   "notes": [
+    {
+     "t": "各方法估算價格差異 55.0%，已重新檢討並說明決定理由。",
+     "law": "§15"
+    },
+    {
+     "t": "建物已經歷年數依實際構成部分與使用狀態調整為 26 年。",
+     "law": "§68 II"
+    },
+    {
+     "t": "土地價格以比較法求取（每坪 148.4 萬元）。",
+     "law": "§69 II"
+    }
+   ],
+   "warns": [],
+   "items": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ]
+  },
+  "marketStats": {
+   "rows": [],
+   "n": 0,
+   "med": null,
+   "p25": null,
+   "p75": null,
+   "mean": null,
+   "rate": null,
+   "monthsSpan": 0
+  },
+  "sales": [],
+  "blocks": [
+   {
+    "t": "cover",
+    "office": "○○不動產估價師事務所",
+    "title": "不動產估價報告書",
+    "rows": [
+     [
+      "案號",
+      "115-0431"
+     ],
+     [
+      "委託人",
+      "○○國際股份有限公司"
+     ],
+     [
+      "勘估標的",
+      "高雄市前金區○○路○號（○○飯店）"
+     ],
+     [
+      "估價金額",
+      "新臺幣 54,999 萬元"
+     ],
+     [
+      "價格日期",
+      "民國 115 年 09 月 30 日"
+     ]
+    ]
+   },
+   {
+    "t": "pb"
+   },
+   {
+    "t": "letter",
+    "to": "○○國際股份有限公司",
+    "body": [
+     "關於 貴公司委託本所針對座落於高雄市前金區○○路○號（○○飯店）之勘估標的進行價值評估乙案，本所業已完成估價報告書。依 貴公司委託內容，估價目的為買賣參考，價格種類為正常價格，價格日期為民國 115 年 09 月 30 日，並考量 貴公司提供之勘估標的基本資料，評估勘估標的於現行不動產市場條件下之合理價值。評估過程均詳載於估價報告書，且依循不動產估價師法及不動產估價技術規則相關規定。",
+     "經本所估價師採用收益法、成本法進行評估，決定勘估標的於民國 115 年 09 月 30 日之價值為：新臺幣 54,999 萬元（伍億肆仟玖佰玖拾玖萬元整）。",
+     "以上評估結果僅適用於勘估標的於前述估價目的下之價值參考。由於不動產價值變動之特性，本估價報告書所載內容之有效期間最長為價格日期起 6 個月內。"
+    ],
+    "office": "○○不動產估價師事務所",
+    "signer": "林○○",
+    "certs": [
+     [
+      "開業證書字號",
+      "[開業證書字號]"
+     ],
+     [
+      "公會會員證書字號",
+      "[公會會員證書字號]"
+     ],
+     [
+      "不動產估價師證書字號",
+      "[估價師證書字號]"
+     ]
+    ]
+   },
+   {
+    "t": "pb"
+   },
+   {
+    "t": "h1",
+    "text": "目錄"
+   },
+   {
+    "t": "list",
+    "items": [
+     "不動產估價報告書摘要",
+     "壹、序言",
+     "貳、估價基本事項",
+     "參、價格形成之主要因素分析",
+     "肆、價格評估",
+     "伍、價格結論",
+     "陸、依不動產估價技術規則須敘明之情況及其他與估價相關之必要事項",
+     "柒、不動產估價師",
+     "附件"
+    ],
+    "ordered": false
+   },
+   {
+    "t": "pb"
+   },
+   {
+    "t": "h1",
+    "text": "不動產估價報告書摘要"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "一、案號",
+      "115-0431"
+     ],
+     [
+      "二、委託人",
+      "○○國際股份有限公司"
+     ],
+     [
+      "三、勘估標的",
+      "高雄市前金區○○路○號（○○飯店）"
+     ],
+     [
+      "　土地標示",
+      "○○段1628 地號"
+     ],
+     [
+      "　建物標示",
+      "○○段 2111～2122 建號"
+     ],
+     [
+      "　面積",
+      "土地 438.00 平方公尺（132.4948 坪）；建物 6,020.41 平方公尺（1,821.17 坪）"
+     ],
+     [
+      "　所有權人",
+      "○○開發股份有限公司（權利範圍全部）"
+     ],
+     [
+      "　使用分區",
+      "第五種商業區"
+     ],
+     [
+      "　使用現況",
+      "旅館營業中，地下 2 層為會議室、地下 1 層為餐廳、1 樓大廳、2～11 樓客房 115 間，維護良好。"
+     ],
+     [
+      "　標的類型",
+      "旅館"
+     ],
+     [
+      "四、估價目的",
+      "買賣參考"
+     ],
+     [
+      "　價格種類",
+      "正常價格"
+     ],
+     [
+      "　估價條件",
+      "以價格日期當時旅館營運現況、不考慮經營權與所有權分屬不同主體之影響為估價條件。"
+     ],
+     [
+      "　價格日期",
+      "民國 115 年 09 月 30 日"
+     ],
+     [
+      "　勘察日期",
+      "民國 115 年 09 月 30 日"
+     ],
+     [
+      "五、他項權利",
+      "最高限額抵押權 2 筆（○○銀行，合計擔保債權 33,000 萬元）"
+     ],
+     [
+      "六、評估價值結論",
+      "新臺幣 54,999 萬元（伍億肆仟玖佰玖拾玖萬元整）"
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "text": "按公告土地現值核算之土地增值稅約新臺幣 1,576,800 元；扣除後淨值約新臺幣 548,413,200 元（不考慮減免規定，實際以稅捐機關核定為準）。"
+   },
+   {
+    "t": "pb"
+   },
+   {
+    "t": "h1",
+    "text": "壹、序言"
+   },
+   {
+    "t": "h2",
+    "text": "一、估價立場聲明"
+   },
+   {
+    "t": "list",
+    "items": [
+     "本事務所以公正第三人立場進行客觀評估。",
+     "本事務所與委託人及受勘估單位僅為單純業務往來關係。",
+     "本事務所及本所估價師與委託人、不動產所有權人或交易雙方，並無國際會計準則第 24 號（IAS 24）所定之關係人或實質關係人之情事。",
+     "本報告書所載內容絕無虛偽或隱匿之情事，事實描述具真實確切性。",
+     "本報告書之分析意見及結論，係基於報告書所載假設及限制條件下成立，屬估價師中立之專業評論。",
+     "本事務所對勘估標的無現有或可預期之利益；對勘估標的之權利關係人亦無個人私利或偏見。",
+     "本事務所收取之報酬係專業勞務之正當報酬，不為不正當之競價，亦不刻意扭曲合理之估價結果。",
+     "本報告書內容遵循不動產估價師法及不動產估價技術規則，並依中華民國不動產估價師公會全國聯合會「敘述式估價報告書範本」格式製作。"
+    ],
+    "ordered": true
+   },
+   {
+    "t": "h2",
+    "text": "二、估價報告書基本聲明事項"
+   },
+   {
+    "t": "list",
+    "items": [
+     "除報告書另有聲明外，勘估標的之所有權視為正常狀態且具市場性。",
+     "除報告書另有聲明外，評估結論未考慮抵押權或其他權利設定之影響。",
+     "報告書引用他人提供之資訊，經估價師盡力查證後認為確實可靠。",
+     "勘估標的之土地及其地上物視為一般正常情形，無隱藏或一般勘察無法發現之影響價值條件。",
+     "除報告書另有聲明外，勘估標的視為符合環境保護相關法規，未受限制。",
+     "勘估標的可能存在之危險因子（如土壤或地下水污染、石棉等）不在估價師勘察範圍內，本報告假設不存在此類影響價值之因素；如有需要，使用者應另聘專家分析。"
+    ],
+    "ordered": true
+   },
+   {
+    "t": "h2",
+    "text": "三、估價報告書使用之限制條件"
+   },
+   {
+    "t": "list",
+    "items": [
+     "本報告書之持有人無出版本報告書之權利。",
+     "未經估價師書面同意，報告書全部或部分內容（尤其估價結論、估價師身分及事務所）不得經由廣告、公共關係、新聞或其他媒體公開。",
+     "評估結果僅適用於整體勘估標的；除報告書另有聲明，將總值按權利比例或其他方式劃分所得之結果均屬無效。",
+     "報告書之預測係基於當前市場條件、短期供需與穩定經濟基礎，將隨未來條件改變而變動。",
+     "評估結果僅供報告書所載估價目的參考，估價目的變更可能使估價金額改變。",
+     "評估結果係在報告書所載估價條件下形成，使用者應了解估價條件以免誤用。",
+     "評估結果僅具不動產價值參考性質，不必然為委託人或使用人之最後決定金額。",
+     "報告書使用者使用本報告書致違反個人資料保護法者，應自負法律責任。"
+    ],
+    "ordered": true
+   },
+   {
+    "t": "h1",
+    "text": "貳、估價基本事項"
+   },
+   {
+    "t": "h2",
+    "text": "一、委託人"
+   },
+   {
+    "t": "p",
+    "text": "○○國際股份有限公司"
+   },
+   {
+    "t": "h2",
+    "text": "二、勘估標的之基本資料"
+   },
+   {
+    "t": "h3",
+    "text": "（一）勘估標的內容"
+   },
+   {
+    "t": "table",
+    "head": [
+     "地段",
+     "地號",
+     "使用分區",
+     "面積(㎡)",
+     "權利範圍",
+     "面積(坪)"
+    ],
+    "rows": [
+     [
+      "○○段",
+      "1628",
+      "第五種商業區",
+      "438.00",
+      "全部",
+      "132.4948"
+     ],
+     [
+      "合計",
+      "",
+      "",
+      "438.00",
+      "",
+      "132.4948"
+     ]
+    ],
+    "align": [
+     "l",
+     "l",
+     "l",
+     "r",
+     "l",
+     "r"
+    ]
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "門牌",
+      "高雄市前金區○○路○號（○○飯店）"
+     ],
+     [
+      "建號",
+      "○○段 2111～2122 建號"
+     ],
+     [
+      "建物面積",
+      "1,821.17 坪（6,020.41 平方公尺）"
+     ],
+     [
+      "樓層",
+      "共 11 層"
+     ],
+     [
+      "構造",
+      "鋼筋混凝土造地上 11 層、地下 2 層，客房 115 間"
+     ],
+     [
+      "建築完成日",
+      "2000-08-28"
+     ],
+     [
+      "建物型態",
+      "其他"
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "text": "評估之權利種類：所有權。"
+   },
+   {
+    "t": "h3",
+    "text": "（二）產權分析"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "所有權人及權利範圍",
+      "○○開發股份有限公司（權利範圍全部）"
+     ],
+     [
+      "他項權利",
+      "最高限額抵押權 2 筆（○○銀行，合計擔保債權 33,000 萬元）"
+     ],
+     [
+      "限制登記",
+      "依登記謄本，查無預告登記、查封等限制登記情事。"
+     ]
+    ]
+   },
+   {
+    "t": "h2",
+    "text": "三、價格日期及勘察日期"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "價格日期",
+      "民國 115 年 09 月 30 日"
+     ],
+     [
+      "勘察日期",
+      "民國 115 年 09 月 30 日"
+     ]
+    ]
+   },
+   {
+    "t": "h2",
+    "text": "四、價格種類及估價條件"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "價格種類",
+      "正常價格"
+     ],
+     [
+      "估價條件",
+      "以價格日期當時旅館營運現況、不考慮經營權與所有權分屬不同主體之影響為估價條件。"
+     ]
+    ]
+   },
+   {
+    "t": "h2",
+    "text": "五、估價目的"
+   },
+   {
+    "t": "p",
+    "text": "本次估價結果作為勘估標的買賣參考之參考，報告書所載價格僅限於該目的之參考，不適用於其他用途。"
+   },
+   {
+    "t": "h2",
+    "text": "六、利益衝突之聲明"
+   },
+   {
+    "t": "p",
+    "text": "本事務所及本所估價師與委託人、不動產所有權人或交易雙方僅為單純之業務關係，並無國際會計準則第 24 號所定之關係人或實質關係人之情事。"
+   },
+   {
+    "t": "h2",
+    "text": "七、現況勘察情況說明"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "勘察日期",
+      "民國 115 年 09 月 30 日"
+     ],
+     [
+      "領勘人及其說明",
+      "委託人指派人員領勘。"
+     ],
+     [
+      "現場勘察參考資料",
+      "登記謄本、地籍圖、都市計畫圖、現場照片"
+     ],
+     [
+      "勘察結論",
+      "旅館營業中，地下 2 層為會議室、地下 1 層為餐廳、1 樓大廳、2～11 樓客房 115 間，維護良好。（拍攝現況照片 12 張）"
+     ]
+    ]
+   },
+   {
+    "t": "h2",
+    "text": "八、估價資料來源說明"
+   },
+   {
+    "t": "list",
+    "items": [
+     "不動產權利狀態以地政事務所核發之登記謄本為準。",
+     "都市計畫及土地使用分區以都市計畫機關查詢或土地使用分區證明為準。",
+     "不動產個別條件及區域環境係估價人員親赴現場勘察，並依都市計畫及地籍資料查證紀錄。",
+     "價格資料取自內政部不動產交易實價查詢服務網、本所案例資料庫，並向仲介、地政士、估價同業訪查。"
+    ],
+    "ordered": true
+   },
+   {
+    "t": "h2",
+    "text": "九、其他負擔"
+   },
+   {
+    "t": "p",
+    "text": "無"
+   },
+   {
+    "t": "h1",
+    "text": "參、價格形成之主要因素分析"
+   },
+   {
+    "t": "h2",
+    "text": "一、一般因素分析"
+   },
+   {
+    "t": "p",
+    "text": "國旅與入境旅客回升，觀光旅館住房率回到疫情前水準。（示意文字）"
+   },
+   {
+    "t": "h2",
+    "text": "二、不動產市場概況分析"
+   },
+   {
+    "t": "p",
+    "text": "⟦市場供需、價格水準、交易概況⟧"
+   },
+   {
+    "t": "h2",
+    "text": "三、區域因素分析"
+   },
+   {
+    "t": "p",
+    "text": "勘估標的所在近鄰地區，交通：臨 30 公尺主要道路，鄰近捷運站；生活機能：商圈成熟；嫌惡設施：無重大嫌惡設施。"
+   },
+   {
+    "t": "h2",
+    "text": "四、個別因素分析"
+   },
+   {
+    "t": "p",
+    "text": "土地三面臨路，面前道路寬約 30 公尺，長方形，地勢平坦；第五種商業區，建蔽率 70%、容積率 840%。"
+   },
+   {
+    "t": "h2",
+    "text": "五、法定使用管制與其他管制事項"
+   },
+   {
+    "t": "p",
+    "text": "勘估標的土地使用分區為第五種商業區。"
+   },
+   {
+    "t": "h2",
+    "text": "六、最有效使用分析"
+   },
+   {
+    "t": "p",
+    "text": "勘估標的依現況作旅館使用，符合最有效使用。"
+   },
+   {
+    "t": "h2",
+    "text": "七、土地增值稅預估"
+   },
+   {
+    "t": "table",
+    "head": [
+     "地號",
+     "公告現值(元/㎡)",
+     "前次移轉現值(元/㎡)",
+     "物價指數",
+     "增值稅(元)"
+    ],
+    "rows": [
+     [
+      "○○段1628",
+      "150,000",
+      "120,000.0",
+      "110.0%",
+      "1,576,800"
+     ],
+     [
+      "合計",
+      "",
+      "",
+      "",
+      "1,576,800"
+     ]
+    ],
+    "align": [
+     "l",
+     "r",
+     "r",
+     "r",
+     "r"
+    ]
+   },
+   {
+    "t": "p",
+    "text": "依土地稅法第 33 條一般稅率（20%、30%、40%）計算，未考慮長期持有減徵、自用住宅用地等優惠，實際以稅捐機關核定為準。"
+   },
+   {
+    "t": "h1",
+    "text": "肆、價格評估"
+   },
+   {
+    "t": "h2",
+    "text": "一、價格種類"
+   },
+   {
+    "t": "p",
+    "text": "正常價格指具有市場性之不動產，於有意願之買賣雙方，依專業知識、謹慎行動，不受任何脅迫，經適當市場行銷及正常交易條件形成之合理價值，並以貨幣金額表示者（§2(1)）。"
+   },
+   {
+    "t": "h2",
+    "text": "二、估價方法之選定"
+   },
+   {
+    "t": "p",
+    "text": "本案依勘估標的之類型（旅館）、估價目的及資料可取得程度，採用收益法、成本法評估（§14）。"
+   },
+   {
+    "t": "p",
+    "text": "收益法係以勘估標的未來平均一年期間之客觀淨收益，應用價格日期當時適當之收益資本化率推算勘估標的價格之方法；得採直接資本化法及折現現金流量分析法（§28）。"
+   },
+   {
+    "t": "p",
+    "text": "成本法係求取勘估標的於價格日期之重建成本或重置成本，扣減其累積折舊額或其他應扣除部分，以推算勘估標的價格之方法（§48）。"
+   },
+   {
+    "t": "h2",
+    "text": "三、價格評估過程"
+   },
+   {
+    "t": "h3",
+    "text": "（一）收益法（折現現金流量分析法）"
+   },
+   {
+    "t": "p",
+    "text": "勘估標的為營業中旅館，以客房收入推估總收入：客房數 115 間 × 平均房價 2,300 元 × 365 日 × 住房率 67.0% ＝ 64,683,475 元；其他收入以客房收入 5.0% 計。客房數 115 間 × 平均房價 2,300 元 × 住房率 67%，參考同區同級旅館與觀光署統計。"
+   },
+   {
+    "t": "table",
+    "head": [
+     "項目",
+     "金額（元）"
+    ],
+    "rows": [
+     [
+      "總收入",
+      "67,917,649"
+     ],
+     [
+      "有效總收入",
+      "67,917,649"
+     ],
+     [
+      "地價稅",
+      "−305,529"
+     ],
+     [
+      "房屋稅",
+      "−1,875,282"
+     ],
+     [
+      "保險費",
+      "−210,384"
+     ],
+     [
+      "維修費",
+      "−643,126"
+     ],
+     [
+      "重置提撥費",
+      "−1,607,816"
+     ],
+     [
+      "營業費用及成本 60.0%、管理費 1.0%",
+      "−39,489,261"
+     ],
+     [
+      "建物折舊提存費",
+      "−13,271,905"
+     ],
+     [
+      "淨收益（第 1 年）",
+      "10,514,345"
+     ]
+    ],
+    "align": [
+     "l",
+     "r"
+    ]
+   },
+   {
+    "t": "p",
+    "text": "分析期間 10 年，折現率 3.18%；收入年成長率前 5 年 2.5%、其後 1.0%；期末價值以第 11 年淨收益 ÷ 期末資本化率 4.28%，扣除處分費用 1.0%（§31、§32）。"
+   },
+   {
+    "t": "table",
+    "head": [
+     "年期",
+     "有效總收入",
+     "總費用",
+     "淨收益",
+     "現值"
+    ],
+    "rows": [
+     [
+      "1",
+      "67,917,649",
+      "44,131,398",
+      "23,786,250",
+      "23,053,160"
+     ],
+     [
+      "2",
+      "69,615,590",
+      "45,118,630",
+      "24,496,960",
+      "23,010,240"
+     ],
+     [
+      "3",
+      "71,355,980",
+      "46,130,542",
+      "25,225,437",
+      "22,964,243"
+     ],
+     [
+      "4",
+      "73,139,879",
+      "47,167,752",
+      "25,972,127",
+      "22,915,293"
+     ],
+     [
+      "5",
+      "74,968,376",
+      "48,230,893",
+      "26,737,483",
+      "22,863,510"
+     ],
+     [
+      "6",
+      "75,718,060",
+      "48,666,780",
+      "27,051,280",
+      "22,418,919"
+     ],
+     [
+      "7",
+      "76,475,241",
+      "49,107,027",
+      "27,368,214",
+      "21,982,536"
+     ],
+     [
+      "8",
+      "77,239,993",
+      "49,551,676",
+      "27,688,317",
+      "21,554,223"
+     ],
+     [
+      "9",
+      "78,012,393",
+      "50,000,771",
+      "28,011,622",
+      "21,133,846"
+     ],
+     [
+      "10",
+      "78,792,517",
+      "50,454,357",
+      "28,338,159",
+      "20,721,272"
+     ],
+     [
+      "期末",
+      "",
+      "",
+      "期末價值 655,485,461",
+      "479,300,440"
+     ]
+    ],
+    "align": [
+     "l",
+     "r",
+     "r",
+     "r",
+     "r"
+    ],
+    "small": true
+   },
+   {
+    "t": "p",
+    "text": "收益價格 ＝ 各期淨收益現值合計 222,617,242 元 ＋ 期末價值現值 479,300,440 元 ＝ 701,917,682 元（38.5 萬元/坪）。"
+   },
+   {
+    "t": "h3",
+    "text": "（二）成本法"
+   },
+   {
+    "t": "p",
+    "text": "營造施工費採單位面積比較法（間接法），單價每坪 21.94 萬元 × 營造工程物價指數 103.09%，依全聯會營造或施工費標準表（高雄市 11 層 RC 38,700 元/㎡），另加旅館設備 4,000 元/㎡；累積折舊採初期加速折舊（定率法）（§68）。"
+   },
+   {
+    "t": "table",
+    "head": [
+     "項目",
+     "金額（元）"
+    ],
+    "rows": [
+     [
+      "營造施工費",
+      "411,911,247"
+     ],
+     [
+      "規劃設計費（2.0%）",
+      "8,238,225"
+     ],
+     [
+      "附加成本（裝修、設備等）",
+      "50,432,490"
+     ],
+     [
+      "廣告銷售、管理、稅捐",
+      "66,359,524"
+     ],
+     [
+      "資本利息（2.99%）",
+      "16,054,550"
+     ],
+     [
+      "開發或建築利潤（20.0%）",
+      "110,599,207"
+     ],
+     [
+      "建物總成本",
+      "663,595,244"
+     ],
+     [
+      "累積折舊（26／50 年）",
+      "−463,192,684"
+     ],
+     [
+      "附加成本累積折舊",
+      "−1,008,650"
+     ],
+     [
+      "建物成本價格",
+      "199,393,910"
+     ],
+     [
+      "土地價格（比較法，148.4 萬元/坪 × 132.49 坪＋其他土地 2,728,000）",
+      "199,343,160"
+     ],
+     [
+      "房地成本價格",
+      "398,737,070"
+     ]
+    ],
+    "align": [
+     "l",
+     "r"
+    ]
+   },
+   {
+    "t": "p",
+    "text": "房地成本價格為 398,737,070 元（21.9 萬元/坪）。土地價格以比較法求取（§69 II）。"
+   },
+   {
+    "t": "h2",
+    "text": "四、價格決定"
+   },
+   {
+    "t": "table",
+    "head": [
+     "估價方法",
+     "試算單價",
+     "權重",
+     "加權後"
+    ],
+    "rows": [
+     [
+      "收益法",
+      "38.5 萬元/坪",
+      "50%",
+      "19.3 萬元/坪"
+     ],
+     [
+      "成本法",
+      "21.9 萬元/坪",
+      "50%",
+      "11.0 萬元/坪"
+     ],
+     [
+      "決定單價",
+      "",
+      "",
+      "30.2 萬元/坪"
+     ]
+    ],
+    "align": [
+     "l",
+     "r",
+     "r",
+     "r"
+    ]
+   },
+   {
+    "t": "p",
+    "text": "成本價格反映土地與建物重建成本，收益價格反映旅館營運收益能力，考量現況條件、未來性及市場發展，兩者賦予相同權重。"
+   },
+   {
+    "t": "p",
+    "text": "各方法試算價格差異為 55.0%，已就顯著差異重新檢討（§15）。"
+   },
+   {
+    "t": "h1",
+    "text": "伍、價格結論"
+   },
+   {
+    "t": "p",
+    "text": "勘估標的係坐落於高雄市前金區○○路○號（○○飯店）之不動產，基於估價目的為買賣參考，價格種類為正常價格，價格日期為民國 115 年 09 月 30 日，經本所估價師針對產權、一般因素、區域因素、個別因素、不動產市場現況及最有效使用分析後，決定勘估標的價格如下："
+   },
+   {
+    "t": "table",
+    "head": [
+     "項目",
+     "單價",
+     "面積(坪)",
+     "總價"
+    ],
+    "rows": [
+     [
+      "勘估標的",
+      "30.2 萬元/坪",
+      "1,821.17",
+      "新臺幣 54,999 萬元"
+     ]
+    ],
+    "align": [
+     "l",
+     "r",
+     "r",
+     "r"
+    ]
+   },
+   {
+    "t": "amount",
+    "text": "新臺幣 54,999 萬元（伍億肆仟玖佰玖拾玖萬元整）"
+   },
+   {
+    "t": "h1",
+    "text": "陸、依不動產估價技術規則須敘明之情況及其他與估價相關之必要事項"
+   },
+   {
+    "t": "h2",
+    "text": "一、依不動產估價技術規則須敘明之情況"
+   },
+   {
+    "t": "list",
+    "items": [
+     "各方法估算價格差異 55.0%，已重新檢討並說明決定理由。（§15）",
+     "建物已經歷年數依實際構成部分與使用狀態調整為 26 年。（§68 II）",
+     "土地價格以比較法求取（每坪 148.4 萬元）。（§69 II）"
+    ],
+    "ordered": true
+   },
+   {
+    "t": "h2",
+    "text": "二、其他與估價相關之必要事項"
+   },
+   {
+    "t": "p",
+    "text": "無。"
+   },
+   {
+    "t": "h1",
+    "text": "柒、不動產估價師"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "事務所",
+      "○○不動產估價師事務所"
+     ],
+     [
+      "不動產估價師",
+      "林○○（簽章）"
+     ],
+     [
+      "不動產估價師證書字號",
+      "[估價師證書字號]"
+     ],
+     [
+      "開業證書字號",
+      "[開業證書字號]（有效期限 2028-03-31）"
+     ],
+     [
+      "公會會員證書字號",
+      "[公會會員證書字號]"
+     ],
+     [
+      "所屬公會",
+      "[縣市]不動產估價師公會"
+     ]
+    ]
+   },
+   {
+    "t": "h1",
+    "text": "附件"
+   },
+   {
+    "t": "list",
+    "items": [
+     "勘估標的位置圖",
+     "勘估標的都市計畫（使用分區）略圖",
+     "土地及建物登記謄本",
+     "地籍圖謄本",
+     "建物測量成果圖",
+     "比較標的位置圖及實價登錄資料",
+     "勘估標的現況照片",
+     "營造或施工費標準表、物價指數及利率參考資料",
+     "不動產估價師證照影本"
+    ],
+    "ordered": true
+   }
+  ],
+  "html": "<div class=\"cover\"><p class=\"office\">○○不動產估價師事務所</p><h1>不動產估價報告書</h1><table class=\"kvt\"><tr><th>案號</th><td>115-0431</td></tr><tr><th>委託人</th><td>○○國際股份有限公司</td></tr><tr><th>勘估標的</th><td>高雄市前金區○○路○號（○○飯店）</td></tr><tr><th>估價金額</th><td>新臺幣 54,999 萬元</td></tr><tr><th>價格日期</th><td>民國 115 年 09 月 30 日</td></tr></table></div><hr class=\"pb\"><div class=\"letter\"><p><b>○○國際股份有限公司</b>　公鑒：</p><p class=\"indent\">關於 貴公司委託本所針對座落於高雄市前金區○○路○號（○○飯店）之勘估標的進行價值評估乙案，本所業已完成估價報告書。依 貴公司委託內容，估價目的為買賣參考，價格種類為正常價格，價格日期為民國 115 年 09 月 30 日，並考量 貴公司提供之勘估標的基本資料，評估勘估標的於現行不動產市場條件下之合理價值。評估過程均詳載於估價報告書，且依循不動產估價師法及不動產估價技術規則相關規定。</p><p class=\"indent\">經本所估價師採用收益法、成本法進行評估，決定勘估標的於民國 115 年 09 月 30 日之價值為：新臺幣 54,999 萬元（伍億肆仟玖佰玖拾玖萬元整）。</p><p class=\"indent\">以上評估結果僅適用於勘估標的於前述估價目的下之價值參考。由於不動產價值變動之特性，本估價報告書所載內容之有效期間最長為價格日期起 6 個月內。</p><p class=\"right\">○○不動產估價師事務所　估價師 林○○　敬上</p><p class=\"right small\">開業證書字號：[開業證書字號]</p><p class=\"right small\">公會會員證書字號：[公會會員證書字號]</p><p class=\"right small\">不動產估價師證書字號：[估價師證書字號]</p></div><hr class=\"pb\"><h2>目錄</h2><ul><li>不動產估價報告書摘要</li><li>壹、序言</li><li>貳、估價基本事項</li><li>參、價格形成之主要因素分析</li><li>肆、價格評估</li><li>伍、價格結論</li><li>陸、依不動產估價技術規則須敘明之情況及其他與估價相關之必要事項</li><li>柒、不動產估價師</li><li>附件</li></ul><hr class=\"pb\"><h2>不動產估價報告書摘要</h2><table class=\"kvt\"><tr><th>一、案號</th><td>115-0431</td></tr><tr><th>二、委託人</th><td>○○國際股份有限公司</td></tr><tr><th>三、勘估標的</th><td>高雄市前金區○○路○號（○○飯店）</td></tr><tr><th>　土地標示</th><td>○○段1628 地號</td></tr><tr><th>　建物標示</th><td>○○段 2111～2122 建號</td></tr><tr><th>　面積</th><td>土地 438.00 平方公尺（132.4948 坪）；建物 6,020.41 平方公尺（1,821.17 坪）</td></tr><tr><th>　所有權人</th><td>○○開發股份有限公司（權利範圍全部）</td></tr><tr><th>　使用分區</th><td>第五種商業區</td></tr><tr><th>　使用現況</th><td>旅館營業中，地下 2 層為會議室、地下 1 層為餐廳、1 樓大廳、2～11 樓客房 115 間，維護良好。</td></tr><tr><th>　標的類型</th><td>旅館</td></tr><tr><th>四、估價目的</th><td>買賣參考</td></tr><tr><th>　價格種類</th><td>正常價格</td></tr><tr><th>　估價條件</th><td>以價格日期當時旅館營運現況、不考慮經營權與所有權分屬不同主體之影響為估價條件。</td></tr><tr><th>　價格日期</th><td>民國 115 年 09 月 30 日</td></tr><tr><th>　勘察日期</th><td>民國 115 年 09 月 30 日</td></tr><tr><th>五、他項權利</th><td>最高限額抵押權 2 筆（○○銀行，合計擔保債權 33,000 萬元）</td></tr><tr><th>六、評估價值結論</th><td>新臺幣 54,999 萬元（伍億肆仟玖佰玖拾玖萬元整）</td></tr></table><p>按公告土地現值核算之土地增值稅約新臺幣 1,576,800 元；扣除後淨值約新臺幣 548,413,200 元（不考慮減免規定，實際以稅捐機關核定為準）。</p><hr class=\"pb\"><h2>壹、序言</h2><h3>一、估價立場聲明</h3><ol><li>本事務所以公正第三人立場進行客觀評估。</li><li>本事務所與委託人及受勘估單位僅為單純業務往來關係。</li><li>本事務所及本所估價師與委託人、不動產所有權人或交易雙方，並無國際會計準則第 24 號（IAS 24）所定之關係人或實質關係人之情事。</li><li>本報告書所載內容絕無虛偽或隱匿之情事，事實描述具真實確切性。</li><li>本報告書之分析意見及結論，係基於報告書所載假設及限制條件下成立，屬估價師中立之專業評論。</li><li>本事務所對勘估標的無現有或可預期之利益；對勘估標的之權利關係人亦無個人私利或偏見。</li><li>本事務所收取之報酬係專業勞務之正當報酬，不為不正當之競價，亦不刻意扭曲合理之估價結果。</li><li>本報告書內容遵循不動產估價師法及不動產估價技術規則，並依中華民國不動產估價師公會全國聯合會「敘述式估價報告書範本」格式製作。</li></ol><h3>二、估價報告書基本聲明事項</h3><ol><li>除報告書另有聲明外，勘估標的之所有權視為正常狀態且具市場性。</li><li>除報告書另有聲明外，評估結論未考慮抵押權或其他權利設定之影響。</li><li>報告書引用他人提供之資訊，經估價師盡力查證後認為確實可靠。</li><li>勘估標的之土地及其地上物視為一般正常情形，無隱藏或一般勘察無法發現之影響價值條件。</li><li>除報告書另有聲明外，勘估標的視為符合環境保護相關法規，未受限制。</li><li>勘估標的可能存在之危險因子（如土壤或地下水污染、石棉等）不在估價師勘察範圍內，本報告假設不存在此類影響價值之因素；如有需要，使用者應另聘專家分析。</li></ol><h3>三、估價報告書使用之限制條件</h3><ol><li>本報告書之持有人無出版本報告書之權利。</li><li>未經估價師書面同意，報告書全部或部分內容（尤其估價結論、估價師身分及事務所）不得經由廣告、公共關係、新聞或其他媒體公開。</li><li>評估結果僅適用於整體勘估標的；除報告書另有聲明，將總值按權利比例或其他方式劃分所得之結果均屬無效。</li><li>報告書之預測係基於當前市場條件、短期供需與穩定經濟基礎，將隨未來條件改變而變動。</li><li>評估結果僅供報告書所載估價目的參考，估價目的變更可能使估價金額改變。</li><li>評估結果係在報告書所載估價條件下形成，使用者應了解估價條件以免誤用。</li><li>評估結果僅具不動產價值參考性質，不必然為委託人或使用人之最後決定金額。</li><li>報告書使用者使用本報告書致違反個人資料保護法者，應自負法律責任。</li></ol><h2>貳、估價基本事項</h2><h3>一、委託人</h3><p>○○國際股份有限公司</p><h3>二、勘估標的之基本資料</h3><h4>（一）勘估標的內容</h4><div class=\"tblx\"><table><thead><tr><th>地段</th><th>地號</th><th>使用分區</th><th>面積(㎡)</th><th>權利範圍</th><th>面積(坪)</th></tr></thead><tbody><tr><td>○○段</td><td>1628</td><td>第五種商業區</td><td class=\"r\">438.00</td><td>全部</td><td class=\"r\">132.4948</td></tr><tr><td>合計</td><td></td><td></td><td class=\"r\">438.00</td><td></td><td class=\"r\">132.4948</td></tr></tbody></table></div><table class=\"kvt\"><tr><th>門牌</th><td>高雄市前金區○○路○號（○○飯店）</td></tr><tr><th>建號</th><td>○○段 2111～2122 建號</td></tr><tr><th>建物面積</th><td>1,821.17 坪（6,020.41 平方公尺）</td></tr><tr><th>樓層</th><td>共 11 層</td></tr><tr><th>構造</th><td>鋼筋混凝土造地上 11 層、地下 2 層，客房 115 間</td></tr><tr><th>建築完成日</th><td>2000-08-28</td></tr><tr><th>建物型態</th><td>其他</td></tr></table><p>評估之權利種類：所有權。</p><h4>（二）產權分析</h4><table class=\"kvt\"><tr><th>所有權人及權利範圍</th><td>○○開發股份有限公司（權利範圍全部）</td></tr><tr><th>他項權利</th><td>最高限額抵押權 2 筆（○○銀行，合計擔保債權 33,000 萬元）</td></tr><tr><th>限制登記</th><td>依登記謄本，查無預告登記、查封等限制登記情事。</td></tr></table><h3>三、價格日期及勘察日期</h3><table class=\"kvt\"><tr><th>價格日期</th><td>民國 115 年 09 月 30 日</td></tr><tr><th>勘察日期</th><td>民國 115 年 09 月 30 日</td></tr></table><h3>四、價格種類及估價條件</h3><table class=\"kvt\"><tr><th>價格種類</th><td>正常價格</td></tr><tr><th>估價條件</th><td>以價格日期當時旅館營運現況、不考慮經營權與所有權分屬不同主體之影響為估價條件。</td></tr></table><h3>五、估價目的</h3><p>本次估價結果作為勘估標的買賣參考之參考，報告書所載價格僅限於該目的之參考，不適用於其他用途。</p><h3>六、利益衝突之聲明</h3><p>本事務所及本所估價師與委託人、不動產所有權人或交易雙方僅為單純之業務關係，並無國際會計準則第 24 號所定之關係人或實質關係人之情事。</p><h3>七、現況勘察情況說明</h3><table class=\"kvt\"><tr><th>勘察日期</th><td>民國 115 年 09 月 30 日</td></tr><tr><th>領勘人及其說明</th><td>委託人指派人員領勘。</td></tr><tr><th>現場勘察參考資料</th><td>登記謄本、地籍圖、都市計畫圖、現場照片</td></tr><tr><th>勘察結論</th><td>旅館營業中，地下 2 層為會議室、地下 1 層為餐廳、1 樓大廳、2～11 樓客房 115 間，維護良好。（拍攝現況照片 12 張）</td></tr></table><h3>八、估價資料來源說明</h3><ol><li>不動產權利狀態以地政事務所核發之登記謄本為準。</li><li>都市計畫及土地使用分區以都市計畫機關查詢或土地使用分區證明為準。</li><li>不動產個別條件及區域環境係估價人員親赴現場勘察，並依都市計畫及地籍資料查證紀錄。</li><li>價格資料取自內政部不動產交易實價查詢服務網、本所案例資料庫，並向仲介、地政士、估價同業訪查。</li></ol><h3>九、其他負擔</h3><p>無</p><h2>參、價格形成之主要因素分析</h2><h3>一、一般因素分析</h3><p>國旅與入境旅客回升，觀光旅館住房率回到疫情前水準。（示意文字）</p><h3>二、不動產市場概況分析</h3><p><span class=\"ph\">市場供需、價格水準、交易概況</span></p><h3>三、區域因素分析</h3><p>勘估標的所在近鄰地區，交通：臨 30 公尺主要道路，鄰近捷運站；生活機能：商圈成熟；嫌惡設施：無重大嫌惡設施。</p><h3>四、個別因素分析</h3><p>土地三面臨路，面前道路寬約 30 公尺，長方形，地勢平坦；第五種商業區，建蔽率 70%、容積率 840%。</p><h3>五、法定使用管制與其他管制事項</h3><p>勘估標的土地使用分區為第五種商業區。</p><h3>六、最有效使用分析</h3><p>勘估標的依現況作旅館使用，符合最有效使用。</p><h3>七、土地增值稅預估</h3><div class=\"tblx\"><table><thead><tr><th>地號</th><th>公告現值(元/㎡)</th><th>前次移轉現值(元/㎡)</th><th>物價指數</th><th>增值稅(元)</th></tr></thead><tbody><tr><td>○○段1628</td><td class=\"r\">150,000</td><td class=\"r\">120,000.0</td><td class=\"r\">110.0%</td><td class=\"r\">1,576,800</td></tr><tr><td>合計</td><td class=\"r\"></td><td class=\"r\"></td><td class=\"r\"></td><td class=\"r\">1,576,800</td></tr></tbody></table></div><p>依土地稅法第 33 條一般稅率（20%、30%、40%）計算，未考慮長期持有減徵、自用住宅用地等優惠，實際以稅捐機關核定為準。</p><h2>肆、價格評估</h2><h3>一、價格種類</h3><p>正常價格指具有市場性之不動產，於有意願之買賣雙方，依專業知識、謹慎行動，不受任何脅迫，經適當市場行銷及正常交易條件形成之合理價值，並以貨幣金額表示者（§2(1)）。</p><h3>二、估價方法之選定</h3><p>本案依勘估標的之類型（旅館）、估價目的及資料可取得程度，採用收益法、成本法評估（§14）。</p><p>收益法係以勘估標的未來平均一年期間之客觀淨收益，應用價格日期當時適當之收益資本化率推算勘估標的價格之方法；得採直接資本化法及折現現金流量分析法（§28）。</p><p>成本法係求取勘估標的於價格日期之重建成本或重置成本，扣減其累積折舊額或其他應扣除部分，以推算勘估標的價格之方法（§48）。</p><h3>三、價格評估過程</h3><h4>（一）收益法（折現現金流量分析法）</h4><p>勘估標的為營業中旅館，以客房收入推估總收入：客房數 115 間 × 平均房價 2,300 元 × 365 日 × 住房率 67.0% ＝ 64,683,475 元；其他收入以客房收入 5.0% 計。客房數 115 間 × 平均房價 2,300 元 × 住房率 67%，參考同區同級旅館與觀光署統計。</p><div class=\"tblx\"><table><thead><tr><th>項目</th><th>金額（元）</th></tr></thead><tbody><tr><td>總收入</td><td class=\"r\">67,917,649</td></tr><tr><td>有效總收入</td><td class=\"r\">67,917,649</td></tr><tr><td>地價稅</td><td class=\"r\">−305,529</td></tr><tr><td>房屋稅</td><td class=\"r\">−1,875,282</td></tr><tr><td>保險費</td><td class=\"r\">−210,384</td></tr><tr><td>維修費</td><td class=\"r\">−643,126</td></tr><tr><td>重置提撥費</td><td class=\"r\">−1,607,816</td></tr><tr><td>營業費用及成本 60.0%、管理費 1.0%</td><td class=\"r\">−39,489,261</td></tr><tr><td>建物折舊提存費</td><td class=\"r\">−13,271,905</td></tr><tr><td>淨收益（第 1 年）</td><td class=\"r\">10,514,345</td></tr></tbody></table></div><p>分析期間 10 年，折現率 3.18%；收入年成長率前 5 年 2.5%、其後 1.0%；期末價值以第 11 年淨收益 ÷ 期末資本化率 4.28%，扣除處分費用 1.0%（§31、§32）。</p><div class=\"tblx\"><table class=\"sm\"><thead><tr><th>年期</th><th>有效總收入</th><th>總費用</th><th>淨收益</th><th>現值</th></tr></thead><tbody><tr><td>1</td><td class=\"r\">67,917,649</td><td class=\"r\">44,131,398</td><td class=\"r\">23,786,250</td><td class=\"r\">23,053,160</td></tr><tr><td>2</td><td class=\"r\">69,615,590</td><td class=\"r\">45,118,630</td><td class=\"r\">24,496,960</td><td class=\"r\">23,010,240</td></tr><tr><td>3</td><td class=\"r\">71,355,980</td><td class=\"r\">46,130,542</td><td class=\"r\">25,225,437</td><td class=\"r\">22,964,243</td></tr><tr><td>4</td><td class=\"r\">73,139,879</td><td class=\"r\">47,167,752</td><td class=\"r\">25,972,127</td><td class=\"r\">22,915,293</td></tr><tr><td>5</td><td class=\"r\">74,968,376</td><td class=\"r\">48,230,893</td><td class=\"r\">26,737,483</td><td class=\"r\">22,863,510</td></tr><tr><td>6</td><td class=\"r\">75,718,060</td><td class=\"r\">48,666,780</td><td class=\"r\">27,051,280</td><td class=\"r\">22,418,919</td></tr><tr><td>7</td><td class=\"r\">76,475,241</td><td class=\"r\">49,107,027</td><td class=\"r\">27,368,214</td><td class=\"r\">21,982,536</td></tr><tr><td>8</td><td class=\"r\">77,239,993</td><td class=\"r\">49,551,676</td><td class=\"r\">27,688,317</td><td class=\"r\">21,554,223</td></tr><tr><td>9</td><td class=\"r\">78,012,393</td><td class=\"r\">50,000,771</td><td class=\"r\">28,011,622</td><td class=\"r\">21,133,846</td></tr><tr><td>10</td><td class=\"r\">78,792,517</td><td class=\"r\">50,454,357</td><td class=\"r\">28,338,159</td><td class=\"r\">20,721,272</td></tr><tr><td>期末</td><td class=\"r\"></td><td class=\"r\"></td><td class=\"r\">期末價值 655,485,461</td><td class=\"r\">479,300,440</td></tr></tbody></table></div><p>收益價格 ＝ 各期淨收益現值合計 222,617,242 元 ＋ 期末價值現值 479,300,440 元 ＝ 701,917,682 元（38.5 萬元/坪）。</p><h4>（二）成本法</h4><p>營造施工費採單位面積比較法（間接法），單價每坪 21.94 萬元 × 營造工程物價指數 103.09%，依全聯會營造或施工費標準表（高雄市 11 層 RC 38,700 元/㎡），另加旅館設備 4,000 元/㎡；累積折舊採初期加速折舊（定率法）（§68）。</p><div class=\"tblx\"><table><thead><tr><th>項目</th><th>金額（元）</th></tr></thead><tbody><tr><td>營造施工費</td><td class=\"r\">411,911,247</td></tr><tr><td>規劃設計費（2.0%）</td><td class=\"r\">8,238,225</td></tr><tr><td>附加成本（裝修、設備等）</td><td class=\"r\">50,432,490</td></tr><tr><td>廣告銷售、管理、稅捐</td><td class=\"r\">66,359,524</td></tr><tr><td>資本利息（2.99%）</td><td class=\"r\">16,054,550</td></tr><tr><td>開發或建築利潤（20.0%）</td><td class=\"r\">110,599,207</td></tr><tr><td>建物總成本</td><td class=\"r\">663,595,244</td></tr><tr><td>累積折舊（26／50 年）</td><td class=\"r\">−463,192,684</td></tr><tr><td>附加成本累積折舊</td><td class=\"r\">−1,008,650</td></tr><tr><td>建物成本價格</td><td class=\"r\">199,393,910</td></tr><tr><td>土地價格（比較法，148.4 萬元/坪 × 132.49 坪＋其他土地 2,728,000）</td><td class=\"r\">199,343,160</td></tr><tr><td>房地成本價格</td><td class=\"r\">398,737,070</td></tr></tbody></table></div><p>房地成本價格為 398,737,070 元（21.9 萬元/坪）。土地價格以比較法求取（§69 II）。</p><h3>四、價格決定</h3><div class=\"tblx\"><table><thead><tr><th>估價方法</th><th>試算單價</th><th>權重</th><th>加權後</th></tr></thead><tbody><tr><td>收益法</td><td class=\"r\">38.5 萬元/坪</td><td class=\"r\">50%</td><td class=\"r\">19.3 萬元/坪</td></tr><tr><td>成本法</td><td class=\"r\">21.9 萬元/坪</td><td class=\"r\">50%</td><td class=\"r\">11.0 萬元/坪</td></tr><tr><td>決定單價</td><td class=\"r\"></td><td class=\"r\"></td><td class=\"r\">30.2 萬元/坪</td></tr></tbody></table></div><p>成本價格反映土地與建物重建成本，收益價格反映旅館營運收益能力，考量現況條件、未來性及市場發展，兩者賦予相同權重。</p><p>各方法試算價格差異為 55.0%，已就顯著差異重新檢討（§15）。</p><h2>伍、價格結論</h2><p>勘估標的係坐落於高雄市前金區○○路○號（○○飯店）之不動產，基於估價目的為買賣參考，價格種類為正常價格，價格日期為民國 115 年 09 月 30 日，經本所估價師針對產權、一般因素、區域因素、個別因素、不動產市場現況及最有效使用分析後，決定勘估標的價格如下：</p><div class=\"tblx\"><table><thead><tr><th>項目</th><th>單價</th><th>面積(坪)</th><th>總價</th></tr></thead><tbody><tr><td>勘估標的</td><td class=\"r\">30.2 萬元/坪</td><td class=\"r\">1,821.17</td><td class=\"r\">新臺幣 54,999 萬元</td></tr></tbody></table></div><p class=\"amount\">新臺幣 54,999 萬元（伍億肆仟玖佰玖拾玖萬元整）</p><h2>陸、依不動產估價技術規則須敘明之情況及其他與估價相關之必要事項</h2><h3>一、依不動產估價技術規則須敘明之情況</h3><ol><li>各方法估算價格差異 55.0%，已重新檢討並說明決定理由。（§15）</li><li>建物已經歷年數依實際構成部分與使用狀態調整為 26 年。（§68 II）</li><li>土地價格以比較法求取（每坪 148.4 萬元）。（§69 II）</li></ol><h3>二、其他與估價相關之必要事項</h3><p>無。</p><h2>柒、不動產估價師</h2><table class=\"kvt\"><tr><th>事務所</th><td>○○不動產估價師事務所</td></tr><tr><th>不動產估價師</th><td>林○○（簽章）</td></tr><tr><th>不動產估價師證書字號</th><td>[估價師證書字號]</td></tr><tr><th>開業證書字號</th><td>[開業證書字號]（有效期限 2028-03-31）</td></tr><tr><th>公會會員證書字號</th><td>[公會會員證書字號]</td></tr><tr><th>所屬公會</th><td>[縣市]不動產估價師公會</td></tr></table><h2>附件</h2><ol><li>勘估標的位置圖</li><li>勘估標的都市計畫（使用分區）略圖</li><li>土地及建物登記謄本</li><li>地籍圖謄本</li><li>建物測量成果圖</li><li>比較標的位置圖及實價登錄資料</li><li>勘估標的現況照片</li><li>營造或施工費標準表、物價指數及利率參考資料</li><li>不動產估價師證照影本</li></ol>"
+ }
+}

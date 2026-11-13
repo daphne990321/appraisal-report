@@ -4,8 +4,9 @@
   "description": "不動產估價報告產生器",
   "scripts": {
     "build": "python3 tools/build.py",
-    "test": "node test/snapshot.js && node test/docx.js && node test/summary.js && node test/interop.js && node test/lvr-cloud.js && node test/boot.js",
+    "test": "node test/snapshot.js && node test/docx.js && node test/summary.js && node test/interop.js && node test/lvr-cloud.js && node test/boot.js && node tools/golden-export.js --check",
     "test:update": "node test/snapshot.js --update",
+    "golden:export": "node tools/golden-export.js",
     "lvr:dry": "node tools/lvr-sync.js --dry-run",
     "mcp:sync": "node tools/sync-mcp.js",
     "mcp:pack": "node tools/sync-mcp.js && cd mcp && npx @anthropic-ai/mcpb pack"

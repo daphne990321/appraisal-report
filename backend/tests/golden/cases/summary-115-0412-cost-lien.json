@@ -1,0 +1,3691 @@
+{
+ "name": "summary-115-0412-cost-lien",
+ "description": "摘要式報告：同上但加採成本法，並列他項權利（最高限額抵押權）。",
+ "case": {
+  "id": "115-0412",
+  "kind": "unit",
+  "signed": false,
+  "signedAt": "",
+  "modelId": "m1",
+  "modelSnapshot": null,
+  "subjFlags": {},
+  "parcels": [],
+  "buildings": [],
+  "special": {
+   "enabled": false,
+   "label": "都市更新完成後",
+   "far": 0,
+   "years": 0,
+   "rateMode": "wacc",
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "prem": {
+    "liquidity": 0.9,
+    "risk": 0.9,
+    "growth": 0.9,
+    "mgmt": 1.2
+   },
+   "rateInput": 5,
+   "w": {
+    "comparison": 50,
+    "land": 50
+   }
+  },
+  "report": {
+   "caseNo": "",
+   "docNo": "",
+   "leader": "",
+   "surveyRefs": "登記謄本、地籍圖、都市計畫圖、現場照片",
+   "surveyConclusion": "",
+   "dataSources": "",
+   "otherBurden": "無",
+   "market": "",
+   "marketSupply": "",
+   "marketDemand": "",
+   "marketPrice": "",
+   "regionChecks": {},
+   "methodReason": "",
+   "notUsed": {}
+  },
+  "basic": {
+   "county": "新竹縣",
+   "district": "竹北市",
+   "road": "○○路",
+   "addr": "新竹縣竹北市○○路○段○號12樓",
+   "bldgNo": "○○段 1234 建號",
+   "landNo": "○○段 567 地號",
+   "zone": "第二種住宅區",
+   "btype": "住宅大樓(11層含以上有電梯)",
+   "area": 38.5,
+   "landShare": 7.82,
+   "floorNum": 12,
+   "totalFloors": 15,
+   "completed": "2018-06-20",
+   "floorDesc": "鋼筋混凝土造 15 層大樓之第 12 層",
+   "owner": "王○○（權利範圍全部）",
+   "encumbrance": "最高限額抵押權 1 筆（○○銀行，擔保債權總金額 1,560 萬元）",
+   "purpose": "抵押權設定",
+   "priceDate": "2026-09-30",
+   "surveyDate": "2026-10-07",
+   "priceType": "正常價格",
+   "conditions": "以價格日期當時現況、無租賃關係、可正常移轉為估價條件；不含車位。",
+   "normalPrice": "",
+   "client": "王○○",
+   "fee": "12000",
+   "contractDate": "2026-10-02",
+   "scope": "勘估標的房地正常價格估價，出具敘述式估價報告書 1 份"
+  },
+  "survey": {
+   "led": true,
+   "indoor": true,
+   "photos": 14,
+   "useStatus": "自住，三房兩廳兩衛；2023 年整修廚房與浴室，屋況良好，無滲漏水跡象。",
+   "illegal": "none",
+   "notes": "委託人表示 2023 年重新裝修廚衛；同社區 10 樓 7 月剛成交；無非自然死亡紀錄。",
+   "d": {
+    "traffic": "距主要幹道及高鐵站車程約 10 分鐘，公車路線 2 條",
+    "life": "步行 10 分鐘內有超市、市場、診所",
+    "school": "國小、國中學區步行可達",
+    "nuisance": "500 公尺內無高壓電塔、加油站、殯葬設施",
+    "floor": "15 層大樓之 12 樓，中高樓層",
+    "view": "南向，前方無高樓遮蔽，可見公園綠帶",
+    "light": "三面採光，通風良好",
+    "layout": "三房兩廳兩衛，方正",
+    "cond": "屋齡約 8 年，2023 年整修廚衛，維護良好",
+    "mgmt": "有管理委員會及 24 小時保全"
+   }
+  },
+  "analysis": {
+   "general": "央行持續選擇性信用管制，投資需求降溫，自住需求為市場主力；新竹科學園區產業就業穩定，支撐竹北人口移入與購屋需求；2026 年以來住宅交易量較前一年減少，價格大致持平。（示意文字：正式報告須引用價格日期前的公開資料並附出處）",
+   "region": "勘估標的所在近鄰地區，交通：距主要幹道及高鐵站車程約 10 分鐘，公車路線 2 條；生活機能：步行 10 分鐘內有超市、市場、診所；學區：國小、國中學區步行可達；嫌惡設施：500 公尺內無高壓電塔、加油站、殯葬設施。",
+   "indiv": "樓層：15 層大樓之 12 樓，中高樓層；景觀：南向，前方無高樓遮蔽，可見公園綠帶；採光通風：三面採光，通風良好；格局：三房兩廳兩衛，方正；屋齡屋況：屋齡約 8 年，2023 年整修廚衛，維護良好；管理：有管理委員會及 24 小時保全。",
+   "hbu": "勘估標的位於第二種住宅區，以現行用途使用合法、實質可能、正當合理且財務可行，維持現行使用即為最有效使用（§2(17)）。",
+   "confirmed": true
+  },
+  "methods": {
+   "comparison": true,
+   "income": true,
+   "cost": true,
+   "land": false,
+   "singleReason": ""
+  },
+  "comp": {
+   "method": "pct",
+   "inputMode": "grade",
+   "regVars": [
+    "age",
+    "floor",
+    "area",
+    "months"
+   ],
+   "volumeBasis": false,
+   "subjFar": 0
+  },
+  "comps": [
+   {
+    "label": "A",
+    "libId": "",
+    "src": "示範",
+    "loc": "竹北市○○路一段（同社區）",
+    "floor": "10F",
+    "age": 8,
+    "date": "2026-07",
+    "price": 52,
+    "special": "",
+    "note": "",
+    "area": 38.1,
+    "zone": "",
+    "far": "",
+    "priceType": "deal",
+    "bargain": 10,
+    "dataSrc": "",
+    "shape": "",
+    "road": "",
+    "cond": 0,
+    "condReason": "",
+    "dateManual": false,
+    "dateAdj": 0,
+    "adj": {
+     "i1": {
+      "lv": 1,
+      "pct": 1,
+      "amt": 0
+     },
+     "i2": {
+      "lv": 1,
+      "pct": 1,
+      "amt": 0
+     }
+    },
+    "flags": {},
+    "weight": 45,
+    "include": true,
+    "exception": false,
+    "exceptionReason": "",
+    "verifyIssue": ""
+   },
+   {
+    "label": "B",
+    "libId": "",
+    "src": "示範",
+    "loc": "竹北市○○路二段",
+    "floor": "15F",
+    "age": 6,
+    "date": "2026-05",
+    "price": 54.5,
+    "special": "",
+    "note": "",
+    "area": 41.3,
+    "zone": "",
+    "far": "",
+    "priceType": "deal",
+    "bargain": 10,
+    "dataSrc": "",
+    "shape": "",
+    "road": "",
+    "cond": 0,
+    "condReason": "",
+    "dateManual": false,
+    "dateAdj": 0,
+    "adj": {
+     "i1": {
+      "lv": -1,
+      "pct": -1,
+      "amt": 0
+     },
+     "i2": {
+      "lv": -1,
+      "pct": -1,
+      "amt": 0
+     },
+     "i3": {
+      "lv": 1,
+      "pct": 1,
+      "amt": 0
+     },
+     "i4": {
+      "lv": -2,
+      "pct": -2,
+      "amt": 0
+     },
+     "i6": {
+      "lv": -2,
+      "pct": -2,
+      "amt": 0
+     }
+    },
+    "flags": {},
+    "weight": 35,
+    "include": true,
+    "exception": false,
+    "exceptionReason": "",
+    "verifyIssue": ""
+   },
+   {
+    "label": "C",
+    "libId": "",
+    "src": "示範",
+    "loc": "竹北市○○街",
+    "floor": "8F",
+    "age": 10,
+    "date": "2026-03",
+    "price": 48.6,
+    "special": "親友關係人間之交易",
+    "note": "親友、員工、共有人或其他特殊關係間之交易",
+    "area": 36.4,
+    "zone": "",
+    "far": "",
+    "priceType": "deal",
+    "bargain": 10,
+    "dataSrc": "",
+    "shape": "",
+    "road": "",
+    "cond": 3,
+    "condReason": "經向買賣雙方及地政士查證，成交價低於同期市場行情約 3%",
+    "dateManual": false,
+    "dateAdj": 0,
+    "adj": {
+     "r1": {
+      "lv": 2,
+      "pct": 2,
+      "amt": 0
+     },
+     "r2": {
+      "lv": 1,
+      "pct": 1,
+      "amt": 0
+     },
+     "r3": {
+      "lv": 2,
+      "pct": 2,
+      "amt": 0
+     },
+     "i1": {
+      "lv": 2,
+      "pct": 2,
+      "amt": 0
+     },
+     "i2": {
+      "lv": 1,
+      "pct": 1,
+      "amt": 0
+     },
+     "i4": {
+      "lv": 2,
+      "pct": 2,
+      "amt": 0
+     },
+     "i6": {
+      "lv": 1,
+      "pct": 1,
+      "amt": 0
+     }
+    },
+    "flags": {},
+    "weight": 20,
+    "include": true,
+    "exception": false,
+    "exceptionReason": "",
+    "verifyIssue": "付款方式未能取得書面資料"
+   }
+  ],
+  "income": {
+   "method": "direct",
+   "revMode": "rent",
+   "rooms": 0,
+   "adr": 0,
+   "occ": 70,
+   "otherPct": 5,
+   "opexPct": 0,
+   "mgmtPct": 0,
+   "rent": 31000,
+   "rentSource": "依委託人提供之同社區租約及近鄰租賃行情決定",
+   "vacMonths": 1,
+   "incomes": [],
+   "exp": [
+    {
+     "name": "地價稅",
+     "amt": 3200
+    },
+    {
+     "name": "房屋稅",
+     "amt": 9800
+    },
+    {
+     "name": "保險費",
+     "amt": 2400
+    },
+    {
+     "name": "維修費",
+     "amt": 11160
+    },
+    {
+     "name": "重置提撥費",
+     "amt": 5000
+    }
+   ],
+   "costSource": "cost",
+   "manualCost": 0,
+   "life": 50,
+   "salvage": 0,
+   "threeYears": true,
+   "capMode": "extract",
+   "cap": 1.25,
+   "risk": {
+    "base": 1.6,
+    "liquidity": 0.2,
+    "risk": 0.3,
+    "growth": -0.6,
+    "mgmt": 0.1
+   },
+   "extract": [
+    {
+     "name": "近鄰 ○○路住宅",
+     "noi": 240000,
+     "price": 20000000
+    },
+    {
+     "name": "同社區 8 樓",
+     "noi": 250000,
+     "price": 20000000
+    },
+    {
+     "name": "○○街住宅",
+     "noi": 260000,
+     "price": 20000000
+    }
+   ],
+   "wacc": [
+    {
+     "name": "自有資金",
+     "w": 40,
+     "k": 2
+    },
+    {
+     "name": "借貸資金",
+     "w": 60,
+     "k": 2.5
+    }
+   ],
+   "dcr": {
+    "dcr": 1.2,
+    "rate": 2.5,
+    "years": 30,
+    "ltv": 70
+   },
+   "egim": {
+    "nir": 70,
+    "egim": 55
+   },
+   "dcf": {
+    "years": 10,
+    "rentGrowth": 1,
+    "rentGrowth2": 1,
+    "switchYear": 0,
+    "expGrowth": 1,
+    "disc": 2.5,
+    "termCap": 2,
+    "sellCost": 1,
+    "deductDep": false
+   }
+  },
+  "cost": {
+   "conMethod": "unit",
+   "unitCost": 11.2,
+   "indexPct": 100,
+   "extraLand": 0,
+   "unitCostNote": "",
+   "items": [
+    {
+     "name": "結構體工程",
+     "qty": 38.5,
+     "price": 62000
+    },
+    {
+     "name": "裝修工程",
+     "qty": 38.5,
+     "price": 32000
+    },
+    {
+     "name": "水電設備工程",
+     "qty": 38.5,
+     "price": 18000
+    }
+   ],
+   "design": 2.5,
+   "extras": [],
+   "adSell": 4,
+   "mgmt": 2,
+   "tax": 1,
+   "interest": 2,
+   "profit": 10,
+   "depMethod": "straight",
+   "sinkRate": 2,
+   "life": 50,
+   "salvage": 0,
+   "ageManual": false,
+   "age": 0,
+   "landUnit": 150
+  },
+  "land": {
+   "sales": [
+    {
+     "name": "一樓店面",
+     "ping": 120,
+     "unit": 70
+    },
+    {
+     "name": "二樓以上住宅",
+     "ping": 980,
+     "unit": 52
+    },
+    {
+     "name": "坡道平面車位（以坪計）",
+     "ping": 150,
+     "unit": 12
+    }
+   ],
+   "floorArea": 1450,
+   "conUnit": 16,
+   "design": 2.5,
+   "adSell": 4,
+   "mgmt": 3,
+   "tax": 1,
+   "profit": 15,
+   "iMode": "formula",
+   "annualRate": 2.5,
+   "landRatio": 60,
+   "years": 3,
+   "iInput": 5
+  },
+  "final": {
+   "useModelWeights": true,
+   "w": {
+    "comparison": 80,
+    "income": 20,
+    "cost": 0,
+    "land": 0
+   },
+   "reviewed": true,
+   "reason": "竹北市住宅以自住需求為主，租金收益率偏低，收益價格主要反映出租投資觀點；比較標的與勘估標的同屬一供需圈，交易資料充足且查證完整，可信度較高。估價目的為買賣參考，依本所估價模型比較價格給予 80%、收益價格 20%。"
+  },
+  "other": "本估價不含停車位價值。\n勘估標的設有最高限額抵押權，估價金額為正常價格，未扣除債權金額。\n使用執照影本尚待委託人提供；如用途與現況不符，估價金額可能需修正。",
+  "appraiser": {
+   "name": "林○○",
+   "certNo": "[估價師證書字號]",
+   "licenseNo": "[開業證書字號]",
+   "licenseExp": "2028-03-31",
+   "office": "○○不動產估價師事務所",
+   "guild": "[縣市]不動產估價師公會"
+  },
+  "chk": {
+   "entered": "未能入內",
+   "photoByClient": true,
+   "useNow": "自用",
+   "nuis": [
+    "近高架道路"
+   ],
+   "noLien": false,
+   "area": {
+    "main": 60,
+    "attach": 10,
+    "common1": 20,
+    "common2": 10,
+    "park": 0,
+    "other": 0
+   },
+   "liens": [
+    {
+     "order": "1",
+     "kind": "最高限額抵押權",
+     "amount": 15600000,
+     "holder": "○○銀行"
+    }
+   ]
+  }
+ },
+ "modelId": "m1",
+ "format": "summary",
+ "expected": {
+  "calc": {
+   "comp": {
+    "rows": [
+     {
+      "items": [
+       {
+        "id": "r1",
+        "group": "region",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "r2",
+        "group": "region",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "r3",
+        "group": "region",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "r4",
+        "group": "region",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "r5",
+        "group": "region",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "i1",
+        "group": "indiv",
+        "v": 1,
+        "pct": 1
+       },
+       {
+        "id": "i2",
+        "group": "indiv",
+        "v": 1,
+        "pct": 1
+       },
+       {
+        "id": "i3",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "i4",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "i5",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "i6",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "i7",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "i8",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "x:e1",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e2",
+        "group": "region",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e3",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e4",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e5",
+        "group": "region",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e6",
+        "group": "region",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e7",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       }
+      ],
+      "r": 0,
+      "i": 2,
+      "rv": 0,
+      "iv": 2,
+      "cond": 0,
+      "date": 0.6,
+      "maxItem": 1,
+      "total": 2.6,
+      "viol15": false,
+      "viol30": false,
+      "trial": 53.36,
+      "usable": true,
+      "specialUnadjusted": false,
+      "weight": 45,
+      "pEff": 52,
+      "bargain": 0,
+      "volRatio": 1,
+      "volPrice": null,
+      "factor": 1.02612,
+      "absSum": 2.6
+     },
+     {
+      "items": [
+       {
+        "id": "r1",
+        "group": "region",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "r2",
+        "group": "region",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "r3",
+        "group": "region",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "r4",
+        "group": "region",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "r5",
+        "group": "region",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "i1",
+        "group": "indiv",
+        "v": -1,
+        "pct": -1
+       },
+       {
+        "id": "i2",
+        "group": "indiv",
+        "v": -1,
+        "pct": -1
+       },
+       {
+        "id": "i3",
+        "group": "indiv",
+        "v": 1,
+        "pct": 1
+       },
+       {
+        "id": "i4",
+        "group": "indiv",
+        "v": -2,
+        "pct": -2
+       },
+       {
+        "id": "i5",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "i6",
+        "group": "indiv",
+        "v": -2,
+        "pct": -2
+       },
+       {
+        "id": "i7",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "i8",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "x:e1",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e2",
+        "group": "region",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e3",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e4",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e5",
+        "group": "region",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e6",
+        "group": "region",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e7",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       }
+      ],
+      "r": 0,
+      "i": -5,
+      "rv": 0,
+      "iv": -5,
+      "cond": 0,
+      "date": 1.2,
+      "maxItem": 2,
+      "total": 6.2,
+      "viol15": false,
+      "viol30": false,
+      "trial": 52.4,
+      "usable": true,
+      "specialUnadjusted": false,
+      "weight": 35,
+      "pEff": 54.5,
+      "bargain": 0,
+      "volRatio": 1,
+      "volPrice": null,
+      "factor": 0.9613999999999999,
+      "absSum": 8.2
+     },
+     {
+      "items": [
+       {
+        "id": "r1",
+        "group": "region",
+        "v": 2,
+        "pct": 2
+       },
+       {
+        "id": "r2",
+        "group": "region",
+        "v": 1,
+        "pct": 1
+       },
+       {
+        "id": "r3",
+        "group": "region",
+        "v": 2,
+        "pct": 2
+       },
+       {
+        "id": "r4",
+        "group": "region",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "r5",
+        "group": "region",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "i1",
+        "group": "indiv",
+        "v": 2,
+        "pct": 2
+       },
+       {
+        "id": "i2",
+        "group": "indiv",
+        "v": 1,
+        "pct": 1
+       },
+       {
+        "id": "i3",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "i4",
+        "group": "indiv",
+        "v": 2,
+        "pct": 2
+       },
+       {
+        "id": "i5",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "i6",
+        "group": "indiv",
+        "v": 1,
+        "pct": 1
+       },
+       {
+        "id": "i7",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "i8",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0
+       },
+       {
+        "id": "x:e1",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e2",
+        "group": "region",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e3",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e4",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e5",
+        "group": "region",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e6",
+        "group": "region",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       },
+       {
+        "id": "x:e7",
+        "group": "indiv",
+        "v": 0,
+        "pct": 0,
+        "exp": true
+       }
+      ],
+      "r": 5,
+      "i": 6,
+      "rv": 5,
+      "iv": 6,
+      "cond": 3,
+      "date": 1.8,
+      "maxItem": 2,
+      "total": 15.8,
+      "viol15": false,
+      "viol30": false,
+      "trial": 56.72,
+      "usable": true,
+      "specialUnadjusted": false,
+      "weight": 20,
+      "pEff": 48.6,
+      "bargain": 0,
+      "volRatio": 1,
+      "volPrice": null,
+      "factor": 1.16702502,
+      "absSum": 15.8
+     }
+    ],
+    "usedCount": 3,
+    "gap": 7.9178885630498534,
+    "wSum": 100,
+    "unitRaw": 53.696000000000005,
+    "unit": 53.7
+   },
+   "reg": null,
+   "cost": {
+    "idx": 1,
+    "extrasDep": 0,
+    "extraLand": 0,
+    "construction": 4312000,
+    "design": 107800,
+    "extras": 0,
+    "fees": 376718.5683589088,
+    "interest": 95930.37136717817,
+    "profit": 489244.8939726086,
+    "T": 5381693.833698696,
+    "age": 8,
+    "dep": 861071.0133917914,
+    "depNote": "",
+    "building": 4520622.820306905,
+    "land": 11730000,
+    "price": 16250622.820306905,
+    "unitRaw": 42.20940992287508,
+    "unit": 42.2
+   },
+   "inc": {
+    "hotel": false,
+    "roomRev": 0,
+    "rent": 31000,
+    "other": 0,
+    "gross": 372000,
+    "loss": 31000,
+    "egi": 341000,
+    "expSum": 37872,
+    "expRaw": 31560,
+    "expMult": 1.2,
+    "pctPart": 0,
+    "buildCost": 5381693.833698696,
+    "dep": 107633.87667397392,
+    "noi": 195494.12332602608,
+    "cap": 1.25,
+    "price": 15639529.866082085,
+    "flows": null,
+    "terminal": null,
+    "unitRaw": 40.622155496317106,
+    "unit": 40.6
+   },
+   "land": {
+    "S": 611600000,
+    "C": 232000000,
+    "design": 5800000,
+    "saleFees": 48928000,
+    "M": 54728000,
+    "i": 0.06000000000000001,
+    "R": 0.15,
+    "V": 214994723.54388845,
+    "unitRaw": 558.4278533607492,
+    "unit": 558.4
+   },
+   "fin": {
+    "methods": [
+     {
+      "key": "comparison",
+      "name": "比較法",
+      "unit": 53.7,
+      "w": 70
+     },
+     {
+      "key": "income",
+      "name": "收益法",
+      "unit": 40.6,
+      "w": 30
+     },
+     {
+      "key": "cost",
+      "name": "成本法",
+      "unit": 42.2,
+      "w": 0
+     }
+    ],
+    "diff": 27.783669141039237,
+    "wSum": 100,
+    "unit": 49.8,
+    "totalWan": 1917,
+    "yuan": 19170000
+   },
+   "mc": 3,
+   "P": {
+    "w": {
+     "comparison": 70,
+     "income": 30,
+     "cost": 0,
+     "land": 0
+    },
+    "capFloor": 1.6,
+    "expMult": 1.2
+   },
+   "M": {
+    "id": "m1",
+    "name": "本所標準模型",
+    "updated": "2026-10-24",
+    "note": "本所一般案件使用。",
+    "settings": {
+     "dateMode": "auto",
+     "monthlyRate": 0.3,
+     "weightMode": "manual",
+     "totalMode": "abs",
+     "lim15": 15,
+     "lim30": 30,
+     "gapLim": 20,
+     "minComps": 3,
+     "diffThreshold": 20,
+     "unitDec": 1,
+     "totalDec": 0,
+     "unitDisplay": "wan"
+    },
+    "indicators": [
+     {
+      "id": "r1",
+      "group": "region",
+      "cat": "交通運輸",
+      "name": "交通",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "r2",
+      "group": "region",
+      "cat": "公共設施",
+      "name": "生活機能",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "r3",
+      "group": "region",
+      "cat": "公共設施",
+      "name": "學區",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "r4",
+      "group": "region",
+      "cat": "公共設施",
+      "name": "公共設施",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "r5",
+      "group": "region",
+      "cat": "自然條件",
+      "name": "嫌惡設施",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "r6",
+      "group": "region",
+      "cat": "發展潛力",
+      "name": "發展趨勢",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": false
+     },
+     {
+      "id": "i1",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "樓層",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i2",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "景觀",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i3",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "面積",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i4",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "屋齡",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i5",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "採光通風",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i6",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "格局",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i7",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "屋況",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i8",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "管理",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": true
+     },
+     {
+      "id": "i9",
+      "group": "indiv",
+      "cat": "建物條件",
+      "name": "公設比",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": false
+     },
+     {
+      "id": "i10",
+      "group": "indiv",
+      "cat": "道路條件",
+      "name": "臨路寬度",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": false
+     },
+     {
+      "id": "i11",
+      "group": "indiv",
+      "cat": "宗地條件",
+      "name": "總價與單價關係",
+      "step": 1,
+      "stepAmt": 0.5,
+      "on": false
+     }
+    ],
+    "indicatorSets": {
+     "bldg": [
+      {
+       "id": "r1",
+       "group": "region",
+       "cat": "交通運輸",
+       "name": "交通",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "r2",
+       "group": "region",
+       "cat": "公共設施",
+       "name": "生活機能",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "r3",
+       "group": "region",
+       "cat": "公共設施",
+       "name": "學區",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "r4",
+       "group": "region",
+       "cat": "公共設施",
+       "name": "公共設施",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "r5",
+       "group": "region",
+       "cat": "自然條件",
+       "name": "嫌惡設施",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "r6",
+       "group": "region",
+       "cat": "發展潛力",
+       "name": "發展趨勢",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": false
+      },
+      {
+       "id": "i1",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "樓層",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i2",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "景觀",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i3",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "面積",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i4",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "屋齡",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i5",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "採光通風",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i6",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "格局",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i7",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "屋況",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i8",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "管理",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "i9",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "公設比",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": false
+      },
+      {
+       "id": "i10",
+       "group": "indiv",
+       "cat": "道路條件",
+       "name": "臨路寬度",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": false
+      },
+      {
+       "id": "i11",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "總價與單價關係",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": false
+      }
+     ],
+     "land": [
+      {
+       "id": "L_r1",
+       "group": "region",
+       "cat": "交通運輸",
+       "name": "主要道路",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r2",
+       "group": "region",
+       "cat": "交通運輸",
+       "name": "捷運、公車便利性",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r3",
+       "group": "region",
+       "cat": "交通運輸",
+       "name": "鐵路、交流道接近程度",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r4",
+       "group": "region",
+       "cat": "自然條件",
+       "name": "景觀",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r5",
+       "group": "region",
+       "cat": "自然條件",
+       "name": "排水、地勢、災害影響",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r6",
+       "group": "region",
+       "cat": "公共設施",
+       "name": "學校、市場",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r7",
+       "group": "region",
+       "cat": "公共設施",
+       "name": "公園、服務性設施",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r8",
+       "group": "region",
+       "cat": "發展潛力",
+       "name": "重大建設",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_r9",
+       "group": "region",
+       "cat": "發展潛力",
+       "name": "發展趨勢、生活圈",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i1",
+       "group": "indiv",
+       "cat": "道路條件",
+       "name": "道路寬度",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i2",
+       "group": "indiv",
+       "cat": "道路條件",
+       "name": "道路鋪裝、種別",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i3",
+       "group": "indiv",
+       "cat": "接近條件",
+       "name": "接近車站、學校、市場",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i4",
+       "group": "indiv",
+       "cat": "接近條件",
+       "name": "接近公園、停車場、商圈",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i5",
+       "group": "indiv",
+       "cat": "週邊環境",
+       "name": "地勢、日照",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i6",
+       "group": "indiv",
+       "cat": "週邊環境",
+       "name": "嫌惡設施、鄰地使用",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i7",
+       "group": "indiv",
+       "cat": "行政條件",
+       "name": "使用分區、建蔽率",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i8",
+       "group": "indiv",
+       "cat": "行政條件",
+       "name": "容積率、禁限建",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i9",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "面積",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i10",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "面寬、深度",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i11",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "形狀",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i12",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "臨路情形",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i13",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "總價與單價關係",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "L_i14",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "規劃可行性",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      }
+     ],
+     "ind": [
+      {
+       "id": "G_r1",
+       "group": "region",
+       "cat": "交通運輸",
+       "name": "主要道路、交流道",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_r2",
+       "group": "region",
+       "cat": "交通運輸",
+       "name": "港口、鐵路",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_r3",
+       "group": "region",
+       "cat": "公共設施",
+       "name": "電力、產業用水",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_r4",
+       "group": "region",
+       "cat": "公共設施",
+       "name": "污廢水、廢棄物處理",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_r5",
+       "group": "region",
+       "cat": "發展潛力",
+       "name": "產業聚集、上下游",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_r6",
+       "group": "region",
+       "cat": "發展潛力",
+       "name": "擴廠可能性、勞工來源",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i1",
+       "group": "indiv",
+       "cat": "道路條件",
+       "name": "道路寬度",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i2",
+       "group": "indiv",
+       "cat": "道路條件",
+       "name": "道路種別",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i3",
+       "group": "indiv",
+       "cat": "道路條件",
+       "name": "貨車進出便利性",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i4",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "面積",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i5",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "形狀",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i6",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "臨路面數",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i7",
+       "group": "indiv",
+       "cat": "宗地條件",
+       "name": "土壤污染",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i8",
+       "group": "indiv",
+       "cat": "行政條件",
+       "name": "使用變更、轉用",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": true
+      },
+      {
+       "id": "G_i9",
+       "group": "indiv",
+       "cat": "建物條件",
+       "name": "廠房結構、樓高",
+       "step": 1,
+       "stepAmt": 0.5,
+       "on": false
+      }
+     ]
+    },
+    "exp": [
+     {
+      "id": "e1",
+      "name": "路沖",
+      "group": "indiv",
+      "pct": -3,
+      "on": true,
+      "sets": [
+       "bldg",
+       "land"
+      ]
+     },
+     {
+      "id": "e2",
+      "name": "臨公園、綠地",
+      "group": "region",
+      "pct": 2,
+      "on": true,
+      "sets": [
+       "bldg",
+       "land"
+      ]
+     },
+     {
+      "id": "e3",
+      "name": "邊間",
+      "group": "indiv",
+      "pct": 1.5,
+      "on": true,
+      "sets": [
+       "bldg"
+      ]
+     },
+     {
+      "id": "e4",
+      "name": "頂樓",
+      "group": "indiv",
+      "pct": -2,
+      "on": true,
+      "sets": [
+       "bldg"
+      ]
+     },
+     {
+      "id": "e5",
+      "name": "鄰近高壓電塔、變電所",
+      "group": "region",
+      "pct": -5,
+      "on": true,
+      "sets": [
+       "bldg",
+       "land",
+       "ind"
+      ]
+     },
+     {
+      "id": "e6",
+      "name": "臨 15 公尺以上道路",
+      "group": "region",
+      "pct": 2,
+      "on": true,
+      "sets": [
+       "bldg",
+       "land",
+       "ind"
+      ]
+     },
+     {
+      "id": "e7",
+      "name": "無電梯四樓以上",
+      "group": "indiv",
+      "pct": -4,
+      "on": true,
+      "sets": [
+       "bldg"
+      ]
+     },
+     {
+      "id": "e8",
+      "name": "雙面臨路（角地）",
+      "group": "indiv",
+      "pct": 3,
+      "on": true,
+      "sets": [
+       "land",
+       "ind"
+      ]
+     },
+     {
+      "id": "e9",
+      "name": "位法定山坡地",
+      "group": "indiv",
+      "pct": -5,
+      "on": true,
+      "sets": [
+       "land"
+      ]
+     },
+     {
+      "id": "e10",
+      "name": "畸零地、難以單獨開發",
+      "group": "indiv",
+      "pct": -10,
+      "on": true,
+      "sets": [
+       "land"
+      ]
+     }
+    ],
+    "select": {
+     "sameCounty": true,
+     "sameDistrict": true,
+     "sameType": true,
+     "sameZone": true,
+     "months": 24,
+     "ageTol": 10,
+     "areaTolPct": 40,
+     "floorTol": 10,
+     "excludeSpecial": true,
+     "excludePresale": true,
+     "keyword": "",
+     "autoN": 3,
+     "wDate": 30,
+     "wAge": 25,
+     "wArea": 20,
+     "wFloor": 15,
+     "wRoad": 10
+    },
+    "rentSelect": {
+     "sameCounty": true,
+     "sameDistrict": true,
+     "sameType": false,
+     "months": 12,
+     "areaTolPct": 60,
+     "onlyWhole": true,
+     "excludeFurnished": false
+    },
+    "purpose": {
+     "買賣參考": {
+      "w": {
+       "comparison": 80,
+       "income": 20,
+       "cost": 0,
+       "land": 0
+      },
+      "capFloor": 0,
+      "expMult": 1
+     },
+     "抵押權設定": {
+      "w": {
+       "comparison": 70,
+       "income": 30,
+       "cost": 0,
+       "land": 0
+      },
+      "capFloor": 1.6,
+      "expMult": 1.2
+     },
+     "資產價值證明": {
+      "w": {
+       "comparison": 80,
+       "income": 20,
+       "cost": 0,
+       "land": 0
+      },
+      "capFloor": 0,
+      "expMult": 1
+     },
+     "繼承、贈與": {
+      "w": {
+       "comparison": 80,
+       "income": 20,
+       "cost": 0,
+       "land": 0
+      },
+      "capFloor": 0,
+      "expMult": 1
+     },
+     "法院訴訟": {
+      "w": {
+       "comparison": 70,
+       "income": 30,
+       "cost": 0,
+       "land": 0
+      },
+      "capFloor": 0,
+      "expMult": 1
+     },
+     "都市更新權利變換": {
+      "w": {
+       "comparison": 60,
+       "income": 0,
+       "cost": 0,
+       "land": 40
+      },
+      "capFloor": 0,
+      "expMult": 1
+     },
+     "企業資產評價": {
+      "w": {
+       "comparison": 50,
+       "income": 50,
+       "cost": 0,
+       "land": 0
+      },
+      "capFloor": 0,
+      "expMult": 1
+     }
+    },
+    "kindWeights": {
+     "unit": null,
+     "house": {
+      "comparison": 60,
+      "income": 0,
+      "cost": 40,
+      "land": 0
+     },
+     "land": {
+      "comparison": 50,
+      "income": 0,
+      "cost": 0,
+      "land": 50
+     },
+     "industrial": {
+      "comparison": 100,
+      "income": 0,
+      "cost": 0,
+      "land": 0
+     },
+     "hotel": {
+      "comparison": 0,
+      "income": 50,
+      "cost": 50,
+      "land": 0
+     },
+     "commercial": {
+      "comparison": 40,
+      "income": 40,
+      "cost": 20,
+      "land": 0
+     },
+     "factory": {
+      "comparison": 50,
+      "income": 0,
+      "cost": 50,
+      "land": 0
+     }
+    },
+    "income": {
+     "vacMonths": 1,
+     "cap": 1.25
+    },
+    "sources": {
+     "lvr": true,
+     "own": true
+    },
+    "lda": {
+     "profit": 20,
+     "design": 2,
+     "adSell": 6,
+     "mgmt": 4.5,
+     "tax": 1,
+     "ownRatio": 50,
+     "ownRate": 1.7,
+     "loanRate": 3.27,
+     "freeFactor": 1.3,
+     "saleFactor": 1.75,
+     "firstFloorRatio": 0.88,
+     "util1F": 200,
+     "utilStep": 1,
+     "baseFloor": 4,
+     "pingPerCar": 18
+    },
+    "texts": {
+     "validMonths": 6,
+     "stance": [
+      "本事務所以公正第三人立場進行客觀評估。",
+      "本事務所與委託人及受勘估單位僅為單純業務往來關係。",
+      "本事務所及本所估價師與委託人、不動產所有權人或交易雙方，並無國際會計準則第 24 號（IAS 24）所定之關係人或實質關係人之情事。",
+      "本報告書所載內容絕無虛偽或隱匿之情事，事實描述具真實確切性。",
+      "本報告書之分析意見及結論，係基於報告書所載假設及限制條件下成立，屬估價師中立之專業評論。",
+      "本事務所對勘估標的無現有或可預期之利益；對勘估標的之權利關係人亦無個人私利或偏見。",
+      "本事務所收取之報酬係專業勞務之正當報酬，不為不正當之競價，亦不刻意扭曲合理之估價結果。",
+      "本報告書內容遵循不動產估價師法及不動產估價技術規則，並依中華民國不動產估價師公會全國聯合會「敘述式估價報告書範本」格式製作。"
+     ],
+     "assumptions": [
+      "除報告書另有聲明外，勘估標的之所有權視為正常狀態且具市場性。",
+      "除報告書另有聲明外，評估結論未考慮抵押權或其他權利設定之影響。",
+      "報告書引用他人提供之資訊，經估價師盡力查證後認為確實可靠。",
+      "勘估標的之土地及其地上物視為一般正常情形，無隱藏或一般勘察無法發現之影響價值條件。",
+      "除報告書另有聲明外，勘估標的視為符合環境保護相關法規，未受限制。",
+      "勘估標的可能存在之危險因子（如土壤或地下水污染、石棉等）不在估價師勘察範圍內，本報告假設不存在此類影響價值之因素；如有需要，使用者應另聘專家分析。"
+     ],
+     "limits": [
+      "本報告書之持有人無出版本報告書之權利。",
+      "未經估價師書面同意，報告書全部或部分內容（尤其估價結論、估價師身分及事務所）不得經由廣告、公共關係、新聞或其他媒體公開。",
+      "評估結果僅適用於整體勘估標的；除報告書另有聲明，將總值按權利比例或其他方式劃分所得之結果均屬無效。",
+      "報告書之預測係基於當前市場條件、短期供需與穩定經濟基礎，將隨未來條件改變而變動。",
+      "評估結果僅供報告書所載估價目的參考，估價目的變更可能使估價金額改變。",
+      "評估結果係在報告書所載估價條件下形成，使用者應了解估價條件以免誤用。",
+      "評估結果僅具不動產價值參考性質，不必然為委託人或使用人之最後決定金額。",
+      "報告書使用者使用本報告書致違反個人資料保護法者，應自負法律責任。"
+     ]
+    },
+    "cost": {
+     "unitCost": 11.2,
+     "design": 2.5,
+     "adSell": 4,
+     "mgmt": 2,
+     "tax": 1,
+     "interest": 2,
+     "profit": 10,
+     "life": 50,
+     "salvage": 0,
+     "table": [
+      {
+       "name": "加強磚造 1–3 層",
+       "unit": 7.6
+      },
+      {
+       "name": "鋼筋混凝土造 4–5 層",
+       "unit": 9.8
+      },
+      {
+       "name": "鋼筋混凝土造 6–10 層",
+       "unit": 11.2
+      },
+      {
+       "name": "鋼筋混凝土造 11–15 層",
+       "unit": 12.6
+      },
+      {
+       "name": "鋼骨鋼筋混凝土造 16–25 層",
+       "unit": 15.8
+      },
+      {
+       "name": "鋼骨造 26 層以上",
+       "unit": 19.5
+      }
+     ]
+    }
+   },
+   "W": {
+    "comparison": 70,
+    "income": 30,
+    "cost": 0,
+    "land": 0
+   },
+   "S": {
+    "dateMode": "auto",
+    "monthlyRate": 0.3,
+    "weightMode": "manual",
+    "totalMode": "abs",
+    "lim15": 15,
+    "lim30": 30,
+    "gapLim": 20,
+    "minComps": 3,
+    "diffThreshold": 20,
+    "unitDec": 1,
+    "totalDec": 0,
+    "unitDisplay": "wan"
+   },
+   "parcels": null,
+   "special": null,
+   "area": 38.5,
+   "isLand": false
+  },
+  "validate": {
+   "bl": [
+    {
+     "t": "收益資本化率 1.25% 低於估價模型「本所標準模型」對「抵押權設定」設定的下限 1.60%",
+     "law": "本所模型",
+     "tab": "income"
+    }
+   ],
+   "notes": [
+    {
+     "t": "區域因素及個別因素調整採百分率法，依事務所指標級距表評定等級。",
+     "law": "§24"
+    },
+    {
+     "t": "比較標的 C 為「親友關係人間之交易」，經向買賣雙方及地政士查證，成交價低於同期市場行情約 3%，以情況調整 +3.0% 採用。",
+     "law": "§23"
+    },
+    {
+     "t": "比較標的 C 付款方式未能取得書面資料，查證有困難。",
+     "law": "§22 II"
+    },
+    {
+     "t": "各方法估算價格差異 27.8%，已重新檢討並說明決定理由。",
+     "law": "§15"
+    },
+    {
+     "t": "土地價格以比較法求取（每坪 150.0 萬元）。",
+     "law": "§69 II"
+    }
+   ],
+   "warns": [],
+   "items": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ]
+  },
+  "marketStats": {
+   "rows": [
+    {
+     "id": "OWN1",
+     "kind": "sale",
+     "src": "本所案例",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "第二種住宅區",
+     "date": "2026-06",
+     "floorNum": 11,
+     "totalFloors": 15,
+     "completed": "2018-03",
+     "age": 8,
+     "areaPing": 39.2,
+     "unitWan": 53.4,
+     "park": true,
+     "note": "",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市○○路（本所 115-0288 案）",
+     "road": "○○路",
+     "elevator": true,
+     "mgmt": true,
+     "score": 93
+    },
+    {
+     "id": "OWN2",
+     "kind": "sale",
+     "src": "本所案例",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "第二種住宅區",
+     "date": "2026-04",
+     "floorNum": 9,
+     "totalFloors": 14,
+     "completed": "2017-11",
+     "age": 8,
+     "areaPing": 36.8,
+     "unitWan": 52.1,
+     "park": true,
+     "note": "",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市○○街（本所 115-0251 案）",
+     "road": "○○街",
+     "elevator": true,
+     "mgmt": true,
+     "score": 76
+    },
+    {
+     "id": "J27",
+     "kind": "sale",
+     "src": "實價登錄",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "住宅區",
+     "date": "2026-07",
+     "floorNum": 15,
+     "totalFloors": 15,
+     "completed": "2021-06",
+     "age": 5,
+     "areaPing": 39.68,
+     "unitWan": 80.65,
+     "totalWan": 3200,
+     "park": true,
+     "note": "",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市高鐵五路",
+     "road": "高鐵五路",
+     "elevator": true,
+     "mgmt": true,
+     "score": 73
+    },
+    {
+     "id": "J64",
+     "kind": "sale",
+     "src": "實價登錄",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "第一種住宅區",
+     "date": "2026-06",
+     "floorNum": 11,
+     "totalFloors": 14,
+     "completed": "2017-06",
+     "age": 9,
+     "areaPing": 30.79,
+     "unitWan": 57.97,
+     "totalWan": 1785,
+     "park": true,
+     "note": "其他增建",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市嘉興三街",
+     "road": "嘉興三街",
+     "elevator": true,
+     "mgmt": true,
+     "score": 73
+    },
+    {
+     "id": "J30",
+     "kind": "sale",
+     "src": "實價登錄",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "第一種住宅區",
+     "date": "2026-07",
+     "floorNum": 7,
+     "totalFloors": 14,
+     "completed": "2017-06",
+     "age": 9,
+     "areaPing": 29.51,
+     "unitWan": 53.2,
+     "totalWan": 1570,
+     "park": true,
+     "note": "",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市嘉興三街",
+     "road": "嘉興三街",
+     "elevator": true,
+     "mgmt": true,
+     "score": 67
+    },
+    {
+     "id": "J85",
+     "kind": "sale",
+     "src": "實價登錄",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "住宅區",
+     "date": "2026-05",
+     "floorNum": 13,
+     "totalFloors": 15,
+     "completed": "2020-03",
+     "age": 6,
+     "areaPing": 47,
+     "unitWan": 83.4,
+     "totalWan": 3920,
+     "park": true,
+     "note": "其他增建",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市隘口一街",
+     "road": "隘口一街",
+     "elevator": true,
+     "mgmt": true,
+     "score": 67
+    },
+    {
+     "id": "J59",
+     "kind": "sale",
+     "src": "實價登錄",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "第一種住宅區",
+     "date": "2026-07",
+     "floorNum": 13,
+     "totalFloors": 14,
+     "completed": "2024-08",
+     "age": 1,
+     "areaPing": 39.52,
+     "unitWan": 62.45,
+     "totalWan": 2468,
+     "park": true,
+     "note": "",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市科大二街",
+     "road": "科大二街",
+     "elevator": true,
+     "mgmt": true,
+     "score": 66
+    },
+    {
+     "id": "J65",
+     "kind": "sale",
+     "src": "實價登錄",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "第一種住宅區",
+     "date": "2026-06",
+     "floorNum": 12,
+     "totalFloors": 14,
+     "completed": "2024-08",
+     "age": 1,
+     "areaPing": 40.47,
+     "unitWan": 61.65,
+     "totalWan": 2495,
+     "park": true,
+     "note": "",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市科大二街",
+     "road": "科大二街",
+     "elevator": true,
+     "mgmt": true,
+     "score": 65
+    },
+    {
+     "id": "J66",
+     "kind": "sale",
+     "src": "實價登錄",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "第一種住宅區",
+     "date": "2026-06",
+     "floorNum": 13,
+     "totalFloors": 14,
+     "completed": "2024-08",
+     "age": 1,
+     "areaPing": 40.47,
+     "unitWan": 62.02,
+     "totalWan": 2510,
+     "park": true,
+     "note": "",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市科大二街",
+     "road": "科大二街",
+     "elevator": true,
+     "mgmt": true,
+     "score": 64
+    },
+    {
+     "id": "J80",
+     "kind": "sale",
+     "src": "實價登錄",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "第一種住宅區",
+     "date": "2026-06",
+     "floorNum": 7,
+     "totalFloors": 14,
+     "completed": "2014-03",
+     "age": 12,
+     "areaPing": 43.25,
+     "unitWan": 67.05,
+     "totalWan": 2900,
+     "park": true,
+     "note": "其他增建",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市十興五街",
+     "road": "十興五街",
+     "elevator": true,
+     "mgmt": true,
+     "score": 63
+    },
+    {
+     "id": "J29",
+     "kind": "sale",
+     "src": "實價登錄",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "住宅區",
+     "date": "2026-07",
+     "floorNum": 11,
+     "totalFloors": 14,
+     "completed": "2008-09",
+     "age": 17,
+     "areaPing": 36.88,
+     "unitWan": 41.62,
+     "totalWan": 1535,
+     "park": true,
+     "note": "其他增建",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市六家七路",
+     "road": "六家七路",
+     "elevator": true,
+     "mgmt": true,
+     "score": 62
+    },
+    {
+     "id": "J89",
+     "kind": "sale",
+     "src": "實價登錄",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "住宅區",
+     "date": "2026-05",
+     "floorNum": 8,
+     "totalFloors": 14,
+     "completed": "2020-12",
+     "age": 5,
+     "areaPing": 47.19,
+     "unitWan": 79.32,
+     "totalWan": 3743,
+     "park": true,
+     "note": "",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市隘口二路",
+     "road": "隘口二路",
+     "elevator": true,
+     "mgmt": true,
+     "score": 60
+    },
+    {
+     "id": "J38",
+     "kind": "sale",
+     "src": "實價登錄",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "第一種住宅區",
+     "date": "2026-07",
+     "floorNum": 12,
+     "totalFloors": 13,
+     "completed": "2011-06",
+     "age": 15,
+     "areaPing": 47.51,
+     "unitWan": 60.62,
+     "totalWan": 2880,
+     "park": true,
+     "note": "其他增建",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市科大二街",
+     "road": "科大二街",
+     "elevator": true,
+     "mgmt": true,
+     "score": 59
+    },
+    {
+     "id": "J60",
+     "kind": "sale",
+     "src": "實價登錄",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "第一種住宅區",
+     "date": "2026-07",
+     "floorNum": 3,
+     "totalFloors": 14,
+     "completed": "2024-08",
+     "age": 1,
+     "areaPing": 40.47,
+     "unitWan": 58.27,
+     "totalWan": 2358,
+     "park": true,
+     "note": "",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市科大二街",
+     "road": "科大二街",
+     "elevator": true,
+     "mgmt": true,
+     "score": 53
+    },
+    {
+     "id": "J63",
+     "kind": "sale",
+     "src": "實價登錄",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "住宅區",
+     "date": "2026-06",
+     "floorNum": 15,
+     "totalFloors": 15,
+     "completed": "2026-05",
+     "age": 0,
+     "areaPing": 30.21,
+     "unitWan": 78.72,
+     "totalWan": 2378,
+     "park": true,
+     "note": "",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市隘口三街",
+     "road": "隘口三街",
+     "elevator": true,
+     "mgmt": true,
+     "score": 50
+    },
+    {
+     "id": "J103",
+     "kind": "sale",
+     "src": "實價登錄",
+     "county": "新竹縣",
+     "district": "竹北市",
+     "type": "住宅大樓(11層含以上有電梯)",
+     "zone": "第一種住宅區",
+     "date": "2026-01",
+     "floorNum": 12,
+     "totalFloors": 15,
+     "completed": "2021-06",
+     "age": 4,
+     "areaPing": 53.23,
+     "unitWan": 52.23,
+     "totalWan": 2780,
+     "park": true,
+     "note": "其他增建",
+     "special": "",
+     "presale": false,
+     "addr": "新竹縣竹北市社崙二街",
+     "road": "社崙二街",
+     "elevator": true,
+     "mgmt": true,
+     "score": 50
+    }
+   ],
+   "n": 16,
+   "med": 61.135,
+   "p25": 53.35,
+   "p75": 69.9675,
+   "mean": 62.791875,
+   "rate": 1.632279189728753,
+   "rateFit": {
+    "beta": [
+     72.46731147283168,
+     1.0249387084654913,
+     -1.0052461709173137
+    ],
+    "se": [
+     8.375838315791132,
+     1.9704709856041696,
+     0.5919541407481654
+    ],
+    "n": 16,
+    "k": 2,
+    "r2": 0.18455720647751894,
+    "adjR2": 0.059104469012521865,
+    "F": 1.4711293687713496,
+    "p": 0.26549585400412534
+   },
+   "monthsSpan": 5
+  },
+  "sales": [
+   "OWN1",
+   "OWN2",
+   "J27",
+   "J64",
+   "J30",
+   "J85",
+   "J59",
+   "J65",
+   "J66",
+   "J80",
+   "J29",
+   "J89",
+   "J38",
+   "J60",
+   "J63",
+   "J103"
+  ],
+  "blocks": [
+   {
+    "t": "cover",
+    "office": "○○不動產估價師事務所",
+    "title": "辦理金融機構不動產抵押貸款業務之不動產估價報告書",
+    "rows": [
+     [
+      "案件編號",
+      "115-0412"
+     ],
+     [
+      "委託單位",
+      "王○○"
+     ],
+     [
+      "勘估標的",
+      "新竹縣竹北市○○路○段○號12樓"
+     ],
+     [
+      "評估金額",
+      "新台幣 19,170,000 元"
+     ],
+     [
+      "勘察日期",
+      "民國 115 年 10 月 07 日"
+     ],
+     [
+      "價格日期",
+      "民國 115 年 09 月 30 日"
+     ]
+    ]
+   },
+   {
+    "t": "pb"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "委託人",
+      "王○○"
+     ],
+     [
+      "案件編號",
+      "115-0412"
+     ]
+    ]
+   },
+   {
+    "t": "h3",
+    "text": "不動產坐落"
+   },
+   {
+    "t": "table",
+    "head": [
+     "坐落及門牌",
+     "地號／建號",
+     "面積（㎡）",
+     "面積（坪）",
+     "所有權人"
+    ],
+    "rows": [
+     [
+      "土地",
+      "○○段 567 地號",
+      "—",
+      "—",
+      "王○○（權利範圍全部）"
+     ],
+     [
+      "建物",
+      "新竹縣竹北市○○路○段○號12樓",
+      "",
+      "",
+      ""
+     ],
+     [
+      "主建物",
+      "○○段 1234 建號",
+      "60.00",
+      "18.15",
+      "王○○（權利範圍全部）"
+     ],
+     [
+      "附屬建物",
+      "—",
+      "10.00",
+      "3.03",
+      "—"
+     ],
+     [
+      "公共設施（I）",
+      "—",
+      "20.00",
+      "6.05",
+      "—"
+     ],
+     [
+      "公共設施（II，含車位）",
+      "—",
+      "10.00",
+      "3.03",
+      "—"
+     ],
+     [
+      "獨立產權車位",
+      "—",
+      "—",
+      "—",
+      "—"
+     ],
+     [
+      "其他獨立產權",
+      "—",
+      "—",
+      "—",
+      "—"
+     ],
+     [
+      "合計",
+      "公設比 30.00%",
+      "100.00",
+      "30.25",
+      ""
+     ]
+    ],
+    "align": [
+     "l",
+     "l",
+     "r",
+     "r",
+     "l"
+    ],
+    "small": true
+   },
+   {
+    "t": "p",
+    "text": "註：公設比為（公設Ⅰ＋公設Ⅱ＋其他獨立產權）÷（主建物＋附屬建物＋公設Ⅰ＋公設Ⅱ＋其他獨立產權）；依範本公式以謄本面積明細計算。"
+   },
+   {
+    "t": "h3",
+    "text": "評估價值及土地增值稅"
+   },
+   {
+    "t": "table",
+    "head": [
+     "項目",
+     "單價",
+     "總價（元）",
+     "土地增值稅（元）",
+     "淨值（元）"
+    ],
+    "rows": [
+     [
+      "土地",
+      "150.0 萬元/坪",
+      "11,730,000",
+      "—",
+      "—"
+     ],
+     [
+      "建物",
+      "⟦待填⟧",
+      "4,520,623",
+      "—",
+      "—"
+     ],
+     [
+      "房地一體",
+      "49.8 萬元/坪",
+      "19,170,000",
+      "⟦待填⟧",
+      "⟦待填⟧"
+     ]
+    ],
+    "align": [
+     "l",
+     "r",
+     "r",
+     "r",
+     "r"
+    ],
+    "small": true
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "不含車位建坪單價",
+      "⟦待填⟧"
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "text": "註：車位價值：⟦待填⟧ 元，車位面積：⟦待填⟧ 坪。土地與建物分開之價格僅成本法有現成數值（土地為比較法求得、建物為成本價格），其餘待估價師填寫。"
+   },
+   {
+    "t": "h3",
+    "text": "他項權利分析"
+   },
+   {
+    "t": "table",
+    "head": [
+     "項目",
+     "第 1 筆"
+    ],
+    "rows": [
+     [
+      "登記次序",
+      "1"
+     ],
+     [
+      "權利種類",
+      "最高限額抵押權"
+     ],
+     [
+      "設定起日",
+      "—"
+     ],
+     [
+      "設定訖日（債權確定日期）",
+      "—"
+     ],
+     [
+      "擔保債權總金額",
+      "15600000"
+     ],
+     [
+      "設定之權利人",
+      "○○銀行"
+     ],
+     [
+      "義務人",
+      "—"
+     ],
+     [
+      "債務人",
+      "—"
+     ]
+    ],
+    "small": true
+   },
+   {
+    "t": "pb"
+   },
+   {
+    "t": "h1",
+    "text": "評估內容"
+   },
+   {
+    "t": "h2",
+    "text": "一、委託人"
+   },
+   {
+    "t": "p",
+    "text": "王○○"
+   },
+   {
+    "t": "h2",
+    "text": "二、勘估標的之基本資料"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "1.土地標示",
+      "○○段 567 地號"
+     ],
+     [
+      "2.建物標示",
+      "○○段 1234 建號；建物面積 38.50 坪（127.27 平方公尺）"
+     ],
+     [
+      "3.建物門牌",
+      "新竹縣竹北市○○路○段○號12樓"
+     ]
+    ]
+   },
+   {
+    "t": "h2",
+    "text": "三、價格日期及勘察日期"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "價格日期",
+      "民國 115 年 09 月 30 日"
+     ],
+     [
+      "勘察日期",
+      "民國 115 年 10 月 07 日"
+     ]
+    ]
+   },
+   {
+    "t": "h2",
+    "text": "四、價格種類"
+   },
+   {
+    "t": "p",
+    "text": "正常價格"
+   },
+   {
+    "t": "h2",
+    "text": "五、估價條件"
+   },
+   {
+    "t": "p",
+    "text": "以價格日期當時現況、無租賃關係、可正常移轉為估價條件；不含車位。"
+   },
+   {
+    "t": "h2",
+    "text": "六、估價目的"
+   },
+   {
+    "t": "p",
+    "text": "抵押權設定"
+   },
+   {
+    "t": "h2",
+    "text": "七、估價金額"
+   },
+   {
+    "t": "list",
+    "items": [
+     "比較價格：建坪單價 53.7 萬元/坪",
+     "收益價格：新台幣 15,639,530 元（建坪單價 40.6 萬元/坪）",
+     "成本價格：新台幣 16,250,623 元（建坪單價 42.2 萬元/坪）",
+     "最終決定之估價金額：新台幣 19,170,000 元"
+    ],
+    "ordered": true
+   },
+   {
+    "t": "h2",
+    "text": "八、勘估標的之所有權、他項權利及其他負擔"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "產權狀況",
+      "□產權清楚　□查封登記　□預告登記　□未辦保存登記　□其他"
+     ],
+     [
+      "謄本狀況",
+      "□完整　□只申請節本　□查無謄本"
+     ],
+     [
+      "建物及土地關連性",
+      "□同屬一人　□分屬不同人"
+     ],
+     [
+      "他項權利及其他負擔",
+      "□無設定　■有設定：最高限額抵押權，權利人 ○○銀行，擔保債權總金額 15,600,000 元"
+     ]
+    ]
+   },
+   {
+    "t": "h2",
+    "text": "九、勘估標的使用現況"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "是否入內勘察",
+      "□已入內　■未能入內"
+     ],
+     [
+      "內部照片由委託人提供",
+      "■是　□否"
+     ],
+     [
+      "使用現況",
+      "■自用　□出租　□閒置　□使用借貸　□過戶中　□無法判斷"
+     ],
+     [
+      "整棟建物使用型態",
+      "⟦待填⟧"
+     ]
+    ]
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "增建情形",
+      "□無　□有"
+     ],
+     [
+      "車位分管協議及圖說",
+      "□是　□否　□無法判斷　□無車位"
+     ],
+     [
+      "約定專用協議",
+      "□是　□否　□無法判斷"
+     ]
+    ]
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "標的是否為瑕疵建物",
+      "□否　□海砂屋　□輻射屋　□事故屋　□結構安全疑慮　□其他"
+     ]
+    ]
+   },
+   {
+    "t": "h2",
+    "text": "十、勘估標的法定使用管制或其他管制事項"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "使用分區",
+      "第二種住宅區"
+     ],
+     [
+      "坐落分區",
+      "□都市計畫地區　□非都市計畫地區"
+     ],
+     [
+      "法令特殊因素",
+      "□無　□山坡地限制區　□行水區限制區　□航高限制區　□斷層帶限制區　□其他"
+     ]
+    ]
+   },
+   {
+    "t": "h2",
+    "text": "十一、價格形成之主要因素分析"
+   },
+   {
+    "t": "h3",
+    "text": "1.區域條件分析及區域建物使用"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "一般生活所需的市場或購物中心距離",
+      "⟦待填⟧ 公里"
+     ],
+     [
+      "最近的國中或國小距離",
+      "⟦待填⟧ 公里"
+     ],
+     [
+      "小區域環境品質",
+      "□良好　□尚可　□不佳"
+     ],
+     [
+      "聯外道路狀況",
+      "□良好　□尚可　□不佳"
+     ],
+     [
+      "大眾運輸系統",
+      "□良好　□尚可　□不佳（需自駕）"
+     ],
+     [
+      "區域地面層作為某用途的比例",
+      "⟦待填⟧ %"
+     ],
+     [
+      "地面層主要用途",
+      "⟦待填⟧"
+     ],
+     [
+      "二層以上作為某用途的比例",
+      "⟦待填⟧ %"
+     ],
+     [
+      "二層以上主要用途",
+      "⟦待填⟧"
+     ],
+     [
+      "近期區域發展之重大設施與計畫",
+      "□無　□有"
+     ]
+    ]
+   },
+   {
+    "t": "h3",
+    "text": "2.市場面分析"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "所在區域空屋率",
+      "⟦待填⟧ %"
+     ],
+     [
+      "區域供需情形",
+      "□供需平衡　□供過於求　□供不應求"
+     ],
+     [
+      "消費客群",
+      "□在地客多　□外來客多　□其他"
+     ],
+     [
+      "預計銷售期",
+      "□三個月內　□三～六個月內　□半年以上"
+     ],
+     [
+      "未來房價走勢",
+      "□平穩　□上漲　□下跌"
+     ],
+     [
+      "流通性",
+      "□良好　□尚可　□不佳"
+     ],
+     [
+      "三個月內售出的議價空間",
+      "⟦待填⟧ %"
+     ]
+    ]
+   },
+   {
+    "t": "h3",
+    "text": "3.標的結構及規劃"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "標的結構",
+      "鋼筋混凝土造 15 層大樓之第 12 層"
+     ],
+     [
+      "標的規劃",
+      "住宅大樓(11層含以上有電梯)"
+     ]
+    ]
+   },
+   {
+    "t": "h3",
+    "text": "4.外在嫌惡設施及負面因素評估"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "嫌惡設施（可複選）",
+      "□無　□死巷　□路沖　□反弓路　□基地低於路面　□天橋旁　□地下道兩側　□電線桿　□高壓電塔　□變電所　□神壇或廟旁　□近鐵路　□工廠林立　□瓦斯行　□墳場　□殯儀館　□特種行業　■近高架道路　□瓦斯槽　□加油站　□焚化爐　□垃圾場旁　□棟距窄、隱私及採光差　□車輛無法進出　□其他"
+     ],
+     [
+      "嫌惡設施補充說明（種類、距離、規模）",
+      "⟦待填⟧"
+     ]
+    ]
+   },
+   {
+    "t": "h3",
+    "text": "5.宗地條件"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "臨接道路寬度",
+      "□未達 4 公尺　□4～未達 6 公尺　□6～未達 10 公尺　□10～未達 15 公尺　□15～未達 20 公尺　□20～未達 30 公尺　□30 公尺以上"
+     ],
+     [
+      "基地主要臨路面寬",
+      "⟦待填⟧ 公尺"
+     ],
+     [
+      "基地深度",
+      "⟦待填⟧ 公尺"
+     ],
+     [
+      "未臨路",
+      "□是　□否"
+     ],
+     [
+      "相對地勢",
+      "□平坦　□陡峭　□低窪　□高低起伏　□緩升　□緩降　□其他"
+     ],
+     [
+      "基地包含既成巷道",
+      "□否　□是"
+     ],
+     [
+      "持分式透天：實際使用與持分面積比較",
+      "□不適用　□相當　□大於　□小於"
+     ]
+    ]
+   },
+   {
+    "t": "h3",
+    "text": "6.建物個別條件"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "社區名稱",
+      "⟦待填⟧"
+     ],
+     [
+      "總戶數",
+      "⟦待填⟧ 戶"
+     ],
+     [
+      "門禁及管理員",
+      "□有　□無"
+     ],
+     [
+      "社區主要規劃坪數",
+      "□20 坪以下及套房　□20～35 坪　□35～50 坪　□其他"
+     ],
+     [
+      "所屬大樓或社區空屋率",
+      "⟦待填⟧ %"
+     ],
+     [
+      "社區管理維護",
+      "□良好　□尚可　□不佳"
+     ],
+     [
+      "天然氣",
+      "□有　□無"
+     ],
+     [
+      "地下室登記用途",
+      "□無　□防空避難室兼停車場　□停車場　□住家　□商業用　□其他"
+     ],
+     [
+      "地下室使用狀況",
+      "□無　□防空避難室兼停車場　□停車場　□住家　□商業用　□閒置　□其他"
+     ],
+     [
+      "停車位所有權",
+      "□無　□有"
+     ],
+     [
+      "停車位使用權",
+      "□無　□有"
+     ],
+     [
+      "停車位使用難易度",
+      "□良好　□普通　□不佳"
+     ]
+    ]
+   },
+   {
+    "t": "h3",
+    "text": "7.建物內部條件評估"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "內部條件",
+      "□良好　□尚可　□不佳　□未入內履勘，無法確認"
+     ]
+    ]
+   },
+   {
+    "t": "h3",
+    "text": "8.負面因素是否已反映於估值"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "嫌惡設施的影響已反映於估值",
+      "□是　□否"
+     ]
+    ]
+   },
+   {
+    "t": "h2",
+    "text": "十二、估價所運用之方法與其估算過程及價格決定之理由"
+   },
+   {
+    "t": "h3",
+    "text": "（一）採用方法"
+   },
+   {
+    "t": "p",
+    "text": "本次價格評估考量產品特性及市場資訊，採用■比較法　■收益法　■成本法。"
+   },
+   {
+    "t": "h3",
+    "text": "（二）估價方法試算表"
+   },
+   {
+    "t": "h3",
+    "text": "比較法試算表"
+   },
+   {
+    "t": "table",
+    "head": [
+     "項次",
+     "比較標的 A",
+     "比較標的 B",
+     "比較標的 C"
+    ],
+    "rows": [
+     [
+      "坐落",
+      "竹北市○○路一段（同社區）",
+      "竹北市○○路二段",
+      "竹北市○○街"
+     ],
+     [
+      "面積（坪）",
+      "38.10",
+      "41.30",
+      "36.40"
+     ],
+     [
+      "屋齡（年）",
+      "8",
+      "6",
+      "10"
+     ],
+     [
+      "樓層",
+      "10F",
+      "15F",
+      "8F"
+     ],
+     [
+      "單價（萬元/坪）",
+      "52.0",
+      "54.5",
+      "48.6"
+     ],
+     [
+      "總價（萬元）",
+      "1,981",
+      "2,251",
+      "1,769"
+     ],
+     [
+      "資料來源",
+      "示範",
+      "示範",
+      "示範"
+     ],
+     [
+      "價格日期",
+      "2026-07",
+      "2026-05",
+      "2026-03"
+     ],
+     [
+      "價格種類",
+      "成交價",
+      "成交價",
+      "成交價"
+     ],
+     [
+      "情況因素調整率",
+      "100.00%",
+      "100.00%",
+      "103.00%"
+     ],
+     [
+      "價格日期調整率",
+      "100.60%",
+      "101.20%",
+      "101.80%"
+     ],
+     [
+      "區域因素調整率",
+      "100.00%",
+      "100.00%",
+      "105.00%"
+     ],
+     [
+      "個別因素調整率",
+      "102.00%",
+      "95.00%",
+      "106.00%"
+     ],
+     [
+      "試算價格（萬元/坪）",
+      "53.4 萬元/坪",
+      "52.4 萬元/坪",
+      "56.7 萬元/坪"
+     ],
+     [
+      "個案調整權重",
+      "45%",
+      "35%",
+      "20%"
+     ],
+     [
+      "加權後價格（萬元/坪）",
+      "24.0 萬元/坪",
+      "18.3 萬元/坪",
+      "11.3 萬元/坪"
+     ]
+    ],
+    "align": [
+     "l",
+     "r",
+     "r",
+     "r"
+    ],
+    "small": true
+   },
+   {
+    "t": "p",
+    "text": "推定比較價格：53.7 萬元/坪；經各項影響因素分析調整後，建坪單價以每坪 537,000 元評估。"
+   },
+   {
+    "t": "p",
+    "text": "調整說明：比較標的 C：經向買賣雙方及地政士查證，成交價低於同期市場行情約 3%"
+   },
+   {
+    "t": "h3",
+    "text": "收益法試算表（直接資本化法）"
+   },
+   {
+    "t": "table",
+    "head": [
+     "項目",
+     "內容"
+    ],
+    "rows": [
+     [
+      "勘估標的面積（坪）",
+      "38.50"
+     ],
+     [
+      "評估毛租金（元/月）",
+      "31,000"
+     ],
+     [
+      "評估毛租金（元/坪/月）",
+      "805"
+     ],
+     [
+      "總收入（元/年）",
+      "372,000"
+     ],
+     [
+      "押金或保證金利息及其他收入（元/年）",
+      "0"
+     ],
+     [
+      "空置及其他損失",
+      "1.0 個月（31,000 元/年）"
+     ],
+     [
+      "有效總收入（元/年）",
+      "341,000"
+     ],
+     [
+      "費用率",
+      "42.67%"
+     ],
+     [
+      "總費用（元/年，含建物折舊提存費）",
+      "145,506"
+     ],
+     [
+      "淨收入（元/年）",
+      "195,494"
+     ],
+     [
+      "收益資本化率（%）",
+      "1.25"
+     ],
+     [
+      "收益價格（元）",
+      "15,639,530"
+     ],
+     [
+      "收益單價（元/坪）",
+      "406,000"
+     ]
+    ],
+    "align": [
+     "l",
+     "r"
+    ]
+   },
+   {
+    "t": "h3",
+    "text": "成本法試算表"
+   },
+   {
+    "t": "table",
+    "head": [
+     "項目",
+     "內容",
+     "金額（元）"
+    ],
+    "rows": [
+     [
+      "建物結構",
+      "鋼筋混凝土造 15 層大樓之第 12 層",
+      ""
+     ],
+     [
+      "標的樓層/總樓層",
+      "12／15",
+      ""
+     ],
+     [
+      "土地價格",
+      "土地單價 150.0 萬元/坪 × 7.82 坪",
+      "11,730,000"
+     ],
+     [
+      "營造或施工單價（元/坪）",
+      "112,000",
+      ""
+     ],
+     [
+      "建物總面積（坪）",
+      "38.50",
+      ""
+     ],
+     [
+      "直接成本：總值（元）",
+      "",
+      "4,312,000"
+     ],
+     [
+      "規劃設計費",
+      "建物直接成本之 2.5%",
+      "107,800"
+     ],
+     [
+      "廣告銷售費、管理費、稅捐及其他負擔",
+      "建築總成本之 4.0%、2.0%、1.0%（合計）",
+      "376,719"
+     ],
+     [
+      "間接成本小計",
+      "",
+      "484,519"
+     ],
+     [
+      "資本利息",
+      "建築直接成本與間接成本之 2.00%",
+      "95,930"
+     ],
+     [
+      "建物建築利潤",
+      "建物總成本之 10.0%",
+      "489,245"
+     ],
+     [
+      "建物總成本（元）",
+      "",
+      "5,381,694"
+     ],
+     [
+      "建築完成日期",
+      "民國 107 年 06 月 20 日",
+      ""
+     ],
+     [
+      "屋齡（年）",
+      "8",
+      ""
+     ],
+     [
+      "耐用年數（年）",
+      "50",
+      ""
+     ],
+     [
+      "建物殘值價格率（%）",
+      "0.0",
+      ""
+     ],
+     [
+      "累積折舊",
+      "",
+      "−861,071"
+     ],
+     [
+      "建物成本價格（元）",
+      "",
+      "4,520,623"
+     ],
+     [
+      "房地成本價格（元）",
+      "",
+      "16,250,623"
+     ]
+    ],
+    "align": [
+     "l",
+     "l",
+     "r"
+    ],
+    "small": true
+   },
+   {
+    "t": "h3",
+    "text": "（三）價格決定說明"
+   },
+   {
+    "t": "p",
+    "text": "竹北市住宅以自住需求為主，租金收益率偏低，收益價格主要反映出租投資觀點；比較標的與勘估標的同屬一供需圈，交易資料充足且查證完整，可信度較高。估價目的為買賣參考，依本所估價模型比較價格給予 80%、收益價格 20%。"
+   },
+   {
+    "t": "h2",
+    "text": "十三、依不動產估價技術規則規定須敘明之情況"
+   },
+   {
+    "t": "list",
+    "items": [
+     "區域因素及個別因素調整採百分率法，依事務所指標級距表評定等級。（§24）",
+     "比較標的 C 為「親友關係人間之交易」，經向買賣雙方及地政士查證，成交價低於同期市場行情約 3%，以情況調整 +3.0% 採用。（§23）",
+     "比較標的 C 付款方式未能取得書面資料，查證有困難。（§22 II）",
+     "各方法估算價格差異 27.8%，已重新檢討並說明決定理由。（§15）",
+     "土地價格以比較法求取（每坪 150.0 萬元）。（§69 II）",
+     "本次因故未能進入勘估標的內部勘察，內部照片係由委託人提供。"
+    ],
+    "ordered": true
+   },
+   {
+    "t": "h2",
+    "text": "十四、其他與估價相關之必要事項"
+   },
+   {
+    "t": "list",
+    "items": [
+     "本估價不含停車位價值。",
+     "勘估標的設有最高限額抵押權，估價金額為正常價格，未扣除債權金額。",
+     "使用執照影本尚待委託人提供；如用途與現況不符，估價金額可能需修正。"
+    ],
+    "ordered": true
+   },
+   {
+    "t": "h2",
+    "text": "十五、不動產估價師姓名及其證照字號"
+   },
+   {
+    "t": "kv",
+    "rows": [
+     [
+      "（一）不動產估價師",
+      "林○○（簽名或蓋章）"
+     ],
+     [
+      "不動產估價師證書字號",
+      "[估價師證書字號]"
+     ],
+     [
+      "不動產估價師開業證書字號",
+      "[開業證書字號]"
+     ],
+     [
+      "（二）不動產估價助理員",
+      "（簽名或蓋章）"
+     ],
+     [
+      "登錄字號",
+      "⟦待填⟧"
+     ]
+    ]
+   }
+  ],
+  "html": "<div class=\"cover\"><p class=\"office\">○○不動產估價師事務所</p><h1>辦理金融機構不動產抵押貸款業務之不動產估價報告書</h1><table class=\"kvt\"><tr><th>案件編號</th><td>115-0412</td></tr><tr><th>委託單位</th><td>王○○</td></tr><tr><th>勘估標的</th><td>新竹縣竹北市○○路○段○號12樓</td></tr><tr><th>評估金額</th><td>新台幣 19,170,000 元</td></tr><tr><th>勘察日期</th><td>民國 115 年 10 月 07 日</td></tr><tr><th>價格日期</th><td>民國 115 年 09 月 30 日</td></tr></table></div><hr class=\"pb\"><table class=\"kvt\"><tr><th>委託人</th><td>王○○</td></tr><tr><th>案件編號</th><td>115-0412</td></tr></table><h4>不動產坐落</h4><div class=\"tblx\"><table class=\"sm\"><thead><tr><th>坐落及門牌</th><th>地號／建號</th><th>面積（㎡）</th><th>面積（坪）</th><th>所有權人</th></tr></thead><tbody><tr><td>土地</td><td>○○段 567 地號</td><td class=\"r\">—</td><td class=\"r\">—</td><td>王○○（權利範圍全部）</td></tr><tr><td>建物</td><td>新竹縣竹北市○○路○段○號12樓</td><td class=\"r\"></td><td class=\"r\"></td><td></td></tr><tr><td>主建物</td><td>○○段 1234 建號</td><td class=\"r\">60.00</td><td class=\"r\">18.15</td><td>王○○（權利範圍全部）</td></tr><tr><td>附屬建物</td><td>—</td><td class=\"r\">10.00</td><td class=\"r\">3.03</td><td>—</td></tr><tr><td>公共設施（I）</td><td>—</td><td class=\"r\">20.00</td><td class=\"r\">6.05</td><td>—</td></tr><tr><td>公共設施（II，含車位）</td><td>—</td><td class=\"r\">10.00</td><td class=\"r\">3.03</td><td>—</td></tr><tr><td>獨立產權車位</td><td>—</td><td class=\"r\">—</td><td class=\"r\">—</td><td>—</td></tr><tr><td>其他獨立產權</td><td>—</td><td class=\"r\">—</td><td class=\"r\">—</td><td>—</td></tr><tr><td>合計</td><td>公設比 30.00%</td><td class=\"r\">100.00</td><td class=\"r\">30.25</td><td></td></tr></tbody></table></div><p>註：公設比為（公設Ⅰ＋公設Ⅱ＋其他獨立產權）÷（主建物＋附屬建物＋公設Ⅰ＋公設Ⅱ＋其他獨立產權）；依範本公式以謄本面積明細計算。</p><h4>評估價值及土地增值稅</h4><div class=\"tblx\"><table class=\"sm\"><thead><tr><th>項目</th><th>單價</th><th>總價（元）</th><th>土地增值稅（元）</th><th>淨值（元）</th></tr></thead><tbody><tr><td>土地</td><td class=\"r\">150.0 萬元/坪</td><td class=\"r\">11,730,000</td><td class=\"r\">—</td><td class=\"r\">—</td></tr><tr><td>建物</td><td class=\"r\"><span class=\"ph\">待填</span></td><td class=\"r\">4,520,623</td><td class=\"r\">—</td><td class=\"r\">—</td></tr><tr><td>房地一體</td><td class=\"r\">49.8 萬元/坪</td><td class=\"r\">19,170,000</td><td class=\"r\"><span class=\"ph\">待填</span></td><td class=\"r\"><span class=\"ph\">待填</span></td></tr></tbody></table></div><table class=\"kvt\"><tr><th>不含車位建坪單價</th><td><span class=\"ph\">待填</span></td></tr></table><p>註：車位價值：<span class=\"ph\">待填</span> 元，車位面積：<span class=\"ph\">待填</span> 坪。土地與建物分開之價格僅成本法有現成數值（土地為比較法求得、建物為成本價格），其餘待估價師填寫。</p><h4>他項權利分析</h4><div class=\"tblx\"><table class=\"sm\"><thead><tr><th>項目</th><th>第 1 筆</th></tr></thead><tbody><tr><td>登記次序</td><td>1</td></tr><tr><td>權利種類</td><td>最高限額抵押權</td></tr><tr><td>設定起日</td><td>—</td></tr><tr><td>設定訖日（債權確定日期）</td><td>—</td></tr><tr><td>擔保債權總金額</td><td>15600000</td></tr><tr><td>設定之權利人</td><td>○○銀行</td></tr><tr><td>義務人</td><td>—</td></tr><tr><td>債務人</td><td>—</td></tr></tbody></table></div><hr class=\"pb\"><h2>評估內容</h2><h3>一、委託人</h3><p>王○○</p><h3>二、勘估標的之基本資料</h3><table class=\"kvt\"><tr><th>1.土地標示</th><td>○○段 567 地號</td></tr><tr><th>2.建物標示</th><td>○○段 1234 建號；建物面積 38.50 坪（127.27 平方公尺）</td></tr><tr><th>3.建物門牌</th><td>新竹縣竹北市○○路○段○號12樓</td></tr></table><h3>三、價格日期及勘察日期</h3><table class=\"kvt\"><tr><th>價格日期</th><td>民國 115 年 09 月 30 日</td></tr><tr><th>勘察日期</th><td>民國 115 年 10 月 07 日</td></tr></table><h3>四、價格種類</h3><p>正常價格</p><h3>五、估價條件</h3><p>以價格日期當時現況、無租賃關係、可正常移轉為估價條件；不含車位。</p><h3>六、估價目的</h3><p>抵押權設定</p><h3>七、估價金額</h3><ol><li>比較價格：建坪單價 53.7 萬元/坪</li><li>收益價格：新台幣 15,639,530 元（建坪單價 40.6 萬元/坪）</li><li>成本價格：新台幣 16,250,623 元（建坪單價 42.2 萬元/坪）</li><li>最終決定之估價金額：新台幣 19,170,000 元</li></ol><h3>八、勘估標的之所有權、他項權利及其他負擔</h3><table class=\"kvt\"><tr><th>產權狀況</th><td>□產權清楚　□查封登記　□預告登記　□未辦保存登記　□其他</td></tr><tr><th>謄本狀況</th><td>□完整　□只申請節本　□查無謄本</td></tr><tr><th>建物及土地關連性</th><td>□同屬一人　□分屬不同人</td></tr><tr><th>他項權利及其他負擔</th><td>□無設定　■有設定：最高限額抵押權，權利人 ○○銀行，擔保債權總金額 15,600,000 元</td></tr></table><h3>九、勘估標的使用現況</h3><table class=\"kvt\"><tr><th>是否入內勘察</th><td>□已入內　■未能入內</td></tr><tr><th>內部照片由委託人提供</th><td>■是　□否</td></tr><tr><th>使用現況</th><td>■自用　□出租　□閒置　□使用借貸　□過戶中　□無法判斷</td></tr><tr><th>整棟建物使用型態</th><td><span class=\"ph\">待填</span></td></tr></table><table class=\"kvt\"><tr><th>增建情形</th><td>□無　□有</td></tr><tr><th>車位分管協議及圖說</th><td>□是　□否　□無法判斷　□無車位</td></tr><tr><th>約定專用協議</th><td>□是　□否　□無法判斷</td></tr></table><table class=\"kvt\"><tr><th>標的是否為瑕疵建物</th><td>□否　□海砂屋　□輻射屋　□事故屋　□結構安全疑慮　□其他</td></tr></table><h3>十、勘估標的法定使用管制或其他管制事項</h3><table class=\"kvt\"><tr><th>使用分區</th><td>第二種住宅區</td></tr><tr><th>坐落分區</th><td>□都市計畫地區　□非都市計畫地區</td></tr><tr><th>法令特殊因素</th><td>□無　□山坡地限制區　□行水區限制區　□航高限制區　□斷層帶限制區　□其他</td></tr></table><h3>十一、價格形成之主要因素分析</h3><h4>1.區域條件分析及區域建物使用</h4><table class=\"kvt\"><tr><th>一般生活所需的市場或購物中心距離</th><td><span class=\"ph\">待填</span> 公里</td></tr><tr><th>最近的國中或國小距離</th><td><span class=\"ph\">待填</span> 公里</td></tr><tr><th>小區域環境品質</th><td>□良好　□尚可　□不佳</td></tr><tr><th>聯外道路狀況</th><td>□良好　□尚可　□不佳</td></tr><tr><th>大眾運輸系統</th><td>□良好　□尚可　□不佳（需自駕）</td></tr><tr><th>區域地面層作為某用途的比例</th><td><span class=\"ph\">待填</span> %</td></tr><tr><th>地面層主要用途</th><td><span class=\"ph\">待填</span></td></tr><tr><th>二層以上作為某用途的比例</th><td><span class=\"ph\">待填</span> %</td></tr><tr><th>二層以上主要用途</th><td><span class=\"ph\">待填</span></td></tr><tr><th>近期區域發展之重大設施與計畫</th><td>□無　□有</td></tr></table><h4>2.市場面分析</h4><table class=\"kvt\"><tr><th>所在區域空屋率</th><td><span class=\"ph\">待填</span> %</td></tr><tr><th>區域供需情形</th><td>□供需平衡　□供過於求　□供不應求</td></tr><tr><th>消費客群</th><td>□在地客多　□外來客多　□其他</td></tr><tr><th>預計銷售期</th><td>□三個月內　□三～六個月內　□半年以上</td></tr><tr><th>未來房價走勢</th><td>□平穩　□上漲　□下跌</td></tr><tr><th>流通性</th><td>□良好　□尚可　□不佳</td></tr><tr><th>三個月內售出的議價空間</th><td><span class=\"ph\">待填</span> %</td></tr></table><h4>3.標的結構及規劃</h4><table class=\"kvt\"><tr><th>標的結構</th><td>鋼筋混凝土造 15 層大樓之第 12 層</td></tr><tr><th>標的規劃</th><td>住宅大樓(11層含以上有電梯)</td></tr></table><h4>4.外在嫌惡設施及負面因素評估</h4><table class=\"kvt\"><tr><th>嫌惡設施（可複選）</th><td>□無　□死巷　□路沖　□反弓路　□基地低於路面　□天橋旁　□地下道兩側　□電線桿　□高壓電塔　□變電所　□神壇或廟旁　□近鐵路　□工廠林立　□瓦斯行　□墳場　□殯儀館　□特種行業　■近高架道路　□瓦斯槽　□加油站　□焚化爐　□垃圾場旁　□棟距窄、隱私及採光差　□車輛無法進出　□其他</td></tr><tr><th>嫌惡設施補充說明（種類、距離、規模）</th><td><span class=\"ph\">待填</span></td></tr></table><h4>5.宗地條件</h4><table class=\"kvt\"><tr><th>臨接道路寬度</th><td>□未達 4 公尺　□4～未達 6 公尺　□6～未達 10 公尺　□10～未達 15 公尺　□15～未達 20 公尺　□20～未達 30 公尺　□30 公尺以上</td></tr><tr><th>基地主要臨路面寬</th><td><span class=\"ph\">待填</span> 公尺</td></tr><tr><th>基地深度</th><td><span class=\"ph\">待填</span> 公尺</td></tr><tr><th>未臨路</th><td>□是　□否</td></tr><tr><th>相對地勢</th><td>□平坦　□陡峭　□低窪　□高低起伏　□緩升　□緩降　□其他</td></tr><tr><th>基地包含既成巷道</th><td>□否　□是</td></tr><tr><th>持分式透天：實際使用與持分面積比較</th><td>□不適用　□相當　□大於　□小於</td></tr></table><h4>6.建物個別條件</h4><table class=\"kvt\"><tr><th>社區名稱</th><td><span class=\"ph\">待填</span></td></tr><tr><th>總戶數</th><td><span class=\"ph\">待填</span> 戶</td></tr><tr><th>門禁及管理員</th><td>□有　□無</td></tr><tr><th>社區主要規劃坪數</th><td>□20 坪以下及套房　□20～35 坪　□35～50 坪　□其他</td></tr><tr><th>所屬大樓或社區空屋率</th><td><span class=\"ph\">待填</span> %</td></tr><tr><th>社區管理維護</th><td>□良好　□尚可　□不佳</td></tr><tr><th>天然氣</th><td>□有　□無</td></tr><tr><th>地下室登記用途</th><td>□無　□防空避難室兼停車場　□停車場　□住家　□商業用　□其他</td></tr><tr><th>地下室使用狀況</th><td>□無　□防空避難室兼停車場　□停車場　□住家　□商業用　□閒置　□其他</td></tr><tr><th>停車位所有權</th><td>□無　□有</td></tr><tr><th>停車位使用權</th><td>□無　□有</td></tr><tr><th>停車位使用難易度</th><td>□良好　□普通　□不佳</td></tr></table><h4>7.建物內部條件評估</h4><table class=\"kvt\"><tr><th>內部條件</th><td>□良好　□尚可　□不佳　□未入內履勘，無法確認</td></tr></table><h4>8.負面因素是否已反映於估值</h4><table class=\"kvt\"><tr><th>嫌惡設施的影響已反映於估值</th><td>□是　□否</td></tr></table><h3>十二、估價所運用之方法與其估算過程及價格決定之理由</h3><h4>（一）採用方法</h4><p>本次價格評估考量產品特性及市場資訊，採用■比較法　■收益法　■成本法。</p><h4>（二）估價方法試算表</h4><h4>比較法試算表</h4><div class=\"tblx\"><table class=\"sm\"><thead><tr><th>項次</th><th>比較標的 A</th><th>比較標的 B</th><th>比較標的 C</th></tr></thead><tbody><tr><td>坐落</td><td class=\"r\">竹北市○○路一段（同社區）</td><td class=\"r\">竹北市○○路二段</td><td class=\"r\">竹北市○○街</td></tr><tr><td>面積（坪）</td><td class=\"r\">38.10</td><td class=\"r\">41.30</td><td class=\"r\">36.40</td></tr><tr><td>屋齡（年）</td><td class=\"r\">8</td><td class=\"r\">6</td><td class=\"r\">10</td></tr><tr><td>樓層</td><td class=\"r\">10F</td><td class=\"r\">15F</td><td class=\"r\">8F</td></tr><tr><td>單價（萬元/坪）</td><td class=\"r\">52.0</td><td class=\"r\">54.5</td><td class=\"r\">48.6</td></tr><tr><td>總價（萬元）</td><td class=\"r\">1,981</td><td class=\"r\">2,251</td><td class=\"r\">1,769</td></tr><tr><td>資料來源</td><td class=\"r\">示範</td><td class=\"r\">示範</td><td class=\"r\">示範</td></tr><tr><td>價格日期</td><td class=\"r\">2026-07</td><td class=\"r\">2026-05</td><td class=\"r\">2026-03</td></tr><tr><td>價格種類</td><td class=\"r\">成交價</td><td class=\"r\">成交價</td><td class=\"r\">成交價</td></tr><tr><td>情況因素調整率</td><td class=\"r\">100.00%</td><td class=\"r\">100.00%</td><td class=\"r\">103.00%</td></tr><tr><td>價格日期調整率</td><td class=\"r\">100.60%</td><td class=\"r\">101.20%</td><td class=\"r\">101.80%</td></tr><tr><td>區域因素調整率</td><td class=\"r\">100.00%</td><td class=\"r\">100.00%</td><td class=\"r\">105.00%</td></tr><tr><td>個別因素調整率</td><td class=\"r\">102.00%</td><td class=\"r\">95.00%</td><td class=\"r\">106.00%</td></tr><tr><td>試算價格（萬元/坪）</td><td class=\"r\">53.4 萬元/坪</td><td class=\"r\">52.4 萬元/坪</td><td class=\"r\">56.7 萬元/坪</td></tr><tr><td>個案調整權重</td><td class=\"r\">45%</td><td class=\"r\">35%</td><td class=\"r\">20%</td></tr><tr><td>加權後價格（萬元/坪）</td><td class=\"r\">24.0 萬元/坪</td><td class=\"r\">18.3 萬元/坪</td><td class=\"r\">11.3 萬元/坪</td></tr></tbody></table></div><p>推定比較價格：53.7 萬元/坪；經各項影響因素分析調整後，建坪單價以每坪 537,000 元評估。</p><p>調整說明：比較標的 C：經向買賣雙方及地政士查證，成交價低於同期市場行情約 3%</p><h4>收益法試算表（直接資本化法）</h4><div class=\"tblx\"><table><thead><tr><th>項目</th><th>內容</th></tr></thead><tbody><tr><td>勘估標的面積（坪）</td><td class=\"r\">38.50</td></tr><tr><td>評估毛租金（元/月）</td><td class=\"r\">31,000</td></tr><tr><td>評估毛租金（元/坪/月）</td><td class=\"r\">805</td></tr><tr><td>總收入（元/年）</td><td class=\"r\">372,000</td></tr><tr><td>押金或保證金利息及其他收入（元/年）</td><td class=\"r\">0</td></tr><tr><td>空置及其他損失</td><td class=\"r\">1.0 個月（31,000 元/年）</td></tr><tr><td>有效總收入（元/年）</td><td class=\"r\">341,000</td></tr><tr><td>費用率</td><td class=\"r\">42.67%</td></tr><tr><td>總費用（元/年，含建物折舊提存費）</td><td class=\"r\">145,506</td></tr><tr><td>淨收入（元/年）</td><td class=\"r\">195,494</td></tr><tr><td>收益資本化率（%）</td><td class=\"r\">1.25</td></tr><tr><td>收益價格（元）</td><td class=\"r\">15,639,530</td></tr><tr><td>收益單價（元/坪）</td><td class=\"r\">406,000</td></tr></tbody></table></div><h4>成本法試算表</h4><div class=\"tblx\"><table class=\"sm\"><thead><tr><th>項目</th><th>內容</th><th>金額（元）</th></tr></thead><tbody><tr><td>建物結構</td><td>鋼筋混凝土造 15 層大樓之第 12 層</td><td class=\"r\"></td></tr><tr><td>標的樓層/總樓層</td><td>12／15</td><td class=\"r\"></td></tr><tr><td>土地價格</td><td>土地單價 150.0 萬元/坪 × 7.82 坪</td><td class=\"r\">11,730,000</td></tr><tr><td>營造或施工單價（元/坪）</td><td>112,000</td><td class=\"r\"></td></tr><tr><td>建物總面積（坪）</td><td>38.50</td><td class=\"r\"></td></tr><tr><td>直接成本：總值（元）</td><td></td><td class=\"r\">4,312,000</td></tr><tr><td>規劃設計費</td><td>建物直接成本之 2.5%</td><td class=\"r\">107,800</td></tr><tr><td>廣告銷售費、管理費、稅捐及其他負擔</td><td>建築總成本之 4.0%、2.0%、1.0%（合計）</td><td class=\"r\">376,719</td></tr><tr><td>間接成本小計</td><td></td><td class=\"r\">484,519</td></tr><tr><td>資本利息</td><td>建築直接成本與間接成本之 2.00%</td><td class=\"r\">95,930</td></tr><tr><td>建物建築利潤</td><td>建物總成本之 10.0%</td><td class=\"r\">489,245</td></tr><tr><td>建物總成本（元）</td><td></td><td class=\"r\">5,381,694</td></tr><tr><td>建築完成日期</td><td>民國 107 年 06 月 20 日</td><td class=\"r\"></td></tr><tr><td>屋齡（年）</td><td>8</td><td class=\"r\"></td></tr><tr><td>耐用年數（年）</td><td>50</td><td class=\"r\"></td></tr><tr><td>建物殘值價格率（%）</td><td>0.0</td><td class=\"r\"></td></tr><tr><td>累積折舊</td><td></td><td class=\"r\">−861,071</td></tr><tr><td>建物成本價格（元）</td><td></td><td class=\"r\">4,520,623</td></tr><tr><td>房地成本價格（元）</td><td></td><td class=\"r\">16,250,623</td></tr></tbody></table></div><h4>（三）價格決定說明</h4><p>竹北市住宅以自住需求為主，租金收益率偏低，收益價格主要反映出租投資觀點；比較標的與勘估標的同屬一供需圈，交易資料充足且查證完整，可信度較高。估價目的為買賣參考，依本所估價模型比較價格給予 80%、收益價格 20%。</p><h3>十三、依不動產估價技術規則規定須敘明之情況</h3><ol><li>區域因素及個別因素調整採百分率法，依事務所指標級距表評定等級。（§24）</li><li>比較標的 C 為「親友關係人間之交易」，經向買賣雙方及地政士查證，成交價低於同期市場行情約 3%，以情況調整 +3.0% 採用。（§23）</li><li>比較標的 C 付款方式未能取得書面資料，查證有困難。（§22 II）</li><li>各方法估算價格差異 27.8%，已重新檢討並說明決定理由。（§15）</li><li>土地價格以比較法求取（每坪 150.0 萬元）。（§69 II）</li><li>本次因故未能進入勘估標的內部勘察，內部照片係由委託人提供。</li></ol><h3>十四、其他與估價相關之必要事項</h3><ol><li>本估價不含停車位價值。</li><li>勘估標的設有最高限額抵押權，估價金額為正常價格，未扣除債權金額。</li><li>使用執照影本尚待委託人提供；如用途與現況不符，估價金額可能需修正。</li></ol><h3>十五、不動產估價師姓名及其證照字號</h3><table class=\"kvt\"><tr><th>（一）不動產估價師</th><td>林○○（簽名或蓋章）</td></tr><tr><th>不動產估價師證書字號</th><td>[估價師證書字號]</td></tr><tr><th>不動產估價師開業證書字號</th><td>[開業證書字號]</td></tr><tr><th>（二）不動產估價助理員</th><td>（簽名或蓋章）</td></tr><tr><th>登錄字號</th><td><span class=\"ph\">待填</span></td></tr></table>"
+ }
+}
