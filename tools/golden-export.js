@@ -29,6 +29,9 @@ const db = E.fresh();
 const files = {};   // 相對路徑 → 內容
 const results = {}; // 情境名稱 → 輸出（供防呆比對）
 files['inputs/db.json'] = json(dbInputs(clone(db)));
+/* 內建模型與各標的類型的空白案件：供 Python 的 default_model()、blank_case() 對照 */
+files['inputs/default_model.json'] = json(E.defaultModel('m1', '本所標準模型', false));
+files['inputs/blank_cases.json'] = json(E.KINDS.map(k => E.blankCase('blank-' + k.id, E.defaultModel('m1', '本所標準模型', false), null, k.id)));
 
 function emit(name, description, c, M, extra){
   extra = extra || {};

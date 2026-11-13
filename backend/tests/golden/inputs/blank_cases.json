@@ -1,0 +1,2128 @@
+[
+ {
+  "id": "blank-unit",
+  "kind": "unit",
+  "signed": false,
+  "signedAt": "",
+  "modelId": "m1",
+  "modelSnapshot": null,
+  "subjFlags": {},
+  "parcels": [],
+  "buildings": [],
+  "special": {
+   "enabled": false,
+   "label": "都市更新完成後",
+   "far": 0,
+   "years": 0,
+   "rateMode": "wacc",
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "prem": {
+    "liquidity": 0.9,
+    "risk": 0.9,
+    "growth": 0.9,
+    "mgmt": 1.2
+   },
+   "rateInput": 5,
+   "w": {
+    "comparison": 50,
+    "land": 50
+   }
+  },
+  "report": {
+   "caseNo": "",
+   "docNo": "",
+   "leader": "",
+   "surveyRefs": "登記謄本、地籍圖、都市計畫圖、現場照片",
+   "surveyConclusion": "",
+   "dataSources": "",
+   "otherBurden": "無",
+   "market": "",
+   "marketSupply": "",
+   "marketDemand": "",
+   "marketPrice": "",
+   "regionChecks": {},
+   "methodReason": "",
+   "notUsed": {}
+  },
+  "basic": {
+   "county": "新竹縣",
+   "district": "竹北市",
+   "road": "",
+   "addr": "",
+   "bldgNo": "",
+   "landNo": "",
+   "zone": "",
+   "btype": "住宅大樓(11層含以上有電梯)",
+   "area": 0,
+   "landShare": 0,
+   "floorNum": 0,
+   "totalFloors": 0,
+   "completed": "",
+   "floorDesc": "",
+   "owner": "",
+   "encumbrance": "",
+   "purpose": "買賣參考",
+   "priceDate": "",
+   "surveyDate": "",
+   "priceType": "正常價格",
+   "conditions": "",
+   "normalPrice": "",
+   "client": "",
+   "fee": "",
+   "contractDate": "",
+   "scope": ""
+  },
+  "survey": {
+   "led": true,
+   "indoor": true,
+   "photos": 0,
+   "useStatus": "",
+   "illegal": "none",
+   "notes": "",
+   "d": {
+    "traffic": "",
+    "life": "",
+    "school": "",
+    "nuisance": "",
+    "floor": "",
+    "view": "",
+    "light": "",
+    "layout": "",
+    "cond": "",
+    "mgmt": ""
+   }
+  },
+  "analysis": {
+   "general": "",
+   "region": "",
+   "indiv": "",
+   "hbu": "",
+   "confirmed": false
+  },
+  "methods": {
+   "comparison": true,
+   "income": true,
+   "cost": false,
+   "land": false,
+   "singleReason": ""
+  },
+  "comp": {
+   "method": "pct",
+   "inputMode": "grade",
+   "regVars": [
+    "age",
+    "floor",
+    "area",
+    "months"
+   ],
+   "volumeBasis": false,
+   "subjFar": 0
+  },
+  "comps": [],
+  "income": {
+   "method": "direct",
+   "revMode": "rent",
+   "rooms": 0,
+   "adr": 0,
+   "occ": 70,
+   "otherPct": 5,
+   "opexPct": 0,
+   "mgmtPct": 0,
+   "rent": 0,
+   "rentSource": "",
+   "vacMonths": 1,
+   "incomes": [],
+   "exp": [
+    {
+     "name": "地價稅",
+     "amt": 0
+    },
+    {
+     "name": "房屋稅",
+     "amt": 0
+    },
+    {
+     "name": "保險費",
+     "amt": 0
+    },
+    {
+     "name": "維修費",
+     "amt": 0
+    },
+    {
+     "name": "重置提撥費",
+     "amt": 0
+    }
+   ],
+   "costSource": "cost",
+   "manualCost": 0,
+   "life": 50,
+   "salvage": 0,
+   "threeYears": true,
+   "capMode": "input",
+   "cap": 1.25,
+   "risk": {
+    "base": 1.6,
+    "liquidity": 0.2,
+    "risk": 0.3,
+    "growth": -0.6,
+    "mgmt": 0.1
+   },
+   "extract": [],
+   "wacc": [
+    {
+     "name": "自有資金",
+     "w": 40,
+     "k": 2
+    },
+    {
+     "name": "借貸資金",
+     "w": 60,
+     "k": 2.5
+    }
+   ],
+   "dcr": {
+    "dcr": 1.2,
+    "rate": 2.5,
+    "years": 30,
+    "ltv": 70
+   },
+   "egim": {
+    "nir": 70,
+    "egim": 55
+   },
+   "dcf": {
+    "years": 10,
+    "rentGrowth": 1,
+    "rentGrowth2": 1,
+    "switchYear": 0,
+    "expGrowth": 1,
+    "disc": 2.5,
+    "termCap": 2,
+    "sellCost": 1,
+    "deductDep": false
+   }
+  },
+  "cost": {
+   "conMethod": "unit",
+   "unitCost": 11.2,
+   "indexPct": 100,
+   "extraLand": 0,
+   "unitCostNote": "",
+   "items": [],
+   "design": 2.5,
+   "extras": [],
+   "adSell": 4,
+   "mgmt": 2,
+   "tax": 1,
+   "interest": 2,
+   "profit": 10,
+   "depMethod": "straight",
+   "sinkRate": 2,
+   "life": 50,
+   "salvage": 0,
+   "ageManual": false,
+   "age": 0,
+   "landUnit": 0
+  },
+  "land": {
+   "mode": "simple",
+   "sales": [
+    {
+     "name": "住宅",
+     "ping": 0,
+     "unit": 0
+    }
+   ],
+   "floorArea": 0,
+   "conUnit": 11.2,
+   "conIndex": 100,
+   "design": 2,
+   "adSell": 6,
+   "mgmt": 4.5,
+   "tax": 1,
+   "profit": 20,
+   "iMode": "table",
+   "annualRate": 2.5,
+   "landRatio": 60,
+   "years": 3,
+   "iInput": 5,
+   "site": 0,
+   "far": 0,
+   "bonus": 0,
+   "freeFactor": 1.3,
+   "floorsAbove": 12,
+   "floorsBelow": 2,
+   "digRate": 60,
+   "saleFactor": 1.75,
+   "firstFloorRatio": 0.88,
+   "baseUnit": 0,
+   "baseFloor": 4,
+   "util1F": 200,
+   "utilStep": 1,
+   "utils": {},
+   "cars": 0,
+   "pingPerCar": 18,
+   "carPrice": 150,
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "buildMonths": 28,
+   "landMonths": 34
+  },
+  "final": {
+   "useModelWeights": true,
+   "w": {
+    "comparison": 80,
+    "income": 20,
+    "cost": 0,
+    "land": 0
+   },
+   "reviewed": false,
+   "reason": ""
+  },
+  "other": "",
+  "appraiser": {
+   "name": "林○○",
+   "certNo": "",
+   "licenseNo": "",
+   "licenseExp": "",
+   "office": "○○不動產估價師事務所",
+   "guild": "[縣市]不動產估價師公會"
+  }
+ },
+ {
+  "id": "blank-house",
+  "kind": "house",
+  "signed": false,
+  "signedAt": "",
+  "modelId": "m1",
+  "modelSnapshot": null,
+  "subjFlags": {},
+  "parcels": [
+   {
+    "section": "",
+    "no": "",
+    "zone": "",
+    "areaM2": 0,
+    "share": 1,
+    "annVal": 0,
+    "prevVal": 0,
+    "prevDate": "",
+    "cpi": 100,
+    "priceMode": "base",
+    "adjPct": 0,
+    "annPct": 30,
+    "unit": 0,
+    "note": ""
+   }
+  ],
+  "buildings": [],
+  "special": {
+   "enabled": false,
+   "label": "都市更新完成後",
+   "far": 0,
+   "years": 0,
+   "rateMode": "wacc",
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "prem": {
+    "liquidity": 0.9,
+    "risk": 0.9,
+    "growth": 0.9,
+    "mgmt": 1.2
+   },
+   "rateInput": 5,
+   "w": {
+    "comparison": 50,
+    "land": 50
+   }
+  },
+  "report": {
+   "caseNo": "",
+   "docNo": "",
+   "leader": "",
+   "surveyRefs": "登記謄本、地籍圖、都市計畫圖、現場照片",
+   "surveyConclusion": "",
+   "dataSources": "",
+   "otherBurden": "無",
+   "market": "",
+   "marketSupply": "",
+   "marketDemand": "",
+   "marketPrice": "",
+   "regionChecks": {},
+   "methodReason": "",
+   "notUsed": {}
+  },
+  "basic": {
+   "county": "新竹縣",
+   "district": "竹北市",
+   "road": "",
+   "addr": "",
+   "bldgNo": "",
+   "landNo": "",
+   "zone": "",
+   "btype": "住宅大樓(11層含以上有電梯)",
+   "area": 0,
+   "landShare": 0,
+   "floorNum": 0,
+   "totalFloors": 0,
+   "completed": "",
+   "floorDesc": "",
+   "owner": "",
+   "encumbrance": "",
+   "purpose": "買賣參考",
+   "priceDate": "",
+   "surveyDate": "",
+   "priceType": "正常價格",
+   "conditions": "",
+   "normalPrice": "",
+   "client": "",
+   "fee": "",
+   "contractDate": "",
+   "scope": ""
+  },
+  "survey": {
+   "led": true,
+   "indoor": true,
+   "photos": 0,
+   "useStatus": "",
+   "illegal": "none",
+   "notes": "",
+   "d": {
+    "traffic": "",
+    "life": "",
+    "school": "",
+    "nuisance": "",
+    "floor": "",
+    "view": "",
+    "light": "",
+    "layout": "",
+    "cond": "",
+    "mgmt": ""
+   }
+  },
+  "analysis": {
+   "general": "",
+   "region": "",
+   "indiv": "",
+   "hbu": "",
+   "confirmed": false
+  },
+  "methods": {
+   "comparison": true,
+   "income": false,
+   "cost": true,
+   "land": false,
+   "singleReason": ""
+  },
+  "comp": {
+   "method": "pct",
+   "inputMode": "grade",
+   "regVars": [
+    "age",
+    "floor",
+    "area",
+    "months"
+   ],
+   "volumeBasis": false,
+   "subjFar": 0
+  },
+  "comps": [],
+  "income": {
+   "method": "direct",
+   "revMode": "rent",
+   "rooms": 0,
+   "adr": 0,
+   "occ": 70,
+   "otherPct": 5,
+   "opexPct": 0,
+   "mgmtPct": 0,
+   "rent": 0,
+   "rentSource": "",
+   "vacMonths": 1,
+   "incomes": [],
+   "exp": [
+    {
+     "name": "地價稅",
+     "amt": 0
+    },
+    {
+     "name": "房屋稅",
+     "amt": 0
+    },
+    {
+     "name": "保險費",
+     "amt": 0
+    },
+    {
+     "name": "維修費",
+     "amt": 0
+    },
+    {
+     "name": "重置提撥費",
+     "amt": 0
+    }
+   ],
+   "costSource": "cost",
+   "manualCost": 0,
+   "life": 50,
+   "salvage": 0,
+   "threeYears": true,
+   "capMode": "input",
+   "cap": 1.25,
+   "risk": {
+    "base": 1.6,
+    "liquidity": 0.2,
+    "risk": 0.3,
+    "growth": -0.6,
+    "mgmt": 0.1
+   },
+   "extract": [],
+   "wacc": [
+    {
+     "name": "自有資金",
+     "w": 40,
+     "k": 2
+    },
+    {
+     "name": "借貸資金",
+     "w": 60,
+     "k": 2.5
+    }
+   ],
+   "dcr": {
+    "dcr": 1.2,
+    "rate": 2.5,
+    "years": 30,
+    "ltv": 70
+   },
+   "egim": {
+    "nir": 70,
+    "egim": 55
+   },
+   "dcf": {
+    "years": 10,
+    "rentGrowth": 1,
+    "rentGrowth2": 1,
+    "switchYear": 0,
+    "expGrowth": 1,
+    "disc": 2.5,
+    "termCap": 2,
+    "sellCost": 1,
+    "deductDep": false
+   }
+  },
+  "cost": {
+   "conMethod": "unit",
+   "unitCost": 11.2,
+   "indexPct": 100,
+   "extraLand": 0,
+   "unitCostNote": "",
+   "items": [],
+   "design": 2.5,
+   "extras": [],
+   "adSell": 4,
+   "mgmt": 2,
+   "tax": 1,
+   "interest": 2,
+   "profit": 10,
+   "depMethod": "straight",
+   "sinkRate": 2,
+   "life": 50,
+   "salvage": 0,
+   "ageManual": false,
+   "age": 0,
+   "landUnit": 0
+  },
+  "land": {
+   "mode": "simple",
+   "sales": [
+    {
+     "name": "住宅",
+     "ping": 0,
+     "unit": 0
+    }
+   ],
+   "floorArea": 0,
+   "conUnit": 11.2,
+   "conIndex": 100,
+   "design": 2,
+   "adSell": 6,
+   "mgmt": 4.5,
+   "tax": 1,
+   "profit": 20,
+   "iMode": "table",
+   "annualRate": 2.5,
+   "landRatio": 60,
+   "years": 3,
+   "iInput": 5,
+   "site": 0,
+   "far": 0,
+   "bonus": 0,
+   "freeFactor": 1.3,
+   "floorsAbove": 12,
+   "floorsBelow": 2,
+   "digRate": 60,
+   "saleFactor": 1.75,
+   "firstFloorRatio": 0.88,
+   "baseUnit": 0,
+   "baseFloor": 4,
+   "util1F": 200,
+   "utilStep": 1,
+   "utils": {},
+   "cars": 0,
+   "pingPerCar": 18,
+   "carPrice": 150,
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "buildMonths": 28,
+   "landMonths": 34
+  },
+  "final": {
+   "useModelWeights": true,
+   "w": {
+    "comparison": 60,
+    "income": 0,
+    "cost": 40,
+    "land": 0
+   },
+   "reviewed": false,
+   "reason": ""
+  },
+  "other": "",
+  "appraiser": {
+   "name": "林○○",
+   "certNo": "",
+   "licenseNo": "",
+   "licenseExp": "",
+   "office": "○○不動產估價師事務所",
+   "guild": "[縣市]不動產估價師公會"
+  }
+ },
+ {
+  "id": "blank-land",
+  "kind": "land",
+  "signed": false,
+  "signedAt": "",
+  "modelId": "m1",
+  "modelSnapshot": null,
+  "subjFlags": {},
+  "parcels": [
+   {
+    "section": "",
+    "no": "",
+    "zone": "",
+    "areaM2": 0,
+    "share": 1,
+    "annVal": 0,
+    "prevVal": 0,
+    "prevDate": "",
+    "cpi": 100,
+    "priceMode": "base",
+    "adjPct": 0,
+    "annPct": 30,
+    "unit": 0,
+    "note": ""
+   }
+  ],
+  "buildings": [],
+  "special": {
+   "enabled": false,
+   "label": "都市更新完成後",
+   "far": 0,
+   "years": 0,
+   "rateMode": "wacc",
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "prem": {
+    "liquidity": 0.9,
+    "risk": 0.9,
+    "growth": 0.9,
+    "mgmt": 1.2
+   },
+   "rateInput": 5,
+   "w": {
+    "comparison": 50,
+    "land": 50
+   }
+  },
+  "report": {
+   "caseNo": "",
+   "docNo": "",
+   "leader": "",
+   "surveyRefs": "登記謄本、地籍圖、都市計畫圖、現場照片",
+   "surveyConclusion": "",
+   "dataSources": "",
+   "otherBurden": "無",
+   "market": "",
+   "marketSupply": "",
+   "marketDemand": "",
+   "marketPrice": "",
+   "regionChecks": {},
+   "methodReason": "",
+   "notUsed": {}
+  },
+  "basic": {
+   "county": "新竹縣",
+   "district": "竹北市",
+   "road": "",
+   "addr": "",
+   "bldgNo": "",
+   "landNo": "",
+   "zone": "",
+   "btype": "住宅大樓(11層含以上有電梯)",
+   "area": 0,
+   "landShare": 0,
+   "floorNum": 0,
+   "totalFloors": 0,
+   "completed": "",
+   "floorDesc": "",
+   "owner": "",
+   "encumbrance": "",
+   "purpose": "買賣參考",
+   "priceDate": "",
+   "surveyDate": "",
+   "priceType": "正常價格",
+   "conditions": "",
+   "normalPrice": "",
+   "client": "",
+   "fee": "",
+   "contractDate": "",
+   "scope": ""
+  },
+  "survey": {
+   "led": true,
+   "indoor": true,
+   "photos": 0,
+   "useStatus": "",
+   "illegal": "none",
+   "notes": "",
+   "d": {
+    "traffic": "",
+    "life": "",
+    "school": "",
+    "nuisance": "",
+    "floor": "",
+    "view": "",
+    "light": "",
+    "layout": "",
+    "cond": "",
+    "mgmt": ""
+   }
+  },
+  "analysis": {
+   "general": "",
+   "region": "",
+   "indiv": "",
+   "hbu": "",
+   "confirmed": false
+  },
+  "methods": {
+   "comparison": true,
+   "income": false,
+   "cost": false,
+   "land": true,
+   "singleReason": ""
+  },
+  "comp": {
+   "method": "pct",
+   "inputMode": "grade",
+   "regVars": [
+    "age",
+    "floor",
+    "area",
+    "months"
+   ],
+   "volumeBasis": true,
+   "subjFar": 0
+  },
+  "comps": [],
+  "income": {
+   "method": "direct",
+   "revMode": "rent",
+   "rooms": 0,
+   "adr": 0,
+   "occ": 70,
+   "otherPct": 5,
+   "opexPct": 0,
+   "mgmtPct": 0,
+   "rent": 0,
+   "rentSource": "",
+   "vacMonths": 1,
+   "incomes": [],
+   "exp": [
+    {
+     "name": "地價稅",
+     "amt": 0
+    },
+    {
+     "name": "房屋稅",
+     "amt": 0
+    },
+    {
+     "name": "保險費",
+     "amt": 0
+    },
+    {
+     "name": "維修費",
+     "amt": 0
+    },
+    {
+     "name": "重置提撥費",
+     "amt": 0
+    }
+   ],
+   "costSource": "cost",
+   "manualCost": 0,
+   "life": 50,
+   "salvage": 0,
+   "threeYears": true,
+   "capMode": "input",
+   "cap": 1.25,
+   "risk": {
+    "base": 1.6,
+    "liquidity": 0.2,
+    "risk": 0.3,
+    "growth": -0.6,
+    "mgmt": 0.1
+   },
+   "extract": [],
+   "wacc": [
+    {
+     "name": "自有資金",
+     "w": 40,
+     "k": 2
+    },
+    {
+     "name": "借貸資金",
+     "w": 60,
+     "k": 2.5
+    }
+   ],
+   "dcr": {
+    "dcr": 1.2,
+    "rate": 2.5,
+    "years": 30,
+    "ltv": 70
+   },
+   "egim": {
+    "nir": 70,
+    "egim": 55
+   },
+   "dcf": {
+    "years": 10,
+    "rentGrowth": 1,
+    "rentGrowth2": 1,
+    "switchYear": 0,
+    "expGrowth": 1,
+    "disc": 2.5,
+    "termCap": 2,
+    "sellCost": 1,
+    "deductDep": false
+   }
+  },
+  "cost": {
+   "conMethod": "unit",
+   "unitCost": 11.2,
+   "indexPct": 100,
+   "extraLand": 0,
+   "unitCostNote": "",
+   "items": [],
+   "design": 2.5,
+   "extras": [],
+   "adSell": 4,
+   "mgmt": 2,
+   "tax": 1,
+   "interest": 2,
+   "profit": 10,
+   "depMethod": "straight",
+   "sinkRate": 2,
+   "life": 50,
+   "salvage": 0,
+   "ageManual": false,
+   "age": 0,
+   "landUnit": 0
+  },
+  "land": {
+   "mode": "detailed",
+   "sales": [
+    {
+     "name": "住宅",
+     "ping": 0,
+     "unit": 0
+    }
+   ],
+   "floorArea": 0,
+   "conUnit": 11.2,
+   "conIndex": 100,
+   "design": 2,
+   "adSell": 6,
+   "mgmt": 4.5,
+   "tax": 1,
+   "profit": 20,
+   "iMode": "table",
+   "annualRate": 2.5,
+   "landRatio": 60,
+   "years": 3,
+   "iInput": 5,
+   "site": 0,
+   "far": 0,
+   "bonus": 0,
+   "freeFactor": 1.3,
+   "floorsAbove": 12,
+   "floorsBelow": 2,
+   "digRate": 60,
+   "saleFactor": 1.75,
+   "firstFloorRatio": 0.88,
+   "baseUnit": 0,
+   "baseFloor": 4,
+   "util1F": 200,
+   "utilStep": 1,
+   "utils": {},
+   "cars": 0,
+   "pingPerCar": 18,
+   "carPrice": 150,
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "buildMonths": 28,
+   "landMonths": 34
+  },
+  "final": {
+   "useModelWeights": true,
+   "w": {
+    "comparison": 50,
+    "income": 0,
+    "cost": 0,
+    "land": 50
+   },
+   "reviewed": false,
+   "reason": ""
+  },
+  "other": "",
+  "appraiser": {
+   "name": "林○○",
+   "certNo": "",
+   "licenseNo": "",
+   "licenseExp": "",
+   "office": "○○不動產估價師事務所",
+   "guild": "[縣市]不動產估價師公會"
+  }
+ },
+ {
+  "id": "blank-industrial",
+  "kind": "industrial",
+  "signed": false,
+  "signedAt": "",
+  "modelId": "m1",
+  "modelSnapshot": null,
+  "subjFlags": {},
+  "parcels": [
+   {
+    "section": "",
+    "no": "",
+    "zone": "",
+    "areaM2": 0,
+    "share": 1,
+    "annVal": 0,
+    "prevVal": 0,
+    "prevDate": "",
+    "cpi": 100,
+    "priceMode": "base",
+    "adjPct": 0,
+    "annPct": 30,
+    "unit": 0,
+    "note": ""
+   }
+  ],
+  "buildings": [],
+  "special": {
+   "enabled": false,
+   "label": "都市更新完成後",
+   "far": 0,
+   "years": 0,
+   "rateMode": "wacc",
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "prem": {
+    "liquidity": 0.9,
+    "risk": 0.9,
+    "growth": 0.9,
+    "mgmt": 1.2
+   },
+   "rateInput": 5,
+   "w": {
+    "comparison": 50,
+    "land": 50
+   }
+  },
+  "report": {
+   "caseNo": "",
+   "docNo": "",
+   "leader": "",
+   "surveyRefs": "登記謄本、地籍圖、都市計畫圖、現場照片",
+   "surveyConclusion": "",
+   "dataSources": "",
+   "otherBurden": "無",
+   "market": "",
+   "marketSupply": "",
+   "marketDemand": "",
+   "marketPrice": "",
+   "regionChecks": {},
+   "methodReason": "",
+   "notUsed": {}
+  },
+  "basic": {
+   "county": "新竹縣",
+   "district": "竹北市",
+   "road": "",
+   "addr": "",
+   "bldgNo": "",
+   "landNo": "",
+   "zone": "",
+   "btype": "住宅大樓(11層含以上有電梯)",
+   "area": 0,
+   "landShare": 0,
+   "floorNum": 0,
+   "totalFloors": 0,
+   "completed": "",
+   "floorDesc": "",
+   "owner": "",
+   "encumbrance": "",
+   "purpose": "買賣參考",
+   "priceDate": "",
+   "surveyDate": "",
+   "priceType": "正常價格",
+   "conditions": "",
+   "normalPrice": "",
+   "client": "",
+   "fee": "",
+   "contractDate": "",
+   "scope": ""
+  },
+  "survey": {
+   "led": true,
+   "indoor": true,
+   "photos": 0,
+   "useStatus": "",
+   "illegal": "none",
+   "notes": "",
+   "d": {
+    "traffic": "",
+    "life": "",
+    "school": "",
+    "nuisance": "",
+    "floor": "",
+    "view": "",
+    "light": "",
+    "layout": "",
+    "cond": "",
+    "mgmt": ""
+   }
+  },
+  "analysis": {
+   "general": "",
+   "region": "",
+   "indiv": "",
+   "hbu": "",
+   "confirmed": false
+  },
+  "methods": {
+   "comparison": true,
+   "income": false,
+   "cost": false,
+   "land": false,
+   "singleReason": "勘估標的為工業區土地，區域內交易以購地自建廠房為主，租賃案例少且租金受建物型態與產業別影響甚鉅，難以規劃標準化產品，收益法與土地開發分析法均不適用，故僅以比較法評估。"
+  },
+  "comp": {
+   "method": "pct",
+   "inputMode": "grade",
+   "regVars": [
+    "age",
+    "floor",
+    "area",
+    "months"
+   ],
+   "volumeBasis": true,
+   "subjFar": 0
+  },
+  "comps": [],
+  "income": {
+   "method": "direct",
+   "revMode": "rent",
+   "rooms": 0,
+   "adr": 0,
+   "occ": 70,
+   "otherPct": 5,
+   "opexPct": 0,
+   "mgmtPct": 0,
+   "rent": 0,
+   "rentSource": "",
+   "vacMonths": 1,
+   "incomes": [],
+   "exp": [
+    {
+     "name": "地價稅",
+     "amt": 0
+    },
+    {
+     "name": "房屋稅",
+     "amt": 0
+    },
+    {
+     "name": "保險費",
+     "amt": 0
+    },
+    {
+     "name": "維修費",
+     "amt": 0
+    },
+    {
+     "name": "重置提撥費",
+     "amt": 0
+    }
+   ],
+   "costSource": "cost",
+   "manualCost": 0,
+   "life": 50,
+   "salvage": 0,
+   "threeYears": true,
+   "capMode": "input",
+   "cap": 1.25,
+   "risk": {
+    "base": 1.6,
+    "liquidity": 0.2,
+    "risk": 0.3,
+    "growth": -0.6,
+    "mgmt": 0.1
+   },
+   "extract": [],
+   "wacc": [
+    {
+     "name": "自有資金",
+     "w": 40,
+     "k": 2
+    },
+    {
+     "name": "借貸資金",
+     "w": 60,
+     "k": 2.5
+    }
+   ],
+   "dcr": {
+    "dcr": 1.2,
+    "rate": 2.5,
+    "years": 30,
+    "ltv": 70
+   },
+   "egim": {
+    "nir": 70,
+    "egim": 55
+   },
+   "dcf": {
+    "years": 10,
+    "rentGrowth": 1,
+    "rentGrowth2": 1,
+    "switchYear": 0,
+    "expGrowth": 1,
+    "disc": 2.5,
+    "termCap": 2,
+    "sellCost": 1,
+    "deductDep": false
+   }
+  },
+  "cost": {
+   "conMethod": "unit",
+   "unitCost": 11.2,
+   "indexPct": 100,
+   "extraLand": 0,
+   "unitCostNote": "",
+   "items": [],
+   "design": 2.5,
+   "extras": [],
+   "adSell": 4,
+   "mgmt": 2,
+   "tax": 1,
+   "interest": 2,
+   "profit": 10,
+   "depMethod": "straight",
+   "sinkRate": 2,
+   "life": 50,
+   "salvage": 0,
+   "ageManual": false,
+   "age": 0,
+   "landUnit": 0
+  },
+  "land": {
+   "mode": "detailed",
+   "sales": [
+    {
+     "name": "住宅",
+     "ping": 0,
+     "unit": 0
+    }
+   ],
+   "floorArea": 0,
+   "conUnit": 11.2,
+   "conIndex": 100,
+   "design": 2,
+   "adSell": 6,
+   "mgmt": 4.5,
+   "tax": 1,
+   "profit": 20,
+   "iMode": "table",
+   "annualRate": 2.5,
+   "landRatio": 60,
+   "years": 3,
+   "iInput": 5,
+   "site": 0,
+   "far": 0,
+   "bonus": 0,
+   "freeFactor": 1.3,
+   "floorsAbove": 12,
+   "floorsBelow": 2,
+   "digRate": 60,
+   "saleFactor": 1.75,
+   "firstFloorRatio": 0.88,
+   "baseUnit": 0,
+   "baseFloor": 4,
+   "util1F": 200,
+   "utilStep": 1,
+   "utils": {},
+   "cars": 0,
+   "pingPerCar": 18,
+   "carPrice": 150,
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "buildMonths": 28,
+   "landMonths": 34
+  },
+  "final": {
+   "useModelWeights": true,
+   "w": {
+    "comparison": 100,
+    "income": 0,
+    "cost": 0,
+    "land": 0
+   },
+   "reviewed": false,
+   "reason": ""
+  },
+  "other": "",
+  "appraiser": {
+   "name": "林○○",
+   "certNo": "",
+   "licenseNo": "",
+   "licenseExp": "",
+   "office": "○○不動產估價師事務所",
+   "guild": "[縣市]不動產估價師公會"
+  }
+ },
+ {
+  "id": "blank-hotel",
+  "kind": "hotel",
+  "signed": false,
+  "signedAt": "",
+  "modelId": "m1",
+  "modelSnapshot": null,
+  "subjFlags": {},
+  "parcels": [
+   {
+    "section": "",
+    "no": "",
+    "zone": "",
+    "areaM2": 0,
+    "share": 1,
+    "annVal": 0,
+    "prevVal": 0,
+    "prevDate": "",
+    "cpi": 100,
+    "priceMode": "base",
+    "adjPct": 0,
+    "annPct": 30,
+    "unit": 0,
+    "note": ""
+   }
+  ],
+  "buildings": [],
+  "special": {
+   "enabled": false,
+   "label": "都市更新完成後",
+   "far": 0,
+   "years": 0,
+   "rateMode": "wacc",
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "prem": {
+    "liquidity": 0.9,
+    "risk": 0.9,
+    "growth": 0.9,
+    "mgmt": 1.2
+   },
+   "rateInput": 5,
+   "w": {
+    "comparison": 50,
+    "land": 50
+   }
+  },
+  "report": {
+   "caseNo": "",
+   "docNo": "",
+   "leader": "",
+   "surveyRefs": "登記謄本、地籍圖、都市計畫圖、現場照片",
+   "surveyConclusion": "",
+   "dataSources": "",
+   "otherBurden": "無",
+   "market": "",
+   "marketSupply": "",
+   "marketDemand": "",
+   "marketPrice": "",
+   "regionChecks": {},
+   "methodReason": "",
+   "notUsed": {}
+  },
+  "basic": {
+   "county": "新竹縣",
+   "district": "竹北市",
+   "road": "",
+   "addr": "",
+   "bldgNo": "",
+   "landNo": "",
+   "zone": "",
+   "btype": "住宅大樓(11層含以上有電梯)",
+   "area": 0,
+   "landShare": 0,
+   "floorNum": 0,
+   "totalFloors": 0,
+   "completed": "",
+   "floorDesc": "",
+   "owner": "",
+   "encumbrance": "",
+   "purpose": "買賣參考",
+   "priceDate": "",
+   "surveyDate": "",
+   "priceType": "正常價格",
+   "conditions": "",
+   "normalPrice": "",
+   "client": "",
+   "fee": "",
+   "contractDate": "",
+   "scope": ""
+  },
+  "survey": {
+   "led": true,
+   "indoor": true,
+   "photos": 0,
+   "useStatus": "",
+   "illegal": "none",
+   "notes": "",
+   "d": {
+    "traffic": "",
+    "life": "",
+    "school": "",
+    "nuisance": "",
+    "floor": "",
+    "view": "",
+    "light": "",
+    "layout": "",
+    "cond": "",
+    "mgmt": ""
+   }
+  },
+  "analysis": {
+   "general": "",
+   "region": "",
+   "indiv": "",
+   "hbu": "",
+   "confirmed": false
+  },
+  "methods": {
+   "comparison": false,
+   "income": true,
+   "cost": true,
+   "land": false,
+   "singleReason": ""
+  },
+  "comp": {
+   "method": "pct",
+   "inputMode": "grade",
+   "regVars": [
+    "age",
+    "floor",
+    "area",
+    "months"
+   ],
+   "volumeBasis": false,
+   "subjFar": 0
+  },
+  "comps": [],
+  "income": {
+   "method": "dcf",
+   "revMode": "hotel",
+   "rooms": 0,
+   "adr": 0,
+   "occ": 70,
+   "otherPct": 5,
+   "opexPct": 60,
+   "mgmtPct": 1,
+   "rent": 0,
+   "rentSource": "",
+   "vacMonths": 1,
+   "incomes": [],
+   "exp": [
+    {
+     "name": "地價稅",
+     "amt": 0
+    },
+    {
+     "name": "房屋稅",
+     "amt": 0
+    },
+    {
+     "name": "保險費",
+     "amt": 0
+    },
+    {
+     "name": "維修費",
+     "amt": 0
+    },
+    {
+     "name": "重置提撥費",
+     "amt": 0
+    }
+   ],
+   "costSource": "cost",
+   "manualCost": 0,
+   "life": 50,
+   "salvage": 0,
+   "threeYears": true,
+   "capMode": "input",
+   "cap": 1.25,
+   "risk": {
+    "base": 1.6,
+    "liquidity": 0.2,
+    "risk": 0.3,
+    "growth": -0.6,
+    "mgmt": 0.1
+   },
+   "extract": [],
+   "wacc": [
+    {
+     "name": "自有資金",
+     "w": 40,
+     "k": 2
+    },
+    {
+     "name": "借貸資金",
+     "w": 60,
+     "k": 2.5
+    }
+   ],
+   "dcr": {
+    "dcr": 1.2,
+    "rate": 2.5,
+    "years": 30,
+    "ltv": 70
+   },
+   "egim": {
+    "nir": 70,
+    "egim": 55
+   },
+   "dcf": {
+    "years": 10,
+    "rentGrowth": 1,
+    "rentGrowth2": 1,
+    "switchYear": 0,
+    "expGrowth": 1,
+    "disc": 2.5,
+    "termCap": 2,
+    "sellCost": 1,
+    "deductDep": false
+   }
+  },
+  "cost": {
+   "conMethod": "unit",
+   "unitCost": 11.2,
+   "indexPct": 100,
+   "extraLand": 0,
+   "unitCostNote": "",
+   "items": [],
+   "design": 2.5,
+   "extras": [],
+   "adSell": 4,
+   "mgmt": 2,
+   "tax": 1,
+   "interest": 2,
+   "profit": 10,
+   "depMethod": "straight",
+   "sinkRate": 2,
+   "life": 50,
+   "salvage": 0,
+   "ageManual": false,
+   "age": 0,
+   "landUnit": 0
+  },
+  "land": {
+   "mode": "simple",
+   "sales": [
+    {
+     "name": "住宅",
+     "ping": 0,
+     "unit": 0
+    }
+   ],
+   "floorArea": 0,
+   "conUnit": 11.2,
+   "conIndex": 100,
+   "design": 2,
+   "adSell": 6,
+   "mgmt": 4.5,
+   "tax": 1,
+   "profit": 20,
+   "iMode": "table",
+   "annualRate": 2.5,
+   "landRatio": 60,
+   "years": 3,
+   "iInput": 5,
+   "site": 0,
+   "far": 0,
+   "bonus": 0,
+   "freeFactor": 1.3,
+   "floorsAbove": 12,
+   "floorsBelow": 2,
+   "digRate": 60,
+   "saleFactor": 1.75,
+   "firstFloorRatio": 0.88,
+   "baseUnit": 0,
+   "baseFloor": 4,
+   "util1F": 200,
+   "utilStep": 1,
+   "utils": {},
+   "cars": 0,
+   "pingPerCar": 18,
+   "carPrice": 150,
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "buildMonths": 28,
+   "landMonths": 34
+  },
+  "final": {
+   "useModelWeights": true,
+   "w": {
+    "comparison": 0,
+    "income": 50,
+    "cost": 50,
+    "land": 0
+   },
+   "reviewed": false,
+   "reason": ""
+  },
+  "other": "",
+  "appraiser": {
+   "name": "林○○",
+   "certNo": "",
+   "licenseNo": "",
+   "licenseExp": "",
+   "office": "○○不動產估價師事務所",
+   "guild": "[縣市]不動產估價師公會"
+  }
+ },
+ {
+  "id": "blank-commercial",
+  "kind": "commercial",
+  "signed": false,
+  "signedAt": "",
+  "modelId": "m1",
+  "modelSnapshot": null,
+  "subjFlags": {},
+  "parcels": [],
+  "buildings": [],
+  "special": {
+   "enabled": false,
+   "label": "都市更新完成後",
+   "far": 0,
+   "years": 0,
+   "rateMode": "wacc",
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "prem": {
+    "liquidity": 0.9,
+    "risk": 0.9,
+    "growth": 0.9,
+    "mgmt": 1.2
+   },
+   "rateInput": 5,
+   "w": {
+    "comparison": 50,
+    "land": 50
+   }
+  },
+  "report": {
+   "caseNo": "",
+   "docNo": "",
+   "leader": "",
+   "surveyRefs": "登記謄本、地籍圖、都市計畫圖、現場照片",
+   "surveyConclusion": "",
+   "dataSources": "",
+   "otherBurden": "無",
+   "market": "",
+   "marketSupply": "",
+   "marketDemand": "",
+   "marketPrice": "",
+   "regionChecks": {},
+   "methodReason": "",
+   "notUsed": {}
+  },
+  "basic": {
+   "county": "新竹縣",
+   "district": "竹北市",
+   "road": "",
+   "addr": "",
+   "bldgNo": "",
+   "landNo": "",
+   "zone": "",
+   "btype": "住宅大樓(11層含以上有電梯)",
+   "area": 0,
+   "landShare": 0,
+   "floorNum": 0,
+   "totalFloors": 0,
+   "completed": "",
+   "floorDesc": "",
+   "owner": "",
+   "encumbrance": "",
+   "purpose": "買賣參考",
+   "priceDate": "",
+   "surveyDate": "",
+   "priceType": "正常價格",
+   "conditions": "",
+   "normalPrice": "",
+   "client": "",
+   "fee": "",
+   "contractDate": "",
+   "scope": ""
+  },
+  "survey": {
+   "led": true,
+   "indoor": true,
+   "photos": 0,
+   "useStatus": "",
+   "illegal": "none",
+   "notes": "",
+   "d": {
+    "traffic": "",
+    "life": "",
+    "school": "",
+    "nuisance": "",
+    "floor": "",
+    "view": "",
+    "light": "",
+    "layout": "",
+    "cond": "",
+    "mgmt": ""
+   }
+  },
+  "analysis": {
+   "general": "",
+   "region": "",
+   "indiv": "",
+   "hbu": "",
+   "confirmed": false
+  },
+  "methods": {
+   "comparison": true,
+   "income": true,
+   "cost": true,
+   "land": false,
+   "singleReason": ""
+  },
+  "comp": {
+   "method": "pct",
+   "inputMode": "grade",
+   "regVars": [
+    "age",
+    "floor",
+    "area",
+    "months"
+   ],
+   "volumeBasis": false,
+   "subjFar": 0
+  },
+  "comps": [],
+  "income": {
+   "method": "direct",
+   "revMode": "rent",
+   "rooms": 0,
+   "adr": 0,
+   "occ": 70,
+   "otherPct": 5,
+   "opexPct": 0,
+   "mgmtPct": 0,
+   "rent": 0,
+   "rentSource": "",
+   "vacMonths": 1,
+   "incomes": [],
+   "exp": [
+    {
+     "name": "地價稅",
+     "amt": 0
+    },
+    {
+     "name": "房屋稅",
+     "amt": 0
+    },
+    {
+     "name": "保險費",
+     "amt": 0
+    },
+    {
+     "name": "維修費",
+     "amt": 0
+    },
+    {
+     "name": "重置提撥費",
+     "amt": 0
+    }
+   ],
+   "costSource": "cost",
+   "manualCost": 0,
+   "life": 50,
+   "salvage": 0,
+   "threeYears": true,
+   "capMode": "input",
+   "cap": 1.25,
+   "risk": {
+    "base": 1.6,
+    "liquidity": 0.2,
+    "risk": 0.3,
+    "growth": -0.6,
+    "mgmt": 0.1
+   },
+   "extract": [],
+   "wacc": [
+    {
+     "name": "自有資金",
+     "w": 40,
+     "k": 2
+    },
+    {
+     "name": "借貸資金",
+     "w": 60,
+     "k": 2.5
+    }
+   ],
+   "dcr": {
+    "dcr": 1.2,
+    "rate": 2.5,
+    "years": 30,
+    "ltv": 70
+   },
+   "egim": {
+    "nir": 70,
+    "egim": 55
+   },
+   "dcf": {
+    "years": 10,
+    "rentGrowth": 1,
+    "rentGrowth2": 1,
+    "switchYear": 0,
+    "expGrowth": 1,
+    "disc": 2.5,
+    "termCap": 2,
+    "sellCost": 1,
+    "deductDep": false
+   }
+  },
+  "cost": {
+   "conMethod": "unit",
+   "unitCost": 11.2,
+   "indexPct": 100,
+   "extraLand": 0,
+   "unitCostNote": "",
+   "items": [],
+   "design": 2.5,
+   "extras": [],
+   "adSell": 4,
+   "mgmt": 2,
+   "tax": 1,
+   "interest": 2,
+   "profit": 10,
+   "depMethod": "straight",
+   "sinkRate": 2,
+   "life": 50,
+   "salvage": 0,
+   "ageManual": false,
+   "age": 0,
+   "landUnit": 0
+  },
+  "land": {
+   "mode": "simple",
+   "sales": [
+    {
+     "name": "住宅",
+     "ping": 0,
+     "unit": 0
+    }
+   ],
+   "floorArea": 0,
+   "conUnit": 11.2,
+   "conIndex": 100,
+   "design": 2,
+   "adSell": 6,
+   "mgmt": 4.5,
+   "tax": 1,
+   "profit": 20,
+   "iMode": "table",
+   "annualRate": 2.5,
+   "landRatio": 60,
+   "years": 3,
+   "iInput": 5,
+   "site": 0,
+   "far": 0,
+   "bonus": 0,
+   "freeFactor": 1.3,
+   "floorsAbove": 12,
+   "floorsBelow": 2,
+   "digRate": 60,
+   "saleFactor": 1.75,
+   "firstFloorRatio": 0.88,
+   "baseUnit": 0,
+   "baseFloor": 4,
+   "util1F": 200,
+   "utilStep": 1,
+   "utils": {},
+   "cars": 0,
+   "pingPerCar": 18,
+   "carPrice": 150,
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "buildMonths": 28,
+   "landMonths": 34
+  },
+  "final": {
+   "useModelWeights": true,
+   "w": {
+    "comparison": 40,
+    "income": 40,
+    "cost": 20,
+    "land": 0
+   },
+   "reviewed": false,
+   "reason": ""
+  },
+  "other": "",
+  "appraiser": {
+   "name": "林○○",
+   "certNo": "",
+   "licenseNo": "",
+   "licenseExp": "",
+   "office": "○○不動產估價師事務所",
+   "guild": "[縣市]不動產估價師公會"
+  }
+ },
+ {
+  "id": "blank-factory",
+  "kind": "factory",
+  "signed": false,
+  "signedAt": "",
+  "modelId": "m1",
+  "modelSnapshot": null,
+  "subjFlags": {},
+  "parcels": [],
+  "buildings": [],
+  "special": {
+   "enabled": false,
+   "label": "都市更新完成後",
+   "far": 0,
+   "years": 0,
+   "rateMode": "wacc",
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "prem": {
+    "liquidity": 0.9,
+    "risk": 0.9,
+    "growth": 0.9,
+    "mgmt": 1.2
+   },
+   "rateInput": 5,
+   "w": {
+    "comparison": 50,
+    "land": 50
+   }
+  },
+  "report": {
+   "caseNo": "",
+   "docNo": "",
+   "leader": "",
+   "surveyRefs": "登記謄本、地籍圖、都市計畫圖、現場照片",
+   "surveyConclusion": "",
+   "dataSources": "",
+   "otherBurden": "無",
+   "market": "",
+   "marketSupply": "",
+   "marketDemand": "",
+   "marketPrice": "",
+   "regionChecks": {},
+   "methodReason": "",
+   "notUsed": {}
+  },
+  "basic": {
+   "county": "新竹縣",
+   "district": "竹北市",
+   "road": "",
+   "addr": "",
+   "bldgNo": "",
+   "landNo": "",
+   "zone": "",
+   "btype": "住宅大樓(11層含以上有電梯)",
+   "area": 0,
+   "landShare": 0,
+   "floorNum": 0,
+   "totalFloors": 0,
+   "completed": "",
+   "floorDesc": "",
+   "owner": "",
+   "encumbrance": "",
+   "purpose": "買賣參考",
+   "priceDate": "",
+   "surveyDate": "",
+   "priceType": "正常價格",
+   "conditions": "",
+   "normalPrice": "",
+   "client": "",
+   "fee": "",
+   "contractDate": "",
+   "scope": ""
+  },
+  "survey": {
+   "led": true,
+   "indoor": true,
+   "photos": 0,
+   "useStatus": "",
+   "illegal": "none",
+   "notes": "",
+   "d": {
+    "traffic": "",
+    "life": "",
+    "school": "",
+    "nuisance": "",
+    "floor": "",
+    "view": "",
+    "light": "",
+    "layout": "",
+    "cond": "",
+    "mgmt": ""
+   }
+  },
+  "analysis": {
+   "general": "",
+   "region": "",
+   "indiv": "",
+   "hbu": "",
+   "confirmed": false
+  },
+  "methods": {
+   "comparison": true,
+   "income": false,
+   "cost": true,
+   "land": false,
+   "singleReason": ""
+  },
+  "comp": {
+   "method": "pct",
+   "inputMode": "grade",
+   "regVars": [
+    "age",
+    "floor",
+    "area",
+    "months"
+   ],
+   "volumeBasis": false,
+   "subjFar": 0
+  },
+  "comps": [],
+  "income": {
+   "method": "direct",
+   "revMode": "rent",
+   "rooms": 0,
+   "adr": 0,
+   "occ": 70,
+   "otherPct": 5,
+   "opexPct": 0,
+   "mgmtPct": 0,
+   "rent": 0,
+   "rentSource": "",
+   "vacMonths": 1,
+   "incomes": [],
+   "exp": [
+    {
+     "name": "地價稅",
+     "amt": 0
+    },
+    {
+     "name": "房屋稅",
+     "amt": 0
+    },
+    {
+     "name": "保險費",
+     "amt": 0
+    },
+    {
+     "name": "維修費",
+     "amt": 0
+    },
+    {
+     "name": "重置提撥費",
+     "amt": 0
+    }
+   ],
+   "costSource": "cost",
+   "manualCost": 0,
+   "life": 50,
+   "salvage": 0,
+   "threeYears": true,
+   "capMode": "input",
+   "cap": 1.25,
+   "risk": {
+    "base": 1.6,
+    "liquidity": 0.2,
+    "risk": 0.3,
+    "growth": -0.6,
+    "mgmt": 0.1
+   },
+   "extract": [],
+   "wacc": [
+    {
+     "name": "自有資金",
+     "w": 40,
+     "k": 2
+    },
+    {
+     "name": "借貸資金",
+     "w": 60,
+     "k": 2.5
+    }
+   ],
+   "dcr": {
+    "dcr": 1.2,
+    "rate": 2.5,
+    "years": 30,
+    "ltv": 70
+   },
+   "egim": {
+    "nir": 70,
+    "egim": 55
+   },
+   "dcf": {
+    "years": 10,
+    "rentGrowth": 1,
+    "rentGrowth2": 1,
+    "switchYear": 0,
+    "expGrowth": 1,
+    "disc": 2.5,
+    "termCap": 2,
+    "sellCost": 1,
+    "deductDep": false
+   }
+  },
+  "cost": {
+   "conMethod": "unit",
+   "unitCost": 11.2,
+   "indexPct": 100,
+   "extraLand": 0,
+   "unitCostNote": "",
+   "items": [],
+   "design": 2.5,
+   "extras": [],
+   "adSell": 4,
+   "mgmt": 2,
+   "tax": 1,
+   "interest": 2,
+   "profit": 10,
+   "depMethod": "straight",
+   "sinkRate": 2,
+   "life": 50,
+   "salvage": 0,
+   "ageManual": false,
+   "age": 0,
+   "landUnit": 0
+  },
+  "land": {
+   "mode": "simple",
+   "sales": [
+    {
+     "name": "住宅",
+     "ping": 0,
+     "unit": 0
+    }
+   ],
+   "floorArea": 0,
+   "conUnit": 11.2,
+   "conIndex": 100,
+   "design": 2,
+   "adSell": 6,
+   "mgmt": 4.5,
+   "tax": 1,
+   "profit": 20,
+   "iMode": "table",
+   "annualRate": 2.5,
+   "landRatio": 60,
+   "years": 3,
+   "iInput": 5,
+   "site": 0,
+   "far": 0,
+   "bonus": 0,
+   "freeFactor": 1.3,
+   "floorsAbove": 12,
+   "floorsBelow": 2,
+   "digRate": 60,
+   "saleFactor": 1.75,
+   "firstFloorRatio": 0.88,
+   "baseUnit": 0,
+   "baseFloor": 4,
+   "util1F": 200,
+   "utilStep": 1,
+   "utils": {},
+   "cars": 0,
+   "pingPerCar": 18,
+   "carPrice": 150,
+   "ownRatio": 50,
+   "ownRate": 1.7,
+   "loanRate": 3.27,
+   "buildMonths": 28,
+   "landMonths": 34
+  },
+  "final": {
+   "useModelWeights": true,
+   "w": {
+    "comparison": 50,
+    "income": 0,
+    "cost": 50,
+    "land": 0
+   },
+   "reviewed": false,
+   "reason": ""
+  },
+  "other": "",
+  "appraiser": {
+   "name": "林○○",
+   "certNo": "",
+   "licenseNo": "",
+   "licenseExp": "",
+   "office": "○○不動產估價師事務所",
+   "guild": "[縣市]不動產估價師公會"
+  }
+ }
+]

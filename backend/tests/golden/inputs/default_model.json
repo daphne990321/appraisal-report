@@ -1,0 +1,1019 @@
+{
+ "id": "m1",
+ "name": "本所標準模型",
+ "updated": "2026-10-24",
+ "note": "本所一般案件使用。",
+ "settings": {
+  "dateMode": "auto",
+  "monthlyRate": 0.3,
+  "weightMode": "manual",
+  "totalMode": "abs",
+  "lim15": 15,
+  "lim30": 30,
+  "gapLim": 20,
+  "minComps": 3,
+  "diffThreshold": 20,
+  "unitDec": 1,
+  "totalDec": 0,
+  "unitDisplay": "wan"
+ },
+ "indicators": [
+  {
+   "id": "r1",
+   "group": "region",
+   "cat": "交通運輸",
+   "name": "交通",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": true
+  },
+  {
+   "id": "r2",
+   "group": "region",
+   "cat": "公共設施",
+   "name": "生活機能",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": true
+  },
+  {
+   "id": "r3",
+   "group": "region",
+   "cat": "公共設施",
+   "name": "學區",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": true
+  },
+  {
+   "id": "r4",
+   "group": "region",
+   "cat": "公共設施",
+   "name": "公共設施",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": true
+  },
+  {
+   "id": "r5",
+   "group": "region",
+   "cat": "自然條件",
+   "name": "嫌惡設施",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": true
+  },
+  {
+   "id": "r6",
+   "group": "region",
+   "cat": "發展潛力",
+   "name": "發展趨勢",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": false
+  },
+  {
+   "id": "i1",
+   "group": "indiv",
+   "cat": "建物條件",
+   "name": "樓層",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": true
+  },
+  {
+   "id": "i2",
+   "group": "indiv",
+   "cat": "建物條件",
+   "name": "景觀",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": true
+  },
+  {
+   "id": "i3",
+   "group": "indiv",
+   "cat": "建物條件",
+   "name": "面積",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": true
+  },
+  {
+   "id": "i4",
+   "group": "indiv",
+   "cat": "建物條件",
+   "name": "屋齡",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": true
+  },
+  {
+   "id": "i5",
+   "group": "indiv",
+   "cat": "建物條件",
+   "name": "採光通風",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": true
+  },
+  {
+   "id": "i6",
+   "group": "indiv",
+   "cat": "建物條件",
+   "name": "格局",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": true
+  },
+  {
+   "id": "i7",
+   "group": "indiv",
+   "cat": "建物條件",
+   "name": "屋況",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": true
+  },
+  {
+   "id": "i8",
+   "group": "indiv",
+   "cat": "建物條件",
+   "name": "管理",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": true
+  },
+  {
+   "id": "i9",
+   "group": "indiv",
+   "cat": "建物條件",
+   "name": "公設比",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": false
+  },
+  {
+   "id": "i10",
+   "group": "indiv",
+   "cat": "道路條件",
+   "name": "臨路寬度",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": false
+  },
+  {
+   "id": "i11",
+   "group": "indiv",
+   "cat": "宗地條件",
+   "name": "總價與單價關係",
+   "step": 1,
+   "stepAmt": 0.5,
+   "on": false
+  }
+ ],
+ "indicatorSets": {
+  "bldg": [
+   {
+    "id": "r1",
+    "group": "region",
+    "cat": "交通運輸",
+    "name": "交通",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "r2",
+    "group": "region",
+    "cat": "公共設施",
+    "name": "生活機能",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "r3",
+    "group": "region",
+    "cat": "公共設施",
+    "name": "學區",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "r4",
+    "group": "region",
+    "cat": "公共設施",
+    "name": "公共設施",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "r5",
+    "group": "region",
+    "cat": "自然條件",
+    "name": "嫌惡設施",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "r6",
+    "group": "region",
+    "cat": "發展潛力",
+    "name": "發展趨勢",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": false
+   },
+   {
+    "id": "i1",
+    "group": "indiv",
+    "cat": "建物條件",
+    "name": "樓層",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "i2",
+    "group": "indiv",
+    "cat": "建物條件",
+    "name": "景觀",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "i3",
+    "group": "indiv",
+    "cat": "建物條件",
+    "name": "面積",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "i4",
+    "group": "indiv",
+    "cat": "建物條件",
+    "name": "屋齡",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "i5",
+    "group": "indiv",
+    "cat": "建物條件",
+    "name": "採光通風",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "i6",
+    "group": "indiv",
+    "cat": "建物條件",
+    "name": "格局",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "i7",
+    "group": "indiv",
+    "cat": "建物條件",
+    "name": "屋況",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "i8",
+    "group": "indiv",
+    "cat": "建物條件",
+    "name": "管理",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "i9",
+    "group": "indiv",
+    "cat": "建物條件",
+    "name": "公設比",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": false
+   },
+   {
+    "id": "i10",
+    "group": "indiv",
+    "cat": "道路條件",
+    "name": "臨路寬度",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": false
+   },
+   {
+    "id": "i11",
+    "group": "indiv",
+    "cat": "宗地條件",
+    "name": "總價與單價關係",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": false
+   }
+  ],
+  "land": [
+   {
+    "id": "L_r1",
+    "group": "region",
+    "cat": "交通運輸",
+    "name": "主要道路",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_r2",
+    "group": "region",
+    "cat": "交通運輸",
+    "name": "捷運、公車便利性",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_r3",
+    "group": "region",
+    "cat": "交通運輸",
+    "name": "鐵路、交流道接近程度",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_r4",
+    "group": "region",
+    "cat": "自然條件",
+    "name": "景觀",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_r5",
+    "group": "region",
+    "cat": "自然條件",
+    "name": "排水、地勢、災害影響",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_r6",
+    "group": "region",
+    "cat": "公共設施",
+    "name": "學校、市場",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_r7",
+    "group": "region",
+    "cat": "公共設施",
+    "name": "公園、服務性設施",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_r8",
+    "group": "region",
+    "cat": "發展潛力",
+    "name": "重大建設",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_r9",
+    "group": "region",
+    "cat": "發展潛力",
+    "name": "發展趨勢、生活圈",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_i1",
+    "group": "indiv",
+    "cat": "道路條件",
+    "name": "道路寬度",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_i2",
+    "group": "indiv",
+    "cat": "道路條件",
+    "name": "道路鋪裝、種別",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_i3",
+    "group": "indiv",
+    "cat": "接近條件",
+    "name": "接近車站、學校、市場",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_i4",
+    "group": "indiv",
+    "cat": "接近條件",
+    "name": "接近公園、停車場、商圈",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_i5",
+    "group": "indiv",
+    "cat": "週邊環境",
+    "name": "地勢、日照",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_i6",
+    "group": "indiv",
+    "cat": "週邊環境",
+    "name": "嫌惡設施、鄰地使用",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_i7",
+    "group": "indiv",
+    "cat": "行政條件",
+    "name": "使用分區、建蔽率",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_i8",
+    "group": "indiv",
+    "cat": "行政條件",
+    "name": "容積率、禁限建",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_i9",
+    "group": "indiv",
+    "cat": "宗地條件",
+    "name": "面積",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_i10",
+    "group": "indiv",
+    "cat": "宗地條件",
+    "name": "面寬、深度",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_i11",
+    "group": "indiv",
+    "cat": "宗地條件",
+    "name": "形狀",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_i12",
+    "group": "indiv",
+    "cat": "宗地條件",
+    "name": "臨路情形",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_i13",
+    "group": "indiv",
+    "cat": "宗地條件",
+    "name": "總價與單價關係",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "L_i14",
+    "group": "indiv",
+    "cat": "宗地條件",
+    "name": "規劃可行性",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   }
+  ],
+  "ind": [
+   {
+    "id": "G_r1",
+    "group": "region",
+    "cat": "交通運輸",
+    "name": "主要道路、交流道",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "G_r2",
+    "group": "region",
+    "cat": "交通運輸",
+    "name": "港口、鐵路",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "G_r3",
+    "group": "region",
+    "cat": "公共設施",
+    "name": "電力、產業用水",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "G_r4",
+    "group": "region",
+    "cat": "公共設施",
+    "name": "污廢水、廢棄物處理",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "G_r5",
+    "group": "region",
+    "cat": "發展潛力",
+    "name": "產業聚集、上下游",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "G_r6",
+    "group": "region",
+    "cat": "發展潛力",
+    "name": "擴廠可能性、勞工來源",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "G_i1",
+    "group": "indiv",
+    "cat": "道路條件",
+    "name": "道路寬度",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "G_i2",
+    "group": "indiv",
+    "cat": "道路條件",
+    "name": "道路種別",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "G_i3",
+    "group": "indiv",
+    "cat": "道路條件",
+    "name": "貨車進出便利性",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "G_i4",
+    "group": "indiv",
+    "cat": "宗地條件",
+    "name": "面積",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "G_i5",
+    "group": "indiv",
+    "cat": "宗地條件",
+    "name": "形狀",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "G_i6",
+    "group": "indiv",
+    "cat": "宗地條件",
+    "name": "臨路面數",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "G_i7",
+    "group": "indiv",
+    "cat": "宗地條件",
+    "name": "土壤污染",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "G_i8",
+    "group": "indiv",
+    "cat": "行政條件",
+    "name": "使用變更、轉用",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": true
+   },
+   {
+    "id": "G_i9",
+    "group": "indiv",
+    "cat": "建物條件",
+    "name": "廠房結構、樓高",
+    "step": 1,
+    "stepAmt": 0.5,
+    "on": false
+   }
+  ]
+ },
+ "exp": [
+  {
+   "id": "e1",
+   "name": "路沖",
+   "group": "indiv",
+   "pct": -3,
+   "on": true,
+   "sets": [
+    "bldg",
+    "land"
+   ]
+  },
+  {
+   "id": "e2",
+   "name": "臨公園、綠地",
+   "group": "region",
+   "pct": 2,
+   "on": true,
+   "sets": [
+    "bldg",
+    "land"
+   ]
+  },
+  {
+   "id": "e3",
+   "name": "邊間",
+   "group": "indiv",
+   "pct": 1.5,
+   "on": true,
+   "sets": [
+    "bldg"
+   ]
+  },
+  {
+   "id": "e4",
+   "name": "頂樓",
+   "group": "indiv",
+   "pct": -2,
+   "on": true,
+   "sets": [
+    "bldg"
+   ]
+  },
+  {
+   "id": "e5",
+   "name": "鄰近高壓電塔、變電所",
+   "group": "region",
+   "pct": -5,
+   "on": true,
+   "sets": [
+    "bldg",
+    "land",
+    "ind"
+   ]
+  },
+  {
+   "id": "e6",
+   "name": "臨 15 公尺以上道路",
+   "group": "region",
+   "pct": 2,
+   "on": true,
+   "sets": [
+    "bldg",
+    "land",
+    "ind"
+   ]
+  },
+  {
+   "id": "e7",
+   "name": "無電梯四樓以上",
+   "group": "indiv",
+   "pct": -4,
+   "on": true,
+   "sets": [
+    "bldg"
+   ]
+  },
+  {
+   "id": "e8",
+   "name": "雙面臨路（角地）",
+   "group": "indiv",
+   "pct": 3,
+   "on": true,
+   "sets": [
+    "land",
+    "ind"
+   ]
+  },
+  {
+   "id": "e9",
+   "name": "位法定山坡地",
+   "group": "indiv",
+   "pct": -5,
+   "on": true,
+   "sets": [
+    "land"
+   ]
+  },
+  {
+   "id": "e10",
+   "name": "畸零地、難以單獨開發",
+   "group": "indiv",
+   "pct": -10,
+   "on": true,
+   "sets": [
+    "land"
+   ]
+  }
+ ],
+ "select": {
+  "sameCounty": true,
+  "sameDistrict": true,
+  "sameType": true,
+  "sameZone": true,
+  "months": 24,
+  "ageTol": 10,
+  "areaTolPct": 40,
+  "floorTol": 10,
+  "excludeSpecial": true,
+  "excludePresale": true,
+  "keyword": "",
+  "autoN": 3,
+  "wDate": 30,
+  "wAge": 25,
+  "wArea": 20,
+  "wFloor": 15,
+  "wRoad": 10
+ },
+ "rentSelect": {
+  "sameCounty": true,
+  "sameDistrict": true,
+  "sameType": false,
+  "months": 12,
+  "areaTolPct": 60,
+  "onlyWhole": true,
+  "excludeFurnished": false
+ },
+ "purpose": {
+  "買賣參考": {
+   "w": {
+    "comparison": 80,
+    "income": 20,
+    "cost": 0,
+    "land": 0
+   },
+   "capFloor": 0,
+   "expMult": 1
+  },
+  "抵押權設定": {
+   "w": {
+    "comparison": 70,
+    "income": 30,
+    "cost": 0,
+    "land": 0
+   },
+   "capFloor": 1.6,
+   "expMult": 1.2
+  },
+  "資產價值證明": {
+   "w": {
+    "comparison": 80,
+    "income": 20,
+    "cost": 0,
+    "land": 0
+   },
+   "capFloor": 0,
+   "expMult": 1
+  },
+  "繼承、贈與": {
+   "w": {
+    "comparison": 80,
+    "income": 20,
+    "cost": 0,
+    "land": 0
+   },
+   "capFloor": 0,
+   "expMult": 1
+  },
+  "法院訴訟": {
+   "w": {
+    "comparison": 70,
+    "income": 30,
+    "cost": 0,
+    "land": 0
+   },
+   "capFloor": 0,
+   "expMult": 1
+  },
+  "都市更新權利變換": {
+   "w": {
+    "comparison": 60,
+    "income": 0,
+    "cost": 0,
+    "land": 40
+   },
+   "capFloor": 0,
+   "expMult": 1
+  },
+  "企業資產評價": {
+   "w": {
+    "comparison": 50,
+    "income": 50,
+    "cost": 0,
+    "land": 0
+   },
+   "capFloor": 0,
+   "expMult": 1
+  }
+ },
+ "kindWeights": {
+  "unit": null,
+  "house": {
+   "comparison": 60,
+   "income": 0,
+   "cost": 40,
+   "land": 0
+  },
+  "land": {
+   "comparison": 50,
+   "income": 0,
+   "cost": 0,
+   "land": 50
+  },
+  "industrial": {
+   "comparison": 100,
+   "income": 0,
+   "cost": 0,
+   "land": 0
+  },
+  "hotel": {
+   "comparison": 0,
+   "income": 50,
+   "cost": 50,
+   "land": 0
+  },
+  "commercial": {
+   "comparison": 40,
+   "income": 40,
+   "cost": 20,
+   "land": 0
+  },
+  "factory": {
+   "comparison": 50,
+   "income": 0,
+   "cost": 50,
+   "land": 0
+  }
+ },
+ "income": {
+  "vacMonths": 1,
+  "cap": 1.25
+ },
+ "sources": {
+  "lvr": true,
+  "own": true
+ },
+ "lda": {
+  "profit": 20,
+  "design": 2,
+  "adSell": 6,
+  "mgmt": 4.5,
+  "tax": 1,
+  "ownRatio": 50,
+  "ownRate": 1.7,
+  "loanRate": 3.27,
+  "freeFactor": 1.3,
+  "saleFactor": 1.75,
+  "firstFloorRatio": 0.88,
+  "util1F": 200,
+  "utilStep": 1,
+  "baseFloor": 4,
+  "pingPerCar": 18
+ },
+ "texts": {
+  "validMonths": 6,
+  "stance": [
+   "本事務所以公正第三人立場進行客觀評估。",
+   "本事務所與委託人及受勘估單位僅為單純業務往來關係。",
+   "本事務所及本所估價師與委託人、不動產所有權人或交易雙方，並無國際會計準則第 24 號（IAS 24）所定之關係人或實質關係人之情事。",
+   "本報告書所載內容絕無虛偽或隱匿之情事，事實描述具真實確切性。",
+   "本報告書之分析意見及結論，係基於報告書所載假設及限制條件下成立，屬估價師中立之專業評論。",
+   "本事務所對勘估標的無現有或可預期之利益；對勘估標的之權利關係人亦無個人私利或偏見。",
+   "本事務所收取之報酬係專業勞務之正當報酬，不為不正當之競價，亦不刻意扭曲合理之估價結果。",
+   "本報告書內容遵循不動產估價師法及不動產估價技術規則，並依中華民國不動產估價師公會全國聯合會「敘述式估價報告書範本」格式製作。"
+  ],
+  "assumptions": [
+   "除報告書另有聲明外，勘估標的之所有權視為正常狀態且具市場性。",
+   "除報告書另有聲明外，評估結論未考慮抵押權或其他權利設定之影響。",
+   "報告書引用他人提供之資訊，經估價師盡力查證後認為確實可靠。",
+   "勘估標的之土地及其地上物視為一般正常情形，無隱藏或一般勘察無法發現之影響價值條件。",
+   "除報告書另有聲明外，勘估標的視為符合環境保護相關法規，未受限制。",
+   "勘估標的可能存在之危險因子（如土壤或地下水污染、石棉等）不在估價師勘察範圍內，本報告假設不存在此類影響價值之因素；如有需要，使用者應另聘專家分析。"
+  ],
+  "limits": [
+   "本報告書之持有人無出版本報告書之權利。",
+   "未經估價師書面同意，報告書全部或部分內容（尤其估價結論、估價師身分及事務所）不得經由廣告、公共關係、新聞或其他媒體公開。",
+   "評估結果僅適用於整體勘估標的；除報告書另有聲明，將總值按權利比例或其他方式劃分所得之結果均屬無效。",
+   "報告書之預測係基於當前市場條件、短期供需與穩定經濟基礎，將隨未來條件改變而變動。",
+   "評估結果僅供報告書所載估價目的參考，估價目的變更可能使估價金額改變。",
+   "評估結果係在報告書所載估價條件下形成，使用者應了解估價條件以免誤用。",
+   "評估結果僅具不動產價值參考性質，不必然為委託人或使用人之最後決定金額。",
+   "報告書使用者使用本報告書致違反個人資料保護法者，應自負法律責任。"
+  ]
+ },
+ "cost": {
+  "unitCost": 11.2,
+  "design": 2.5,
+  "adSell": 4,
+  "mgmt": 2,
+  "tax": 1,
+  "interest": 2,
+  "profit": 10,
+  "life": 50,
+  "salvage": 0,
+  "table": [
+   {
+    "name": "加強磚造 1–3 層",
+    "unit": 7.6
+   },
+   {
+    "name": "鋼筋混凝土造 4–5 層",
+    "unit": 9.8
+   },
+   {
+    "name": "鋼筋混凝土造 6–10 層",
+    "unit": 11.2
+   },
+   {
+    "name": "鋼筋混凝土造 11–15 層",
+    "unit": 12.6
+   },
+   {
+    "name": "鋼骨鋼筋混凝土造 16–25 層",
+    "unit": 15.8
+   },
+   {
+    "name": "鋼骨造 26 層以上",
+    "unit": 19.5
+   }
+  ]
+ }
+}

@@ -4,7 +4,7 @@
     "把單一 HTML + Supabase 的估價報告產生器，改成 Python FastAPI 後端 + PostgreSQL + React SPA 的自架平台（podman compose），並加入可操作案件的 AI 助理。新版放在舊版旁邊，最後一段才搬資料並移除舊版。每一段送一個 PR 給 upstream。"
   ],
   "now": [
-    "2026-11-09 估價師訪談的結論已併入路線圖（新增 office-workload、intake-estimate、office-templates、office-case-library、office-ai-calibration、editions）。正在做 calc-engine 的前置：用舊版補齊 golden。全部節點由 Claude（建構師）負責。"
+    "calc-engine 完成。下一步：accounts-domain（需要 Podman）、report-gen（不需要資料庫，可先做）。全部節點由 Claude（建構師）負責。"
   ],
   "children": [
     {
@@ -184,7 +184,7 @@
     {
       "id": "calc-engine",
       "title": "計算引擎與法規檢查移植到 Python",
-      "status": "planned",
+      "status": "done",
       "tickets": [
         "bl-e37c81",
         "bl-0912f5",
@@ -195,74 +195,78 @@
       "dependsOn": [
         "foundation"
       ],
-      "updated": "2026-11-07",
+      "updated": "2026-11-13",
       "summary": "案件文件 Pydantic schema + 版本升級；calc / validate；以 golden snapshot 比對並訂容許誤差",
       "detail": "範圍（做）：backend/src/appraisal/domain/{case,calc,validate,model}，純函式。\n 1) 案件文件 Pydantic schema：以 core/model.js blankCase()（第 83 行）為形狀，標的種類見 core/data.js KINDS（unit、house、land、industrial、hotel、commercial、factory）；JSON key 沿用 camelCase（alias）；schema_version 與升級函式鏈（舊版是 {v:5} 與案件檔 {format:'appraisal-case', v:5}）；blank_case()；合併與預設值只有一份（取代 core/model.js deepMerge）。\n 2) 估價模型 schema 與內建模型：core/data.js defaultModel()、defaultIndicatorSets、defaultExp、defaultPurpose、defaultKindWeights、defaultTexts；常數 COUNTIES、BTYPES、PURPOSES、SPECIALS、REGVARS、LEVELS。\n 3) 計算：core/calc.js 全部（compCalc、deviationWeights、ols/gammln/betacf/betai/invert、incomeCalc、capRate、costCalc、capitalInterest、ldaDetailed、landCalc、finalCalc、landVAT、parcelsCalc、discountFactor、cnAmount、monthsBetween、yearsBetween）與 core/model.js calc()、regression()、filteredSales、scoreOf、filteredRents、marketStats、rentStats、quantile、subj、areaOf、basePing、purposeRule、modelOf（簽名後用 modelSnapshot）。\n 4) 法規檢查：core/model.js validate()（回傳 bl 必須修正 / notes 必須說明 / warns 提醒 / items 15 項）、selText、ITEMS15；每條訊息保留法條出處。\n範圍（不做）：報告區塊（report-gen）、LVR 下載與 CSV 解析 importLvr（lvr-sync，雖然舊版放在 core/model.js）、DB 與 API。\n限制：domain 不 import 其他 appraisal 子套件；計算輸入明確（case、model、參考資料、today），不讀全域與時鐘；函式 ≤ 50 行、檔案 ≤ 300 行，要依估價方法拆檔（舊 validate 與 compCalc 都太長）；註解寫法條依據。\nJS 與 Python 的行為差異要特別處理：Math.round 是「.5 往正無限大」而 Python round() 是銀行家捨入；n() 把 ''、null、字串轉 0；toFixed 與 Intl 格式；new Date(...) 的日期解析。\n完成訊號：golden 比對通過。golden 來源是 test/snapshots/cases.json（6 組＝3 個示範案件 115-0412 unit、115-0420 land、115-0431 hotel × 2 個模型 m1 本所標準、m2 抵押貸款保守；每組有 calc、validate、marketStats、sales、blocks、html；約 1093 個非整數）。因為 Python 無法執行 sampleCase()，第一步是在舊版還在時用 node 把 E.fresh() 輸出成 JSON 輸入檔（案件、模型、BUILTIN 實價登錄 core/data_j.txt、ownCases）放進 backend/tests/golden。validate 訊息文字要逐字相同，sales 的 id 與順序要相同。每個 schema 升級步驟有測試。\n交給下游：CaseDocument、upgrade_case_document()、blank_case()、calculate(case, model, ref, today)、validate()、ModelDocument 與內建模型、golden 測試工具（case-api、report-gen、mcp-endpoint 共用）。",
       "children": [
         {
           "id": "calc-engine.q-numeric-tolerance",
           "title": "各種數字的容許誤差",
-          "status": "open",
-          "updated": "2026-11-07",
+          "status": "decided",
+          "updated": "2026-11-13",
           "summary": "golden 比對對每一種數字用多大的誤差",
           "detail": "steering 把容許誤差交給本 spec。要分類：金額（元、萬元）、單價（unitDec 位）、百分率與調整率、權重、因子（factor）、迴歸統計（r2、F、p、beta、se）、日期差。選項：A 全部用同一個相對誤差（例如 1e-9）；B 依類別訂不同誤差，顯示用數字要求逐字相同；C 比對「顯示捨入後」的值，另對原始值用較寬誤差。\n取捨：嚴格 對 JS 與 Python 浮點最後幾位的差異。放寬必須寫理由。"
         },
         {
           "id": "calc-engine.q-rounding-semantics",
           "title": "四捨五入要和 JavaScript 一模一樣嗎",
-          "status": "open",
-          "updated": "2026-11-07",
+          "status": "decided",
+          "updated": "2026-11-13",
           "summary": "Math.round 與 Python round() 對 .5 的處理不同，且影響顯示與判斷",
           "detail": "舊版 r2、roundTo、權重取整、yuan 都用 Math.round（.5 往正無限大：-2.5 → -2）。Python round() 是銀行家捨入（2.5 → 2），Decimal ROUND_HALF_UP 對負數是 -3。選項：A 寫一個 js_round（floor(x + 0.5)）逐位重現舊行為；B 改用 Decimal HALF_UP 並接受極少數金額差 1；C 用 float 乘 10^n 後再 js_round。\n取捨：和舊報告數字完全一致 對 更合理的捨入。也要確認 toFixed 的行為（它依二進位精確值）。"
         },
         {
           "id": "calc-engine.q-open-map-typing",
           "title": "開放式的 map 要多嚴格",
-          "status": "open",
-          "updated": "2026-11-07",
+          "status": "decided",
+          "updated": "2026-11-13",
           "summary": "比較標的的 adj（以因素 id 為 key）、chk 題庫答案、regionChecks、indicatorSets 是動態 key",
           "detail": "全部嚴格型別會讓 schema 很大且常改；全部 dict[str, Any] 又失去驗證（steering：寫入都經 schema 驗證）。選項：A 固定欄位嚴格，動態 map 用 dict[str, 值型別]（例如 adj: dict[str, AdjCell]）；B 動態 map 只驗最外層是 object；C 先全部嚴格，由 golden 與舊案件匯入測試找出缺口。\n取捨：驗證強度 對 匯入舊案件（真實資料可能有多餘欄位）的容錯。"
         },
         {
           "id": "calc-engine.q-ols-implementation",
           "title": "OLS 與 betai 怎麼移植",
-          "status": "open",
-          "updated": "2026-11-07",
+          "status": "decided",
+          "updated": "2026-11-13",
           "summary": "計量模型分析法用 gammln、betacf、betai、invert 算 p 值",
           "detail": "選項：A 逐行移植 core/calc.js 的 ols、invert（部分樞軸高斯消去）、gammln、betacf、betai（EPS 3e-12，MAXIT 200），不加依賴，結果最接近舊版；B 用 numpy 與 scipy.stats（新依賴、image 變大，數值較精確，但和舊 golden 可能差在 p 值的最後幾位）；C 矩陣用 numpy、p 值用手寫 betai。\n取捨：沒有新依賴與可重現舊值 對 依賴成熟函式庫。steering 的技術表沒有 numpy / scipy，採 B 或 C 要先更新 tech.md。"
         },
         {
           "id": "calc-engine.q-document-identity-fields",
           "title": "案件文件裡的 id、signed、modelSnapshot 怎麼放",
-          "status": "open",
-          "updated": "2026-11-07",
+          "status": "decided",
+          "updated": "2026-11-13",
           "summary": "案件 JSON 內有 id、signed、signedAt、modelId、modelSnapshot，和資料表欄位 case_no、signed 重複",
           "detail": "舊版 cases.data 內含完整的 c.id 與 c.signed，資料表另有 case_no 與 signed 欄位（supabase/001），兩份可能不一致。選項：A 文件內移除 id 與 signed，只由欄位決定，升級函式負責轉換，API 回傳時再合併；B 文件內保留，寫入時由 Service 強制與欄位相同；C modelSnapshot 也移出文件放獨立欄位。\n取捨：單一真相 對 與舊案件檔（含匯出匯入）的相容。steering 已決定簽名時模型複製進案件。"
         },
         {
           "id": "calc-engine.q-reference-data-interface",
           "title": "計算要拿多少實價登錄",
-          "status": "open",
-          "updated": "2026-11-07",
+          "status": "decided",
+          "updated": "2026-11-13",
           "summary": "calculate() 的參考資料由誰先篩、篩多少",
           "detail": "舊版 filteredSales 在記憶體裡套全部規則；雲端模式先用 SQL 依縣市、區、期間、種類、型態預篩並限 8000 筆（core/cloud.js cloudLvrSpec）。選項：A 呼叫端用 SQL 預篩，domain 再套完整規則（要保證預篩條件不比 filteredSales 嚴）；B domain 收全部候選（可能數萬筆），效能與記憶體較差；C 預篩條件由 domain 提供函式產生，呼叫端只負責執行查詢。\n取捨：草稿計算小於 1 秒的目標與 golden 一致性。C 可避免兩份規則不同步。"
         },
         {
           "id": "calc-engine.q-validate-location-key",
           "title": "檢查結果指向哪裡",
-          "status": "open",
-          "updated": "2026-11-07",
+          "status": "decided",
+          "updated": "2026-11-13",
           "summary": "舊版 validate 的每一項帶 tab（data:subject、comp、income、cost、land、final、survey），對應舊的 9 分頁",
           "detail": "新版是 7 個步驟。選項：A 回傳語意區段（subject、comps、income、cost、land、final、survey 等），由前端對應到步驟；B 直接回傳步驟代碼（intake、docs、survey、comps、calc、decide、deliver）；C 回傳欄位路徑（例如 basic.addr），前端可直接跳到欄位。\n取捨：domain 不知道畫面（A、C 較乾淨）對 前端最少工作（B）。C 最有用但要為每條規則標路徑。"
         },
         {
           "id": "calc-engine.q-schema-version-start",
           "title": "案件 schema 版本從幾號開始",
-          "status": "open",
-          "updated": "2026-11-07",
+          "status": "decided",
+          "updated": "2026-11-13",
           "summary": "舊資料是 v:5；新版 schema_version 起點與升級鏈",
           "detail": "舊版 db.v 與案件檔的 v 都是 5（core/model.js fresh、importCaseFile 的檔案格式）。選項：A 延續 5，新版第一個格式是 6，升級函式鏈從 5 開始；B 新版從 1 開始，另有「legacy v5」的專用匯入轉換器；C 用日期或字串版本。\n取捨：舊檔案直接可辨識 對 乾淨起點。影響 case-api 的匯入相容與 legacy-retire 的遷移。"
         }
+      ],
+      "spec": "calc-engine",
+      "notes": [
+        "完成（2026-11-13）：domain/ 的 calculate、validate、blank_case、default_model、prefilter；31 個 golden 情境零差異。8 個待決問題的決定見 spec calc-engine design.md。"
       ]
     },
     {
