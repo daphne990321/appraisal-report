@@ -4,7 +4,7 @@
     "把單一 HTML + Supabase 的估價報告產生器，改成 Python FastAPI 後端 + PostgreSQL + React SPA 的自架平台（podman compose），並加入可操作案件的 AI 助理。新版放在舊版旁邊，最後一段才搬資料並移除舊版。每一段送一個 PR 給 upstream。"
   ],
   "now": [
-    "calc-engine 完成。下一步：accounts-domain（需要 Podman）、report-gen（不需要資料庫，可先做）。全部節點由 Claude（建構師）負責。"
+    "calc-engine 完成；2026-11-22 路線圖去重（office-history-import 併入 office-case-library、office-methods-ai 併入 office-ai-calibration）。下一步：report-gen 與 visual-design（不需要資料庫，同時進行）；之後 accounts-domain（需要 Podman）。全部節點由 Claude（建構師）負責。"
   ],
   "children": [
     {
@@ -154,7 +154,7 @@
           "summary": "舊版 office_settings.data 裡的 own 與 imported 是無上限的陣列，整塊一起存",
           "detail": "舊版 office_settings.data = {own, imported, hideBuiltin}，任何一筆改動都是整塊覆寫，兩人同時改只能整塊衝突（core/cloud.js cloudSettingsConflict）。選項：A 沿用 JSONB 一塊加版本號（簡單，衝突粒度粗）；B own 拆成 office_comparables 資料表（每筆有 id、版本、可逐筆編輯）；C own 拆表、imported 另由 lvr-sync 的手動匯入決定。\n取捨：簡單 對 逐筆編輯與衝突粒度。與 lvr-sync 的 manual-import-storage 相關。",
           "notes": [
-            "2026-11-12 估價師訪談：每個事務所的估價方法不同，要能上傳自己的歷史案例，讓 AI 學出該所的方法。這一題的答案會影響 office-history-import 與 office-methods-ai，偏向 B（逐筆的資料表）。"
+            "2026-11-12 估價師訪談：每個事務所的估價方法不同，要能上傳自己的歷史案例，讓 AI 學出該所的方法。這一題的答案會影響 office-case-library 與 office-ai-calibration，偏向 B（逐筆的資料表）。"
           ]
         },
         {
@@ -641,29 +641,49 @@
       "id": "office-case-library",
       "title": "事務所歷史案例庫",
       "status": "planned",
-      "ordinal": 7,
+      "ordinal": 4,
       "dependsOn": [
         "accounts-domain",
         "case-api"
       ],
-      "updated": "2026-11-13",
+      "updated": "2026-11-22",
       "summary": "訪談：各所有大量過去案例可以參考；不能跨所使用",
-      "detail": "範圍（做）：事務所上傳自己的歷史案例（舊報告的結構化資料：標的、日期、價格、比較標的、調整、權重），只有該事務所能讀；舊版「本所案例」（ownCases）搬進來；在找比較標的與初估時可以使用。\n範圍（不做）：AI 學習（office-ai-calibration）。\n限制：每個 Repository 方法必帶 office_id；個資欄位（委託人、所有權人）預設不收或遮蔽；匯入檔不放進 git。\n完成訊號：跨所讀取一律拒絕（每個端點有測試）；刪除事務所資料時案例一併刪除。",
-      "children": []
+      "detail": "範圍（做）：事務所上傳自己的歷史案例（舊報告的結構化資料：標的、日期、價格、比較標的、調整、權重），只有該事務所能讀；上傳格式至少支援本系統與舊版的案件檔，Word 報告與試算表的解析深度見 q-source-formats；查詢、篩選與刪除；舊版「本所案例」（ownCases）搬進來；在找比較標的與初估時可以使用。\n範圍（不做）：AI 學習（office-ai-calibration）。\n限制：每個 Repository 方法必帶 office_id；個資欄位（委託人、所有權人）預設不收或遮蔽；匯入檔不放進 git。\n完成訊號：跨所讀取一律拒絕（每個端點、MCP 工具與 AI 操作都有測試）；刪除事務所資料時案例一併刪除。\n交給 office-ai-calibration：結構化的本所案例。",
+      "children": [
+        {
+          "id": "office-case-library.q-source-formats",
+          "title": "歷史案例要支援哪些檔案",
+          "status": "open",
+          "updated": "2026-11-12",
+          "summary": "舊案多半是 Word 報告與 Excel 試算表，不是結構化資料",
+          "detail": "選項：A 只收本系統／舊版的案件檔（JSON），最可靠；B 加上 Word 報告，用 AI 抽出比較標的、調整率、價格（結果要人確認）；C 再加 Excel 試算表。取捨：B、C 最貼近實際，但抽取有錯誤率，要有人工確認畫面。"
+        },
+        {
+          "id": "office-case-library.q-personal-data",
+          "title": "歷史案例中的個資怎麼處理",
+          "status": "open",
+          "updated": "2026-11-12",
+          "summary": "舊報告含委託人、所有權人姓名與地址",
+          "detail": "選項：A 原樣存放，靠事務所隔離保護；B 上傳時去識別化（姓名遮蔽），只保留估價相關欄位；C 讓事務所選。要一併決定：保存多久、刪除後 AI 已學到的內容怎麼處理。"
+        }
+      ],
+      "notes": [
+        "2026-11-22：併入重複節點 office-history-import（Jason 2026-11-12 加，與本節點同一件事），帶入上傳格式、MCP 與 AI 隔離測試，以及兩個待決問題 q-source-formats、q-personal-data。順序改為 4（case-api 之後即可做，intake-estimate 會用到）。"
+      ]
     },
     {
       "id": "office-ai-calibration",
       "title": "AI 依該所案例建議估價模型與報告文字",
       "status": "planned",
-      "ordinal": 8,
+      "ordinal": 7,
       "dependsOn": [
         "office-case-library",
         "ai-assistant",
         "office-templates"
       ],
-      "updated": "2026-11-13",
+      "updated": "2026-11-22",
       "summary": "訪談：希望 AI 校準憑經驗訂的調整項目；考慮地端 AI（安全、成本）",
-      "detail": "範圍（做）：AI 讀該事務所的歷史案例，整理出常用的調整比率、權重與報告文字寫法，產生估價模型與範本的「建議草稿」；估價師逐項確認後才寫入事務所設定。\n限制：AI 只讀該所資料，結果只給該所（隔離測試）；AI 產出一律是草稿，不得直接改數值、權重或計算結果；每次建議記錄依據的案例數與期間。\n完成訊號：兩個事務所的案例互不影響彼此的建議（測試）；未經確認的建議不會改變任何計算結果。",
+      "detail": "範圍（做）：AI 讀該事務所的歷史案例，整理出常用的調整比率、權重與報告文字寫法，產生估價模型與範本的「建議草稿」；估價師逐項確認後才寫入事務所設定。\n限制：AI 只讀該所資料，結果只給該所（隔離測試，AI 的檢索、上下文與產出都不能用到別所資料）；法定門檻下限仍由後端強制；估價師確認後存成本所模型時走 models-settings-api 的版本檢查與權限；AI 產出一律是草稿，不得直接改數值、權重或計算結果；每次建議記錄依據的案例數與期間。\n完成訊號：兩個事務所的案例互不影響彼此的建議（測試）；未經確認的建議不會改變任何計算結果。",
       "children": [
         {
           "id": "office-ai-calibration.q-ai-hosting",
@@ -671,8 +691,14 @@
           "status": "open",
           "updated": "2026-11-13",
           "summary": "事務所想要地端 AI；目前架構用 Claude API（公司付費）",
-          "detail": "選項：A 雲端 Claude API ＋ 嚴格事務所隔離與不保留資料；B 企業版用事務所自己的地端模型（效果較弱、要硬體）；C 介面抽象化，兩者都可接。建構師會做比較研究（效果、成本、安全）後再請 Daphne 決定。"
+          "detail": "選項：A 雲端 Claude API ＋ 嚴格事務所隔離與不保留資料；B 企業版用事務所自己的地端模型（效果較弱、要硬體）；C 介面抽象化，兩者都可接。建構師會做比較研究（效果、成本、安全）後再請 Daphne 決定。",
+          "notes": [
+            "2026-11-22：ai-assistant 已決定模型端點由 .env（ANTHROPIC_BASE_URL、ANTHROPIC_MODEL）設定，接地端相容端點不必改程式；本題剩下的是「建議用哪一種」，仍待比較研究後由 Daphne 決定。"
+          ]
         }
+      ],
+      "notes": [
+        "2026-11-22：併入重複節點 office-methods-ai（Jason 2026-11-12 加，與本節點同一件事），帶入「法定門檻由後端強制」與「走 models-settings-api 存檔」。順序改為 7（office-templates 之後）。"
       ]
     },
     {
@@ -908,55 +934,6 @@
           "summary": "目前一套 stack 一組端點設定",
           "detail": "選項：A 一套 stack 一組（steering 現況），要地端模型的事務所另外架一套 stack；B 事務所設定中可填自己的端點與 key（多所共用 stack 時也能各接各的）。取捨：A 簡單、key 不進資料庫；B 彈性大，但 key 要加密存放，且每個端點的能力要另外驗證。跟企業版／個人版的分法有關。"
         }
-      ]
-    },
-    {
-      "id": "office-history-import",
-      "title": "事務所歷史案例匯入",
-      "status": "planned",
-      "ordinal": 4,
-      "dependsOn": [
-        "accounts-domain",
-        "case-api"
-      ],
-      "updated": "2026-11-12",
-      "summary": "事務所上傳自己過去的估價案例（舊版案件檔、Word 報告、試算表），整理成可查詢的本所案例；只有該所看得到",
-      "detail": "來源：2026-11-12 估價師訪談。各事務所的估價方法不同，多半是資深估價師帶出來的；過去案例是最好的參考。\n範圍（做）：上傳與解析歷史案例（至少支援本系統與舊版的案件檔；Word 報告與試算表的解析深度待決）；存成本所案例（見 accounts-domain.q-own-cases-storage）；查詢與篩選；刪除。\n限制：事務所隔離照 steering，查詢一律帶事務所條件；歷史案例可能含委託人個資，存放與刪除規則要先定。\n完成訊號：一個事務所上傳的案例，另一個事務所的任何 API、MCP 工具、AI 操作都讀不到（有自動測試）。\n交給 office-methods-ai：結構化的本所案例。",
-      "children": [
-        {
-          "id": "office-history-import.q-source-formats",
-          "title": "歷史案例要支援哪些檔案",
-          "status": "open",
-          "updated": "2026-11-12",
-          "summary": "舊案多半是 Word 報告與 Excel 試算表，不是結構化資料",
-          "detail": "選項：A 只收本系統／舊版的案件檔（JSON），最可靠；B 加上 Word 報告，用 AI 抽出比較標的、調整率、價格（結果要人確認）；C 再加 Excel 試算表。取捨：B、C 最貼近實際，但抽取有錯誤率，要有人工確認畫面。"
-        },
-        {
-          "id": "office-history-import.q-personal-data",
-          "title": "歷史案例中的個資怎麼處理",
-          "status": "open",
-          "updated": "2026-11-12",
-          "summary": "舊報告含委託人、所有權人姓名與地址",
-          "detail": "選項：A 原樣存放，靠事務所隔離保護；B 上傳時去識別化（姓名遮蔽），只保留估價相關欄位；C 讓事務所選。要一併決定：保存多久、刪除後 AI 已學到的內容怎麼處理。"
-        }
-      ]
-    },
-    {
-      "id": "office-methods-ai",
-      "title": "AI 依本所案例產生事務所的估價方法與報告範本",
-      "status": "planned",
-      "ordinal": 6,
-      "dependsOn": [
-        "office-history-import",
-        "models-settings-api",
-        "ai-assistant",
-        "report-gen"
-      ],
-      "updated": "2026-11-12",
-      "summary": "AI 從本所歷史案例歸納出該所的調整項目、比率習慣與報告文字，產生估價模型與範本的草稿，由估價師審核後採用；絕不跨事務所",
-      "detail": "來源：2026-11-12 估價師訪談。不同事務所方法不同，AI 要學出各所自己的方法。\n範圍（做）：AI 只讀本所案例；產出估價模型草稿（調整項目、比率、權重）與報告文字範本草稿；估價師審核、修改後才存成本所模型（走 models-settings-api 的版本檢查與權限）。\n限制：AI 的檢索、上下文與產出都不能用到別的事務所的資料；AI 產生的草稿不能直接生效；法定門檻下限仍由後端強制。\n待使用者決定（會改 steering）：AI 是雲端 API 還是地端模型；個人版／企業版的分法。\n完成訊號：隔離測試證明 A 所的案例不會出現在 B 所的 AI 回應或草稿中；草稿要經估價師確認才生效。",
-      "notes": [
-        "2026-11-12：地端或雲端由 ANTHROPIC_BASE_URL 決定（見 ai-assistant），本節點不用另外處理模型部署。"
       ]
     },
     {
