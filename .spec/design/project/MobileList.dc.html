@@ -8,66 +8,53 @@
 <body>
 <x-dc>
 <helmet>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=Noto+Serif+TC:wght@700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
 <style>
 body{margin:0}
 a{color:#2747A0}a:hover{color:#1E3A85}
 </style>
 </helmet>
-<div style="width: 390px; height: 844px; overflow: hidden; background: #F4F5F7; color: #161B26; font-family: 'Noto Sans TC', system-ui, sans-serif; display: flex; flex-direction: column">
-  <header style="padding: 16px 16px 12px; background: #FFFFFF; border-bottom: 1px solid #D9DDE4; display: flex; flex-direction: column; gap: 12px">
-    <div style="display: flex; align-items: center; justify-content: space-between">
-      <h1 style="margin: 0; font-size: 22px; font-weight: 700">案件</h1>
-      <button type="button" aria-label="帳號選單：林估價師" style="width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent; display: flex; align-items: center; justify-content: center"><span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 50%; background: #2747A0; color: #FFFFFF; font-size: 13px; display: flex; align-items: center; justify-content: center">林</span></button>
-    </div>
-    <div style="display: flex; gap: 8px; overflow-x: auto">
-      <sc-for list="{{filters}}" as="f" hint-placeholder-count="7">
-        <button type="button" aria-pressed="{{f.on}}" style="{{f.style}}">{{f.label}}</button>
-      </sc-for>
-    </div>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F4F5F7; color: #161B26; font-family: 'Noto Sans TC', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <header style="background: #161B26; color: #EEF0F4; padding: 16px; display: flex; align-items: center; gap: 10px">
+    <div style="width: 30px; height: 30px; border-radius: 7px; background: #B4381F; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif TC', serif; font-size: 16px; font-weight: 700" aria-hidden="true">估</div>
+    <span style="font-weight: 700; flex: 1">案件</span>
+    <a href="CaseCalendar.dc.html" style="height: 44px; padding: 0 12px; border-radius: 8px; color: #EEF0F4; display: inline-flex; align-items: center; font-size: 14px; text-decoration: none; border: 1px solid #2A3142">月曆</a>
   </header>
-
-  <main style="flex: 1; overflow: hidden; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px">
-    <sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
-      <a href="MobileCase.dc.html" style="display: flex; flex-direction: column; gap: 8px; padding: 14px; background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 10px; text-decoration: none; color: #161B26">
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
-          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #5C6475">{{r.no}}</span>
-          <span style="{{r.chip}}">{{r.status}}</span>
-        </div>
-        <span style="font-size: 15px; font-weight: 500">{{r.name}}</span>
-        <div style="display: flex; align-items: center; gap: 10px">
-          <div style="flex: 1; height: 6px; border-radius: 3px; background: #EDEFF3"><div style="height: 6px; border-radius: 3px; background: #2747A0; width: {{r.pct}}"></div></div>
-          <span style="font-size: 13px; color: #3A4253">{{r.step}}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; font-size: 13px">
-          <span style="color: #3A4253">{{r.owner}}</span>
-          <span style="{{r.dueStyle}}">{{r.due}}</span>
-        </div>
-      </a>
-    </sc-for>
-  </main>
-
-  <div style="padding: 12px 16px 24px; background: #FFFFFF; border-top: 1px solid #D9DDE4">
-    <button type="button" style="width: 100%; height: 48px; border: 0; border-radius: 8px; background: #2747A0; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 500">新增案件</button>
+  <div style="padding: 12px 16px; display: flex; gap: 8px; overflow-x: auto">
+    <span style="flex: none; height: 36px; padding: 0 14px; border-radius: 18px; background: #2747A0; color: #FFFFFF; font-size: 14px; display: inline-flex; align-items: center">我負責的 3</span>
+    <span style="flex: none; height: 36px; padding: 0 14px; border-radius: 18px; background: #FFFFFF; border: 1px solid #D9DDE4; font-size: 14px; display: inline-flex; align-items: center">待我確認 1</span>
+    <span style="flex: none; height: 36px; padding: 0 14px; border-radius: 18px; background: #FFFFFF; border: 1px solid #D9DDE4; font-size: 14px; display: inline-flex; align-items: center">3 天內到期 2</span>
+    <span style="flex: none; height: 36px; padding: 0 14px; border-radius: 18px; background: #FFFFFF; border: 1px solid #D9DDE4; font-size: 14px; display: inline-flex; align-items: center">進行中 4</span>
+  </div>
+  <div style="flex: 1; overflow-y: auto; padding: 0 16px 16px; display: flex; flex-direction: column; gap: 10px">
+    <div style="font-size: 13px; color: #5C6475; padding-top: 4px">今天 115/11/22</div>
+    <a href="MobileSurvey.dc.html" style="background: #FFFFFF; border: 1px solid #D9DDE4; border-left: 4px solid #2747A0; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 6px; color: #161B26; text-decoration: none">
+      <div style="display: flex; justify-content: space-between"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2747A0">115-0436</span><span style="font-size: 13px; color: #2747A0; font-weight: 500">10:00 現勘</span></div>
+      <div style="font-size: 16px; font-weight: 500">新竹市東區 透天厝</div>
+      <div style="font-size: 13px; color: #5C6475">第 3／7 步・現勘・期限明天</div>
+    </a>
+    <a href="MobileHandoff.dc.html" style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 6px; color: #161B26; text-decoration: none">
+      <div style="display: flex; justify-content: space-between"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2747A0">115-0431</span><span style="padding: 1px 8px; border-radius: 10px; background: #FDF0D8; color: #7A4A00; font-size: 13px">待確認</span></div>
+      <div style="font-size: 16px; font-weight: 500">高雄市前金區 旅館</div>
+      <div style="font-size: 13px; color: #9A2818">已逾期 2 天・第 6／7 步</div>
+    </a>
+    <div style="font-size: 13px; color: #5C6475; padding-top: 8px">其他</div>
+    <a href="#" style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 6px; color: #161B26; text-decoration: none">
+      <div style="display: flex; justify-content: space-between"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2747A0">115-0412</span><span style="font-size: 13px; color: #7A4A00">3 天後</span></div>
+      <div style="font-size: 16px; font-weight: 500">新竹縣竹北市 住宅大樓 12 樓</div>
+      <div style="font-size: 13px; color: #5C6475">第 5／7 步・試算（請在電腦上操作）</div>
+    </a>
+    <a href="#" style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 6px; color: #161B26; text-decoration: none">
+      <div style="display: flex; justify-content: space-between"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2747A0">115-0441</span><span style="padding: 1px 8px; border-radius: 10px; background: #EDEFF3; color: #3A4253; font-size: 13px">暫停</span></div>
+      <div style="font-size: 16px; font-weight: 500">臺北市大安區 公寓 4 樓</div>
+      <div style="font-size: 13px; color: #5C6475">第 1／7 步・接案</div>
+    </a>
   </div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
-  renderVals() {
-    const pill = 'font-size: 12px; font-weight: 500; padding: 3px 9px; border-radius: 999px; white-space: nowrap; ';
-    const due = 'white-space: nowrap; ';
-    const fBase = 'height: 36px; flex: 0 0 auto; padding: 0 14px; border-radius: 999px; font: inherit; font-size: 14px; ';
-    const filters = [['進行中', true], ['我負責的'], ['待我確認'], ['3 天內到期'], ['已逾期'], ['已交付'], ['全部']]
-      .map(([label, on]) => ({ label, on: on ? 'true' : 'false', style: fBase + (on ? 'border: 1px solid #2747A0; background: #2747A0; color: #FFFFFF' : 'border: 1px solid #D9DDE4; background: #FFFFFF; color: #3A4253') }));
-    const rows = [
-      { no: '115-0142', name: '大安區信義路四段 公寓 5 樓', step: '5/7 試算', pct: '71%', owner: '林估價師', status: '進行中', chip: pill + 'background: #E6EBF7; color: #1E3A85', due: '剩 2 天', dueStyle: due + 'color: #7A4A00; font-weight: 500' },
-      { no: '115-0139', name: '新店區安康路 透天厝', step: '6/7 決定價格', pct: '86%', owner: '林估價師', status: '待確認', chip: pill + 'background: #FDF0D8; color: #7A4A00', due: '11/12', dueStyle: due + 'color: #3A4253' },
-      { no: '115-0137', name: '桃園市蘆竹區 工業用地', step: '4/7 比較標的', pct: '57%', owner: '王助理', status: '退回修改', chip: pill + 'background: #FBE5E1; color: #9A2818', due: '已逾期 2 天', dueStyle: due + 'color: #9A2818; font-weight: 700' },
-      { no: '115-0135', name: '中山區南京東路 商辦 12 樓', step: '3/7 現勘', pct: '43%', owner: '張助理', status: '進行中', chip: pill + 'background: #E6EBF7; color: #1E3A85', due: '剩 3 天', dueStyle: due + 'color: #7A4A00; font-weight: 500' }
-    ];
-    return { filters, rows };
-  }
+  renderVals() { return {}; }
 }
 </script>
 </body>

@@ -1,25 +1,28 @@
 {
   "v": 3,
-  "createdOnFiles": {"v": 1, "at": "2026-11-07T09:20:00Z"},
-  "title": "估價報告系統 視覺設計（初稿）",
+  "createdOnFiles": {"v": 1, "at": "2026-11-22T09:00:00Z"},
+  "title": "估價報告系統 視覺設計",
   "launch": {"view": "canvas"},
   "pages": [],
   "boards": {
-    "Main.dc.html": {"x": 0, "y": 0, "w": 1280, "h": 1000, "title": "設計 token：地籍藍"},
-    "Login.dc.html": {"x": 0, "y": 1350, "w": 1440, "h": 900, "title": "登入", "expand": "fill"},
-    "CaseList.dc.html": {"x": 1520, "y": 1350, "w": 1440, "h": 900, "title": "案件清單", "expand": "fill"},
-    "CaseStep.dc.html": {"x": 0, "y": 2600, "w": 1440, "h": 960, "title": "案件頁：試算（AI 浮動泡泡）", "expand": "fill", "is_interactive": true},
-    "CasePinned.dc.html": {"x": 1520, "y": 2600, "w": 1440, "h": 960, "title": "案件頁：AI 釘選後三欄", "expand": "fill", "is_interactive": true},
-    "MobileList.dc.html": {"x": 0, "y": 3910, "w": 390, "h": 844, "title": "手機：案件清單"},
-    "MobileCase.dc.html": {"x": 470, "y": 3910, "w": 390, "h": 844, "title": "手機：案件頁與 AI"}
+    "Main.dc.html": {"x": 0, "y": 0, "w": 1280, "h": 1080, "title": "設計 token：已選地籍藍"},
+    "Login.dc.html": {"x": 0, "y": 1500, "w": 1440, "h": 900, "title": "登入／註冊", "expand": "fill", "is_interactive": true},
+    "CaseList.dc.html": {"x": 1520, "y": 1500, "w": 1440, "h": 1000, "title": "案件清單與看板", "expand": "fill", "is_interactive": true},
+    "CaseCalendar.dc.html": {"x": 3040, "y": 1500, "w": 1440, "h": 1000, "title": "月曆與每人案件量", "expand": "fill"},
+    "CaseStep.dc.html": {"x": 0, "y": 2920, "w": 1440, "h": 1180, "title": "案件頁：試算步驟", "expand": "fill", "is_interactive": true},
+    "CasePinned.dc.html": {"x": 1520, "y": 2920, "w": 1680, "h": 1000, "title": "三欄：AI 釘選後", "expand": "fill", "is_interactive": true},
+    "Conflict.dc.html": {"x": 3280, "y": 2920, "w": 1440, "h": 900, "title": "版本衝突", "expand": "fill"},
+    "Report.dc.html": {"x": 0, "y": 4520, "w": 1100, "h": 1400, "title": "報告預覽"},
+    "MobileList.dc.html": {"x": 1180, "y": 4520, "w": 390, "h": 844, "title": "手機：案件清單"},
+    "MobileSurvey.dc.html": {"x": 1650, "y": 4520, "w": 390, "h": 844, "title": "手機：現勘"},
+    "MobileHandoff.dc.html": {"x": 2120, "y": 4520, "w": 390, "h": 844, "title": "手機：交接與確認"}
   },
-  "order": ["Main.dc.html", "Login.dc.html", "CaseList.dc.html", "CaseStep.dc.html", "CasePinned.dc.html", "MobileList.dc.html", "MobileCase.dc.html"],
+  "order": ["Main.dc.html", "Login.dc.html", "CaseList.dc.html", "CaseCalendar.dc.html", "CaseStep.dc.html", "CasePinned.dc.html", "Conflict.dc.html", "Report.dc.html", "MobileList.dc.html", "MobileSurvey.dc.html", "MobileHandoff.dc.html"],
   "notes": {
-    "t_tokens": {"x": 0, "y": -300, "text": "設計基礎", "kind": "title1", "maxW": 1280},
-    "t_entry": {"x": 0, "y": 1050, "text": "進入系統", "kind": "title1", "maxW": 2960},
-    "t_case": {"x": 0, "y": 2300, "text": "案件頁與 AI 助理", "kind": "title1", "maxW": 2960},
-    "t_mobile": {"x": 0, "y": 3610, "text": "手機版", "kind": "title1", "maxW": 860},
-    "n_draft": {"x": 1360, "y": 0, "w": 420, "text": "初稿。配色與版面重新設計，不沿用舊版的青綠＋印章配色，也不沿用 SolidWorks 窗格的配色。\n\n主色「地籍藍」只用在主要動作與目前位置；朱紅只用在「已簽名」。\n\n待決：手機版做到什麼程度、三欄在窄螢幕怎麼退化。", "fill": "orange", "size": "m"}
+    "t1": {"x": 0, "y": -300, "text": "設計 token", "kind": "title1", "maxW": 1280},
+    "t2": {"x": 0, "y": 1200, "text": "登入與案件管理", "kind": "title1", "maxW": 4480},
+    "t3": {"x": 0, "y": 2620, "text": "案件頁", "kind": "title1", "maxW": 4720},
+    "t4": {"x": 0, "y": 4220, "text": "報告與手機", "kind": "title1", "maxW": 2510}
   },
   "designSystems": []
 }

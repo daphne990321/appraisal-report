@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<title>版本衝突</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2747A0}a:hover{color:#1E3A85}
+</style>
+</helmet>
+<div style="min-height: 900px; background: rgba(22,27,38,0.45); font-family: 'Noto Sans TC', system-ui, sans-serif; color: #161B26; display: flex; align-items: center; justify-content: center; padding: 40px 16px; box-sizing: border-box">
+  <div role="dialog" aria-labelledby="cf-title" style="width: 100%; max-width: 760px; background: #FFFFFF; border-radius: 14px; box-shadow: 0 12px 40px rgba(22,27,38,0.25); padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <h1 id="cf-title" style="margin: 0; font-size: 22px">陳○○ 剛剛也改了這件案子</h1>
+      <p style="margin: 0; font-size: 15px; line-height: 1.8; color: #5C6475">你按「確認儲存」之前，陳○○ 在 11/22 14:05 存了新的版本。有 1 個欄位兩個人都改了，請選要留哪一個；其他欄位會自動合併。</p>
+    </div>
+
+    <div style="border: 1px solid #D9DDE4; border-radius: 12px; overflow-x: auto">
+      <table style="width: 100%; min-width: 560px; border-collapse: collapse; font-size: 15px">
+        <thead><tr style="text-align: left; color: #5C6475; font-size: 13px; background: #F4F5F7"><th style="padding: 10px 14px; font-weight: 500">欄位</th><th style="padding: 10px 14px; font-weight: 500">你的修改</th><th style="padding: 10px 14px; font-weight: 500">陳○○ 的修改</th></tr></thead>
+        <tbody>
+          <tr style="border-top: 1px solid #D9DDE4">
+            <td style="padding: 14px; font-weight: 500">收益資本化率</td>
+            <td style="padding: 14px"><label style="display: flex; align-items: center; gap: 10px; cursor: pointer"><input type="radio" name="cap" checked="checked" style="width: 20px; height: 20px"><span style="font-family: 'IBM Plex Mono', monospace">1.30%</span></label></td>
+            <td style="padding: 14px"><label style="display: flex; align-items: center; gap: 10px; cursor: pointer"><input type="radio" name="cap" style="width: 20px; height: 20px"><span style="font-family: 'IBM Plex Mono', monospace">1.25%</span></label></td>
+          </tr>
+          <tr style="border-top: 1px solid #D9DDE4; color: #5C6475">
+            <td style="padding: 14px">比較標的 B 權重</td>
+            <td style="padding: 14px">35% → 30%</td>
+            <td style="padding: 14px">沒有改</td>
+          </tr>
+          <tr style="border-top: 1px solid #D9DDE4; color: #5C6475">
+            <td style="padding: 14px">現勘照片</td>
+            <td style="padding: 14px">沒有改</td>
+            <td style="padding: 14px">新增 4 張</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="padding: 12px 14px; border-radius: 10px; background: #FDF0D8; color: #7A4A00; font-size: 14px; line-height: 1.7">還沒儲存的修改都還在，不會因為這個畫面而消失。</div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end">
+      <button type="button" style="height: 44px; padding: 0 18px; border: 1px solid #D9DDE4; border-radius: 8px; background: #FFFFFF; color: #161B26; font: 500 15px 'Noto Sans TC', sans-serif">先看陳○○ 的版本</button>
+      <button type="button" style="height: 44px; padding: 0 20px; border: 0; border-radius: 8px; background: #2747A0; color: #FFFFFF; font: 500 15px 'Noto Sans TC', sans-serif">合併後儲存</button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

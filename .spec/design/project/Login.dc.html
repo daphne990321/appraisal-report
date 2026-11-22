@@ -2,69 +2,103 @@
 <html lang="zh-Hant-TW">
 <head>
 <meta charset="utf-8">
-<title>登入</title>
+<title>登入與註冊</title>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=Noto+Serif+TC:wght@600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
 <style>
 body{margin:0}
 a{color:#2747A0}a:hover{color:#1E3A85}
+input:focus{outline:2px solid #9DB0E0;outline-offset:1px}
 </style>
 </helmet>
-<div style="min-height: 900px; box-sizing: border-box; background: #F4F5F7; color: #161B26; font-family: 'Noto Sans TC', system-ui, sans-serif; display: flex; align-items: center; justify-content: center; padding: 48px 16px">
-  <main style="width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 24px">
-    <div style="display: flex; align-items: center; gap: 12px">
-      <div style="width: 40px; height: 40px; border-radius: 8px; background: #2747A0; display: flex; align-items: center; justify-content: center">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"></path><path d="M5 21V9l7-5 7 5v12"></path><path d="M9 21v-6h6v6"></path></svg>
-      </div>
-      <div style="display: flex; flex-direction: column">
-        <span style="font-size: 18px; font-weight: 700">估價報告系統</span>
-        <span style="font-size: 13px; color: #5C6475">不動產估價師事務所</span>
-      </div>
+<div style="min-height: 900px; background: {{p.bg}}; color: {{p.ink}}; font-family: 'Noto Sans TC', system-ui, sans-serif; display: flex; flex-wrap: wrap">
+  <div style="flex: 1 1 420px; background: #161B26; color: #EEF0F4; padding: 64px 56px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; gap: 40px">
+    <div style="display: flex; align-items: center; gap: 14px">
+      <div style="width: 48px; height: 48px; border-radius: 10px; background: {{p.seal}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif TC', serif; font-size: 26px; font-weight: 700" aria-hidden="true">估</div>
+      <div style="font-family: 'Noto Serif TC', serif; font-size: 22px; font-weight: 700">估價報告系統</div>
     </div>
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 440px">
+      <h1 style="margin: 0; font-family: 'Noto Serif TC', serif; font-size: 34px; line-height: 1.4">從接案到簽名，<br>一件案子在同一個地方完成。</h1>
+      <p style="margin: 0; font-size: 16px; line-height: 1.8; color: #A9B1C2">調資料、現勘、比較標的、試算、決定價格、簽名交付。計算與法規檢查由系統把關，AI 只提建議，數字由估價師決定。</p>
+    </div>
+    <div style="font-size: 13px; color: #A9B1C2">每個事務所的資料彼此隔離，不會被其他事務所看到。</div>
+  </div>
 
-    <section style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 10px; padding: 32px; display: flex; flex-direction: column; gap: 20px">
-      <h1 style="margin: 0; font-size: 22px; font-weight: 700">登入</h1>
-
-      <div style="display: flex; flex-direction: column; gap: 10px">
-        <button type="button" style="height: 44px; display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid #D9DDE4; border-radius: 6px; background: #FFFFFF; color: #161B26; font: inherit; font-size: 15px">
-          <span aria-hidden="true" style="width: 20px; height: 20px; border-radius: 4px; background: #EDEFF3; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">G</span>用 Google 帳號登入</button>
-        <button type="button" style="height: 44px; display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid #D9DDE4; border-radius: 6px; background: #FFFFFF; color: #161B26; font: inherit; font-size: 15px">
-          <span aria-hidden="true" style="width: 20px; height: 20px; border-radius: 4px; background: #EDEFF3; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">M</span>用 Microsoft 365 帳號登入</button>
-        <button type="button" style="height: 44px; display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid #D9DDE4; border-radius: 6px; background: #FFFFFF; color: #161B26; font: inherit; font-size: 15px">
-          <span aria-hidden="true" style="width: 20px; height: 20px; border-radius: 4px; background: #EDEFF3; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">f</span>用 Meta 帳號登入</button>
+  <div style="flex: 1 1 480px; display: flex; align-items: center; justify-content: center; padding: 48px 24px; box-sizing: border-box">
+    <div style="width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 24px">
+      <div style="display: flex; gap: 4px; background: #FFFFFF; border: 1px solid {{p.line}}; border-radius: 10px; padding: 4px" role="tablist" aria-label="登入或註冊">
+        <button type="button" role="tab" aria-selected="{{isLogin}}" onClick="{{toLogin}}" style="flex: 1; height: 44px; border: 0; border-radius: 8px; background: {{tabLoginBg}}; color: {{tabLoginInk}}; font: 500 15px 'Noto Sans TC', sans-serif; cursor: pointer">登入</button>
+        <button type="button" role="tab" aria-selected="{{isSignup}}" onClick="{{toSignup}}" style="flex: 1; height: 44px; border: 0; border-radius: 8px; background: {{tabSignupBg}}; color: {{tabSignupInk}}; font: 500 15px 'Noto Sans TC', sans-serif; cursor: pointer">註冊個人版</button>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 12px; color: #5C6475; font-size: 13px">
-        <div style="flex: 1; height: 1px; background: #D9DDE4"></div>或用本系統帳號<div style="flex: 1; height: 1px; background: #D9DDE4"></div>
-      </div>
-
-      <form style="display: flex; flex-direction: column; gap: 14px; margin: 0">
-        <div style="display: flex; flex-direction: column; gap: 6px">
-          <label for="email" style="font-size: 13px; font-weight: 500; color: #3A4253">電子郵件</label>
-          <input id="email" type="email" value="lin@example-office.tw" style="height: 42px; padding: 0 12px; border: 1px solid #C9CED8; border-radius: 6px; font: inherit; font-size: 15px; color: #161B26; background: #FFFFFF">
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 6px">
-          <div style="display: flex; justify-content: space-between; align-items: baseline">
-            <label for="pw" style="font-size: 13px; font-weight: 500; color: #3A4253">密碼</label>
-            <a href="#forgot" style="font-size: 13px">忘記密碼</a>
+      <sc-if value="{{isLogin}}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; gap: 16px">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="email" style="font-size: 14px; font-weight: 500">電子郵件</label>
+            <input id="email" type="email" value="lin@example.com" style="height: 44px; padding: 0 12px; border: 1px solid {{p.line}}; border-radius: 8px; font: 16px 'Noto Sans TC', sans-serif; background: #FFFFFF">
           </div>
-          <input id="pw" type="password" value="password" style="height: 42px; padding: 0 12px; border: 1px solid #C9CED8; border-radius: 6px; font: inherit; font-size: 15px; color: #161B26; background: #FFFFFF">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline">
+              <label for="pw" style="font-size: 14px; font-weight: 500">密碼</label>
+              <a href="#forgot" style="font-size: 14px; color: {{p.accent}}">忘記密碼？</a>
+            </div>
+            <input id="pw" type="password" value="password" style="height: 44px; padding: 0 12px; border: 1px solid {{p.line}}; border-radius: 8px; font: 16px 'Noto Sans TC', sans-serif; background: #FFFFFF">
+          </div>
+          <button type="button" style="height: 48px; border: 0; border-radius: 8px; background: {{p.accent}}; color: #FFFFFF; font: 500 16px 'Noto Sans TC', sans-serif">登入</button>
+          <div style="display: flex; align-items: center; gap: 12px; color: {{p.muted}}; font-size: 13px">
+            <div style="flex: 1; height: 1px; background: {{p.line}}"></div>或用其他帳號<div style="flex: 1; height: 1px; background: {{p.line}}"></div>
+          </div>
+          <button type="button" style="height: 44px; border: 1px solid {{p.line}}; border-radius: 8px; background: #FFFFFF; color: {{p.ink}}; font: 500 15px 'Noto Sans TC', sans-serif">用 Google 帳號登入</button>
+          <button type="button" style="height: 44px; border: 1px solid {{p.line}}; border-radius: 8px; background: #FFFFFF; color: {{p.ink}}; font: 500 15px 'Noto Sans TC', sans-serif">用 Microsoft 帳號登入</button>
+          <p style="margin: 0; font-size: 13px; color: {{p.muted}}; line-height: 1.7">事務所成員請用邀請信中的連結設定密碼。</p>
         </div>
-        <button type="submit" style="height: 44px; border: 0; border-radius: 6px; background: #2747A0; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 500">登入</button>
-      </form>
-    </section>
+      </sc-if>
 
-    <p style="margin: 0; font-size: 13px; color: #5C6475; line-height: 1.7; text-align: center">本系統不開放自行註冊。帳號由事務所管理者邀請建立。<br>收到邀請信後，用信中的連結設定密碼或綁定外部帳號。</p>
-  </main>
+      <sc-if value="{{isSignup}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 16px">
+          <p style="margin: 0; font-size: 14px; line-height: 1.8; color: {{p.muted}}">個人版：系統替你建立一個只有你一人的事務所，使用內建的估價模型與報告範本。之後可以升級成企業版。</p>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="name" style="font-size: 14px; font-weight: 500">姓名</label>
+            <input id="name" type="text" value="林○○" style="height: 44px; padding: 0 12px; border: 1px solid {{p.line}}; border-radius: 8px; font: 16px 'Noto Sans TC', sans-serif; background: #FFFFFF">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="semail" style="font-size: 14px; font-weight: 500">電子郵件</label>
+            <input id="semail" type="email" value="lin@example.com" style="height: 44px; padding: 0 12px; border: 1px solid {{p.line}}; border-radius: 8px; font: 16px 'Noto Sans TC', sans-serif; background: #FFFFFF">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="cert" style="font-size: 14px; font-weight: 500">估價師證書字號</label>
+            <input id="cert" type="text" placeholder="例如（110）台內估字第 000 號" style="height: 44px; padding: 0 12px; border: 1px solid {{p.line}}; border-radius: 8px; font: 16px 'Noto Sans TC', sans-serif; background: #FFFFFF">
+            <span style="font-size: 13px; color: {{p.muted}}">簽名前需要通過資格確認（待決定確認方式）。</span>
+          </div>
+          <button type="button" style="height: 48px; border: 0; border-radius: 8px; background: {{p.accent}}; color: #FFFFFF; font: 500 16px 'Noto Sans TC', sans-serif">寄驗證信</button>
+          <p style="margin: 0; font-size: 13px; color: {{p.muted}}">點信中的連結完成驗證後，才能開始使用。</p>
+        </div>
+      </sc-if>
+    </div>
+  </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"palette":{"editor":"enum","options":["青綠（沿用舊版）","地籍藍"],"default":"地籍藍"},"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
-  renderVals() { return {}; }
+  constructor(props) { super(props); this.state = { tab: 'login' }; }
+  renderVals() {
+    const PAL = {
+      '青綠（沿用舊版）': { accent: '#1F5E66', soft: '#E1EDEE', bg: '#F3F5F4', line: '#D3DAD9', ink: '#161B26', muted: '#5A676C', seal: '#B23A2B' },
+      '地籍藍': { accent: '#2747A0', soft: '#E6EBF7', bg: '#F4F5F7', line: '#D9DDE4', ink: '#161B26', muted: '#5C6475', seal: '#B4381F' }
+    };
+    const p = PAL[this.props.palette ?? '地籍藍'] || PAL['地籍藍'];
+    const login = this.state.tab === 'login';
+    return {
+      p: p, isLogin: login, isSignup: !login,
+      tabLoginBg: login ? p.soft : 'transparent', tabLoginInk: login ? p.accent : p.muted,
+      tabSignupBg: login ? 'transparent' : p.soft, tabSignupInk: login ? p.muted : p.accent,
+      toLogin: () => this.setState({ tab: 'login' }), toSignup: () => this.setState({ tab: 'signup' })
+    };
+  }
 }
 </script>
 </body>

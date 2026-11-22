@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<title>報告預覽</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=Noto+Serif+TC:wght@400;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2747A0}a:hover{color:#1E3A85}
+</style>
+</helmet>
+<div style="width: 1100px; height: 1400px; box-sizing: border-box; background: #E9ECF2; color: #161B26; font-family: 'Noto Sans TC', system-ui, sans-serif; display: flex; flex-direction: column">
+  <div style="background: #FFFFFF; border-bottom: 1px solid #D9DDE4; padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+    <a href="CaseStep.dc.html" style="font-size: 14px; color: #5C6475; text-decoration: none">← 115-0412</a>
+    <span style="font-weight: 700; font-size: 17px">報告預覽</span>
+    <span style="padding: 3px 10px; border-radius: 12px; background: #E6EBF7; color: #2747A0; font-size: 13px; font-weight: 500">敘述式（買賣參考，系統自動選）</span>
+    <span style="padding: 3px 10px; border-radius: 12px; background: #FFF3B0; color: #5C4A00; font-size: 13px">草稿：黃底是待填欄位，共 1 處</span>
+    <div style="flex: 1"></div>
+    <label for="fmt" style="font-size: 14px; color: #5C6475">格式</label>
+    <select id="fmt" style="height: 40px; padding: 0 10px; border: 1px solid #D9DDE4; border-radius: 8px; font: 15px 'Noto Sans TC', sans-serif"><option>自動</option><option>敘述式</option><option>摘要式</option></select>
+    <button type="button" style="height: 44px; padding: 0 16px; border: 1px solid #D9DDE4; border-radius: 8px; background: #FFFFFF; color: #161B26; font: 500 15px 'Noto Sans TC', sans-serif">下載 .html</button>
+    <button type="button" style="height: 44px; padding: 0 18px; border: 0; border-radius: 8px; background: #2747A0; color: #FFFFFF; font: 500 15px 'Noto Sans TC', sans-serif">下載 Word</button>
+  </div>
+
+  <div style="flex: 1; overflow: hidden; padding: 28px; display: flex; gap: 28px; justify-content: center">
+    <div style="width: 500px; height: 707px; background: #FFFFFF; box-shadow: 0 2px 8px rgba(22,27,38,0.18); padding: 56px 48px; box-sizing: border-box; font-family: 'Noto Serif TC', serif; display: flex; flex-direction: column; align-items: center; gap: 28px">
+      <div style="font-size: 17px; font-weight: 700; margin-top: 40px">○○不動產估價師事務所</div>
+      <div style="font-size: 30px; font-weight: 700; letter-spacing: 4px">不動產估價報告書</div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 24px">
+        <tr><th style="width: 30%; text-align: left; padding: 8px 10px; border: 1px solid #808080; background: #EEF2F1">案號</th><td style="padding: 8px 10px; border: 1px solid #808080">115-0412</td></tr>
+        <tr><th style="text-align: left; padding: 8px 10px; border: 1px solid #808080; background: #EEF2F1">委託人</th><td style="padding: 8px 10px; border: 1px solid #808080">王○○</td></tr>
+        <tr><th style="text-align: left; padding: 8px 10px; border: 1px solid #808080; background: #EEF2F1">勘估標的</th><td style="padding: 8px 10px; border: 1px solid #808080">新竹縣竹北市○○路○段○號12樓</td></tr>
+        <tr><th style="text-align: left; padding: 8px 10px; border: 1px solid #808080; background: #EEF2F1">估價金額</th><td style="padding: 8px 10px; border: 1px solid #808080">新臺幣 1,975 萬元</td></tr>
+        <tr><th style="text-align: left; padding: 8px 10px; border: 1px solid #808080; background: #EEF2F1">價格日期</th><td style="padding: 8px 10px; border: 1px solid #808080">民國 115 年 09 月 30 日</td></tr>
+      </table>
+    </div>
+
+    <div style="width: 500px; height: 707px; background: #FFFFFF; box-shadow: 0 2px 8px rgba(22,27,38,0.18); padding: 40px 44px; box-sizing: border-box; font-family: 'Noto Serif TC', serif; font-size: 13px; line-height: 1.9; display: flex; flex-direction: column; gap: 8px; overflow: hidden">
+      <div style="align-self: flex-end; font-size: 11px; color: #5C6475">○○不動產估價師事務所　案號 115-0412</div>
+      <div style="font-size: 17px; font-weight: 700">貳、估價基本事項</div>
+      <div style="font-weight: 700">一、委託人</div>
+      <p style="margin: 0; text-indent: 2em">王○○</p>
+      <div style="font-weight: 700">二、勘估標的之基本資料</div>
+      <div style="font-weight: 600">（一）勘估標的內容</div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 12px">
+        <tr><th style="width: 28%; text-align: left; padding: 4px 8px; border: 1px solid #808080; background: #EEF2F1">門牌</th><td style="padding: 4px 8px; border: 1px solid #808080">新竹縣竹北市○○路○段○號12樓</td></tr>
+        <tr><th style="text-align: left; padding: 4px 8px; border: 1px solid #808080; background: #EEF2F1">建物面積</th><td style="padding: 4px 8px; border: 1px solid #808080">38.50 坪（127.27 平方公尺）</td></tr>
+        <tr><th style="text-align: left; padding: 4px 8px; border: 1px solid #808080; background: #EEF2F1">樓層</th><td style="padding: 4px 8px; border: 1px solid #808080">第 12 層／共 15 層</td></tr>
+        <tr><th style="text-align: left; padding: 4px 8px; border: 1px solid #808080; background: #EEF2F1">構造</th><td style="padding: 4px 8px; border: 1px solid #808080">鋼筋混凝土造 15 層大樓之第 12 層</td></tr>
+      </table>
+      <p style="margin: 0; text-indent: 2em">評估之權利種類：所有權。</p>
+      <div style="font-weight: 600">（二）產權分析</div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 12px">
+        <tr><th style="width: 28%; text-align: left; padding: 4px 8px; border: 1px solid #808080; background: #EEF2F1">他項權利</th><td style="padding: 4px 8px; border: 1px solid #808080">最高限額抵押權 1 筆（○○銀行，擔保債權總金額 1,560 萬元）</td></tr>
+        <tr><th style="text-align: left; padding: 4px 8px; border: 1px solid #808080; background: #EEF2F1">限制登記</th><td style="padding: 4px 8px; border: 1px solid #808080">依登記謄本，查無預告登記、查封等限制登記情事。</td></tr>
+      </table>
+      <div style="font-weight: 700">三、價格日期及勘察日期</div>
+      <p style="margin: 0; text-indent: 2em">價格日期：民國 115 年 09 月 30 日；勘察日期：民國 115 年 10 月 07 日。</p>
+      <div style="font-weight: 700">柒、不動產估價師</div>
+      <p style="margin: 0; text-indent: 2em">估價師 林○○，證書字號 <a href="CaseStep.dc.html" style="background: #FFF3B0; color: #5C4A00; padding: 0 4px; font-family: 'Noto Sans TC', sans-serif; text-decoration: none">估價師證書字號</a></p>
+      <div style="margin-top: auto; align-self: center; font-size: 11px; color: #5C6475">- 5 -</div>
+    </div>
+  </div>
+  <div style="padding: 0 28px 20px; font-size: 13px; color: #5C6475; text-align: center">點黃底欄位會跳到案件頁要填的地方。目標價格不會出現在報告。</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1100,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

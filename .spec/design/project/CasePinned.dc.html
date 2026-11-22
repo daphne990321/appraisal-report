@@ -2,24 +2,121 @@
 <html lang="zh-Hant-TW">
 <head>
 <meta charset="utf-8">
-<title>案件頁：AI 釘選三欄</title>
+<title>三欄：AI 釘選後</title>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=Noto+Serif+TC:wght@600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=Noto+Serif+TC:wght@600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
 <style>
 body{margin:0}
+a{color:#2747A0}a:hover{color:#1E3A85}
 </style>
 </helmet>
-<div style="min-height: 960px">
-  <dc-import name="CaseStep" pinned="{{true}}" open="{{false}}" hint-size="100%,960px"></dc-import>
+<div style="min-height: 1000px; background: {{p.bg}}; color: {{p.ink}}; font-family: 'Noto Sans TC', system-ui, sans-serif; display: flex; flex-direction: column">
+  <header style="background: #FFFFFF; border-bottom: 1px solid {{p.line}}; padding: 12px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px">
+    <a href="CaseStep.dc.html" style="font-size: 14px; color: {{p.muted}}; text-decoration: none">← 回到一般版面</a>
+    <span style="font-family: 'IBM Plex Mono', monospace; color: {{p.muted}}">115-0412</span>
+    <span style="font-weight: 700; font-size: 17px">新竹縣竹北市 住宅大樓 12 樓</span>
+    <span style="font-size: 14px; color: {{p.muted}}">⑤ 試算・目標價格 2,000 萬元</span>
+  </header>
+
+  <div style="flex: 1; display: flex; flex-wrap: wrap; align-items: stretch">
+    <section aria-label="案件內容" style="flex: 1 1 420px; min-width: 0; padding: 20px; display: flex; flex-direction: column; gap: 14px; border-right: 1px solid {{p.line}}">
+      <h2 style="margin: 0; font-size: 18px">比較標的</h2>
+      <div style="background: #FFFFFF; border: 1px solid {{p.line}}; border-radius: 12px; overflow-x: auto">
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+          <thead><tr style="color: {{p.muted}}; font-size: 13px; text-align: left"><th style="padding: 10px 12px; font-weight: 500">標的</th><th style="padding: 10px 12px; font-weight: 500; text-align: right">單價</th><th style="padding: 10px 12px; font-weight: 500; text-align: right">調整率</th><th style="padding: 10px 12px; font-weight: 500; text-align: right">權重</th></tr></thead>
+          <tbody>
+            <tr style="border-top: 1px solid {{p.line}}"><td style="padding: 10px 12px">A 光明一路 大樓</td><td style="padding: 10px 12px; text-align: right; font-family: 'IBM Plex Mono', monospace">52.3</td><td style="padding: 10px 12px; text-align: right; font-family: 'IBM Plex Mono', monospace">2.6%</td><td style="padding: 10px 12px; text-align: right; font-family: 'IBM Plex Mono', monospace">40%</td></tr>
+            <tr style="border-top: 1px solid {{p.line}}"><td style="padding: 10px 12px">B 縣政九路 大樓</td><td style="padding: 10px 12px; text-align: right; font-family: 'IBM Plex Mono', monospace">50.6</td><td style="padding: 10px 12px; text-align: right; font-family: 'IBM Plex Mono', monospace">6.2%</td><td style="padding: 10px 12px; text-align: right; font-family: 'IBM Plex Mono', monospace">35%</td></tr>
+            <tr style="border-top: 1px solid {{p.line}}; background: {{rowC}}"><td style="padding: 10px 12px">C 嘉豐五路 大樓 <span style="font-size: 12px; color: #7A4B00">親友交易</span></td><td style="padding: 10px 12px; text-align: right; font-family: 'IBM Plex Mono', monospace">47.1</td><td style="padding: 10px 12px; text-align: right; font-family: 'IBM Plex Mono', monospace">15.8%</td><td style="padding: 10px 12px; text-align: right; font-family: 'IBM Plex Mono', monospace">25%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid {{p.line}}; border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px">
+        <span style="font-size: 14px; color: {{p.muted}}">試算結果</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px">1,975 萬元</span>
+        <span style="font-size: 14px; color: {{p.muted}}; width: 100%">和目標價格差 −25 萬元（−1.3%）</span>
+      </div>
+    </section>
+
+    <section aria-label="對照報告" style="flex: 1 1 420px; min-width: 0; padding: 20px; background: #E9ECF2; border-right: 1px solid {{p.line}}">
+      <div style="background: #FFFFFF; box-shadow: 0 1px 4px rgba(22,27,38,0.15); padding: 40px 36px; font-family: 'Noto Serif TC', serif; font-size: 15px; line-height: 2; display: flex; flex-direction: column; gap: 10px">
+        <div style="font-size: 18px; font-weight: 700">肆、價格評估</div>
+        <div style="font-weight: 700">一、比較法</div>
+        <p style="margin: 0; text-indent: 2em">本案選取鄰近 3 件比較標的，經情況、價格日期、區域因素及個別因素調整後，比較價格為每坪 53.7 萬元。</p>
+        <p style="margin: 0; text-indent: 2em; background: {{rowC}}">比較標的 C 為「親友關係人間之交易」，經向買賣雙方及地政士查證，成交價低於同期市場行情約 3%，以情況調整 +3.0% 採用。</p>
+        <div style="font-weight: 700">二、收益法</div>
+        <p style="margin: 0; text-indent: 2em">以直接資本化法估算，收益價格為每坪 41.9 萬元。</p>
+        <p style="margin: 0; text-indent: 2em">本案估價師證書字號：<span style="background: #FFF3B0; padding: 0 4px; font-family: 'Noto Sans TC', sans-serif">⟦估價師證書字號⟧</span></p>
+      </div>
+    </section>
+
+    <section aria-label="AI 助理" style="flex: 1 1 380px; min-width: 0; background: #FFFFFF; display: flex; flex-direction: column">
+      <div style="padding: 14px 16px; border-bottom: 1px solid {{p.line}}; display: flex; justify-content: space-between; align-items: center">
+        <span style="font-weight: 700">AI 助理</span>
+        <div style="display: flex; gap: 4px">
+          <button type="button" aria-label="取消釘選" style="width: 40px; height: 40px; border: 0; border-radius: 8px; background: {{p.soft}}; color: {{p.accent}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 17v5M9 3h6l-1 7 3 3H7l3-3z"></path></svg></button>
+          <a href="CaseStep.dc.html" aria-label="關閉" style="width: 40px; height: 40px; border-radius: 8px; color: {{p.ink}}; display: inline-flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+        </div>
+      </div>
+      <div style="flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto">
+        <div style="align-self: flex-end; max-width: 85%; padding: 10px 14px; border-radius: 12px; background: {{p.soft}}; font-size: 15px; line-height: 1.7">能不能更接近目標價格？</div>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: {{p.muted}}">
+          <span>✓ 查了竹北市近 6 個月 12 件住宅大樓成交</span>
+          <span>✓ 檢查每件替換後的調整率是否超過 15%／30%</span>
+        </div>
+        <div style="font-size: 15px; line-height: 1.8">有 1 個建議。採用後約 1,993 萬元，和目標差 −7 萬元。</div>
+
+        <div style="border: 1px solid {{cardBorder}}; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: {{cardBg}}">
+          <div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 13px; color: {{p.muted}}">建議草稿</span><span style="font-size: 13px; font-weight: 500; color: {{cardStateInk}}">{{cardState}}</span></div>
+          <div style="font-size: 15px; font-weight: 700; line-height: 1.6">用比較標的 D 取代 C</div>
+          <div style="font-size: 14px; line-height: 1.8">D：光明六路 住宅大樓，115/08 成交，每坪 55.2 萬元，總調整率 4.1%。</div>
+          <div style="font-size: 14px; line-height: 1.8; color: {{p.muted}}">理由：C 是親友交易，需要情況調整，付款方式也查證不到；D 是一般交易，條件更接近勘估標的。</div>
+          <sc-if value="{{pending}}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; gap: 8px">
+              <button type="button" onClick="{{accept}}" style="flex: 1; height: 44px; border: 0; border-radius: 8px; background: {{p.accent}}; color: #FFFFFF; font: 500 15px 'Noto Sans TC', sans-serif; cursor: pointer">採用</button>
+              <button type="button" onClick="{{reject}}" style="flex: 1; height: 44px; border: 1px solid {{p.line}}; border-radius: 8px; background: #FFFFFF; color: {{p.ink}}; font: 500 15px 'Noto Sans TC', sans-serif; cursor: pointer">不採用</button>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="border: 1px dashed {{p.line}}; border-radius: 12px; padding: 14px; font-size: 14px; line-height: 1.8">
+          <div style="font-weight: 700; margin-bottom: 4px">為什麼無法再接近</div>
+          比較標的 A 的區域因素調整已到 15% 上限；其他 10 件成交的總調整率超過 30%，依技術規則 §25 不能採用。
+        </div>
+        <div style="font-size: 13px; color: {{p.muted}}; line-height: 1.7">AI 不會自己改數字。按「採用」後才寫進案件，並記錄「AI 建議、林○○採用」。</div>
+      </div>
+      <div style="padding: 12px 16px; border-top: 1px solid {{p.line}}; display: flex; gap: 8px">
+        <label for="ask" style="position: absolute; left: -9999px">問 AI</label>
+        <input id="ask" type="text" placeholder="問這件案子的問題" style="flex: 1; height: 44px; padding: 0 12px; border: 1px solid {{p.line}}; border-radius: 8px; font: 15px 'Noto Sans TC', sans-serif">
+        <button type="button" style="height: 44px; padding: 0 16px; border: 0; border-radius: 8px; background: {{p.accent}}; color: #FFFFFF; font: 500 15px 'Noto Sans TC', sans-serif">送出</button>
+      </div>
+    </section>
+  </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+<script type="text/x-dc" data-dc-script data-props='{"palette":{"editor":"enum","options":["青綠（沿用舊版）","地籍藍"],"default":"地籍藍"},"$preview":{"width":1680,"height":1000}}'>
 class Component extends DCLogic {
-  renderVals() { return {}; }
+  constructor(props) { super(props); this.state = { card: 'pending' }; }
+  renderVals() {
+    const PAL = {
+      '青綠（沿用舊版）': { accent: '#1F5E66', soft: '#E1EDEE', bg: '#F3F5F4', line: '#D3DAD9', ink: '#161B26', muted: '#5A676C', seal: '#B23A2B' },
+      '地籍藍': { accent: '#2747A0', soft: '#E6EBF7', bg: '#F4F5F7', line: '#D9DDE4', ink: '#161B26', muted: '#5C6475', seal: '#B4381F' }
+    };
+    const p = PAL[this.props.palette ?? '地籍藍'] || PAL['地籍藍'];
+    const s = this.state.card;
+    const label = { pending: '待估價師決定', accepted: '已採用（未儲存）', rejected: '不採用' }[s];
+    return {
+      p: p, pending: s === 'pending', cardState: label,
+      cardStateInk: s === 'accepted' ? '#1F5A38' : (s === 'rejected' ? p.muted : '#7A4B00'),
+      cardBorder: s === 'accepted' ? '#1F5A38' : p.line, cardBg: s === 'rejected' ? p.bg : '#FFFFFF',
+      rowC: s === 'pending' ? '#FBEFD9' : 'transparent',
+      accept: () => this.setState({ card: 'accepted' }), reject: () => this.setState({ card: 'rejected' })
+    };
+  }
 }
 </script>
 </body>
