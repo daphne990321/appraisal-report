@@ -35,3 +35,6 @@ __pycache__/
 
 # TanStack Router plugin 的快取
 .tanstack/
+
+# Python 虛擬環境
+.venv/

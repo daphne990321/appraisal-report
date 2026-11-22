@@ -15,6 +15,7 @@ dependencies = [
     "alembic",
     "pydantic>=2",
     "pydantic-settings",
+    "python-docx",
 ]
 
 # 測試用的 AsyncClient 與 ASGITransport 來自 httpx
