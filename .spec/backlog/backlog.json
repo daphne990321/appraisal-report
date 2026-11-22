@@ -103,6 +103,13 @@
       "date": "2026-11-07",
       "source": "roadmap hand-off survey 2026-11-07",
       "feature": "calc-engine"
+    },
+    {
+      "id": "bl-188508",
+      "title": "個人版／企業版的付費與訂閱流程",
+      "type": "feature",
+      "date": "2026-11-12",
+      "source": "2026-11-12 估價師訪談與使用者決定"
     }
   ]
 }

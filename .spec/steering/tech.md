@@ -138,6 +138,8 @@ steering 只決定 UI 元件庫。配色、字型和整體外觀由設計稿決�
 ### AI 助理
 
 - Agent runtime 是 Claude Agent SDK。內建的檔案與 shell 工具全部關閉；它唯一的工具是本後端 MCP 端點上的案件工具。
+- 模型的 API 端點與模型名稱由 `.env` 設定（`ANTHROPIC_BASE_URL`、`ANTHROPIC_MODEL`），不寫死在程式。預設接 Anthropic API；要用地端模型時，改指向相容 Anthropic API 的端點即可，程式不用改。
+- 不論接哪個端點，每次送給模型的內容只包含目前這件案件與該事務所自己的資料。
 - Agent 在同一個 app 內呼叫 MCP 工具（process 內或 localhost），不經過外部網路。
 - Agent 用一個短期憑證呼叫 MCP 工具。這個憑證綁定它代表的成員，也綁定它被打開時的那件案子；它不能存取其他案件。
 - AI 是 Service 層的一個使用者：事務所隔離、它所代表的使用者的身分、版本檢查、簽名鎖定全部照常適用。已簽名的案件對 AI 是唯讀。AI 不能簽名。
@@ -194,7 +196,7 @@ steering 只決定 UI 元件庫。配色、字型和整體外觀由設計稿決�
 | 對象 | 協定 | 用途 |
 |------|------|------|
 | 內政部實價登錄（plvr.land.moi.gov.tw） | HTTPS（httpx） | 每月下載公開的實價登錄資料 |
-| Anthropic API | HTTPS（Claude Agent SDK） | AI 助理 |
+| Anthropic API（或相容的地端端點） | HTTPS（Claude Agent SDK） | AI 助理；端點由 `ANTHROPIC_BASE_URL` 決定 |
 | 外部 MCP client | MCP over HTTP，OAuth 2.1 | 事務所成員用自己的 AI 工具操作案件 |
 | SMTP 郵件伺服器 | SMTP | 寄送密碼重設連結與邀請信 |
 | 外部登入提供者（Google、Microsoft 365 / Entra ID、Meta） | OIDC / OAuth 2.0（Authlib） | 成員用既有的帳號登入 |
@@ -263,7 +265,7 @@ steering 只決定 UI 元件庫。配色、字型和整體外觀由設計稿決�
 |------|------|------|
 | 資料庫 | `DATABASE_URL`、`POSTGRES_PASSWORD` | 連線資訊 |
 | 安全 | `SECRET_KEY` | 簽署 session、密碼重設連結與 OAuth 相關資料 |
-| AI | `ANTHROPIC_API_KEY` | 一套 stack 一把 |
+| AI | `ANTHROPIC_API_KEY`、`ANTHROPIC_BASE_URL`、`ANTHROPIC_MODEL` | 一套 stack 一組；`ANTHROPIC_BASE_URL` 不設時用 Anthropic API |
 | 登入提供者 | `AUTH_LOCAL_ENABLED`、`GOOGLE_CLIENT_ID`、`GOOGLE_CLIENT_SECRET`、`ENTRA_TENANT_ID`、`ENTRA_CLIENT_ID`、`ENTRA_CLIENT_SECRET`、`META_APP_ID`、`META_APP_SECRET` | 哪些提供者啟用與其 client 設定；沒有設定的外部提供者不啟用 |
 | 郵件 | `SMTP_HOST`、`SMTP_PORT`、`SMTP_USER`、`SMTP_PASSWORD`、`MAIL_FROM` | 寄送密碼重設與邀請信 |
 | 部署 | `VIRTUAL_HOST`、`LETSENCRYPT_HOST`、`PUBLIC_BASE_URL` | 網域與對外網址 |
@@ -294,7 +296,7 @@ steering 只決定 UI 元件庫。配色、字型和整體外觀由設計稿決�
   - Microsoft 365 / Entra ID（OIDC）。
   - Meta（Facebook Login，OAuth 2.0）。
 - **哪些提供者啟用**，以及它們的 client id / secret，從各 stack 的 `.env` 讀取。
-- **沒有公開註冊**：成員由事務所的估價師或系統管理員邀請，不能自己註冊來建立事務所。第一次用外部提供者登入時，必須對上一份待處理的邀請，或對上一個已連結的身分，才會成功；否則拒絕登入。
+- **公開註冊只建立個人版事務所**：任何人可以用本系統帳號（email 必須先驗證）或外部提供者自行註冊；註冊時系統建立一個只有他一人、身分為估價師的個人版事務所。加入既有的事務所只能透過邀請：第一次用外部提供者登入時，對上一份待處理的邀請就加入那個事務所，對上已連結的身分就照常登入，兩者都沒有就走註冊。
 - **用 email 連結身分的條件**：只有在提供者聲明這個 email 已驗證時，才可以用 email 自動連結。沒有這個聲明時，成員必須先登入，再手動連結新的身分。未驗證的 email 一律不連結。
 - **系統自己的 session**：不論用哪個提供者登入，登入成功後系統都發出自己的伺服器端 session，session 識別放在 HttpOnly cookie。提供者的 token 不當作本系統的 session，也不送到前端。token 不放在 localStorage。
 - **前端不認識個別提供者**：前端從後端端點取得已啟用的提供者清單，再由後端開始登入流程。前端不放任何提供者的 SDK。
