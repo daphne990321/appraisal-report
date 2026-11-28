@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<title>各種狀態</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=Noto+Serif+TC:wght@700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2747A0}a:hover{color:#1E3A85}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; background: #F4F5F7; color: #161B26; font-family: 'Noto Sans TC', system-ui, sans-serif; padding: 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+  <section style="display: flex; flex-direction: column; gap: 10px">
+    <h2 style="margin: 0; font-size: 15px; color: #5C6475">空白：還沒有案件</h2>
+    <div style="flex: 1; background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 32px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#5C6475" stroke-width="1.5" aria-hidden="true"><path d="M4 4h12l4 4v12H4z"></path><path d="M8 12h8M8 16h5"></path></svg>
+      <div style="font-size: 18px; font-weight: 700">還沒有案件</div>
+      <div style="font-size: 14px; color: #5C6475; line-height: 1.7">從接案初估開始，或直接新增案件。</div>
+      <div style="display: flex; gap: 8px"><a href="Intake.dc.html" style="height: 44px; padding: 0 16px; border: 1px solid #D9DDE4; border-radius: 8px; display: inline-flex; align-items: center; color: #161B26; text-decoration: none; font-size: 15px">接案初估</a><a href="CaseStep.dc.html" style="height: 44px; padding: 0 16px; border-radius: 8px; background: #2747A0; color: #FFFFFF; display: inline-flex; align-items: center; text-decoration: none; font-size: 15px">新增案件</a></div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 10px">
+    <h2 style="margin: 0; font-size: 15px; color: #5C6475">載入中</h2>
+    <div style="flex: 1; background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 14px" aria-busy="true" aria-label="載入中">
+      <div style="height: 20px; width: 40%; border-radius: 6px; background: #EDEFF3"></div>
+      <div style="height: 56px; border-radius: 8px; background: #EDEFF3"></div>
+      <div style="height: 56px; border-radius: 8px; background: #EDEFF3"></div>
+      <div style="height: 56px; border-radius: 8px; background: #EDEFF3"></div>
+      <div style="height: 56px; width: 70%; border-radius: 8px; background: #EDEFF3"></div>
+      <div style="font-size: 13px; color: #5C6475">灰色方塊佔住版面，資料到了直接換上，畫面不跳動。</div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 10px">
+    <h2 style="margin: 0; font-size: 15px; color: #5C6475">錯誤：連不上伺服器</h2>
+    <div style="flex: 1; background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 32px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9A2818" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v6M12 16.5v.5"></path></svg>
+      <div style="font-size: 18px; font-weight: 700">現在連不上系統</div>
+      <div style="font-size: 14px; color: #5C6475; line-height: 1.7">還沒儲存的修改都保留在這台電腦上，連線恢復後再按「確認儲存」即可。</div>
+      <button type="button" style="height: 44px; padding: 0 18px; border: 0; border-radius: 8px; background: #2747A0; color: #FFFFFF; font: 500 15px 'Noto Sans TC', sans-serif">重試</button>
+    </div>
+  </section>
+
+  <section style="grid-column: span 2; display: flex; flex-direction: column; gap: 10px">
+    <h2 style="margin: 0; font-size: 15px; color: #5C6475">已簽名：唯讀</h2>
+    <div style="flex: 1; background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column">
+      <div style="background: #FBE5E1; color: #9A2818; padding: 14px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+        <div style="width: 36px; height: 36px; border-radius: 8px; background: #B4381F; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif TC', serif; font-size: 20px; font-weight: 700" aria-hidden="true">估</div>
+        <span style="flex: 1 1 300px; font-size: 15px">林○○ 已於 115/11/18 簽名。案件內容與估價模型都已鎖定，不能修改或刪除。</span>
+        <a href="Report.dc.html" style="font-size: 14px; color: #9A2818">下載報告</a>
+      </div>
+      <div style="padding: 20px; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; gap: 16px; font-size: 15px; align-items: center"><span style="width: 140px; color: #5C6475">收益資本化率</span><span style="font-family: 'IBM Plex Mono', monospace">1.30%</span><span style="font-size: 13px; color: #5C6475">（唯讀）</span></div>
+        <div style="display: flex; gap: 16px; font-size: 15px; align-items: center"><span style="width: 140px; color: #5C6475">決定價格</span><span style="font-family: 'IBM Plex Mono', monospace">1,975 萬元</span></div>
+        <div style="font-size: 14px; color: #5C6475; line-height: 1.7">要更正時：新增一件「更正案件」，原案件保留不動。（作法待訪談確認）</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 10px">
+    <h2 style="margin: 0; font-size: 15px; color: #5C6475">沒有權限</h2>
+    <div style="flex: 1; background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 32px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center">
+      <div style="font-size: 18px; font-weight: 700">只有估價師可以簽名</div>
+      <div style="font-size: 14px; color: #5C6475; line-height: 1.7">你的身分是助理。請交接給負責的估價師確認與簽名。</div>
+      <a href="CaseStep.dc.html" style="height: 44px; padding: 0 16px; border: 1px solid #D9DDE4; border-radius: 8px; display: inline-flex; align-items: center; color: #161B26; text-decoration: none; font-size: 15px">交接給估價師</a>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

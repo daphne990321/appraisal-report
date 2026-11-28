@@ -15,14 +15,23 @@
     "Report.dc.html": {"x": 0, "y": 4520, "w": 1100, "h": 1400, "title": "報告預覽"},
     "MobileList.dc.html": {"x": 1180, "y": 4520, "w": 390, "h": 844, "title": "手機：案件清單"},
     "MobileSurvey.dc.html": {"x": 1650, "y": 4520, "w": 390, "h": 844, "title": "手機：現勘"},
-    "MobileHandoff.dc.html": {"x": 2120, "y": 4520, "w": 390, "h": 844, "title": "手機：交接與確認"}
+    "MobileHandoff.dc.html": {"x": 2120, "y": 4520, "w": 390, "h": 844, "title": "手機：交接與確認"},
+    "Intake.dc.html": {"x": 0, "y": 6340, "w": 1440, "h": 1100, "title": "接案初估與報價", "expand": "fill", "is_interactive": true},
+    "Models.dc.html": {"x": 1520, "y": 6340, "w": 1440, "h": 1000, "title": "估價模型", "expand": "fill", "is_interactive": true},
+    "Settings.dc.html": {"x": 3040, "y": 6340, "w": 1440, "h": 1000, "title": "事務所設定", "expand": "fill"},
+    "Members.dc.html": {"x": 0, "y": 7860, "w": 1440, "h": 900, "title": "成員與邀請", "expand": "fill"},
+    "Sources.dc.html": {"x": 1520, "y": 7860, "w": 1440, "h": 900, "title": "資料來源", "expand": "fill"},
+    "History.dc.html": {"x": 3040, "y": 7860, "w": 1440, "h": 900, "title": "歷程", "expand": "fill"},
+    "States.dc.html": {"x": 4560, "y": 7860, "w": 1440, "h": 900, "title": "各種狀態：空白、載入、錯誤、唯讀"}
   },
-  "order": ["Main.dc.html", "Login.dc.html", "CaseList.dc.html", "CaseCalendar.dc.html", "CaseStep.dc.html", "CasePinned.dc.html", "Conflict.dc.html", "Report.dc.html", "MobileList.dc.html", "MobileSurvey.dc.html", "MobileHandoff.dc.html"],
+  "order": ["Main.dc.html", "Login.dc.html", "CaseList.dc.html", "CaseCalendar.dc.html", "CaseStep.dc.html", "CasePinned.dc.html", "Conflict.dc.html", "Report.dc.html", "MobileList.dc.html", "MobileSurvey.dc.html", "MobileHandoff.dc.html", "Intake.dc.html", "Models.dc.html", "Settings.dc.html", "Members.dc.html", "Sources.dc.html", "History.dc.html", "States.dc.html"],
   "notes": {
     "t1": {"x": 0, "y": -300, "text": "設計 token", "kind": "title1", "maxW": 1280},
     "t2": {"x": 0, "y": 1200, "text": "登入與案件管理", "kind": "title1", "maxW": 4480},
     "t3": {"x": 0, "y": 2620, "text": "案件頁", "kind": "title1", "maxW": 4720},
-    "t4": {"x": 0, "y": 4220, "text": "報告與手機", "kind": "title1", "maxW": 2510}
+    "t4": {"x": 0, "y": 4220, "text": "報告與手機", "kind": "title1", "maxW": 2510},
+    "t5": {"x": 0, "y": 6040, "text": "接案初估與設定", "kind": "title1", "maxW": 4480},
+    "t6": {"x": 0, "y": 7560, "text": "成員、資料來源、歷程與狀態", "kind": "title1", "maxW": 6000}
   },
   "designSystems": []
 }

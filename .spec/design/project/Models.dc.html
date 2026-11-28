@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<title>估價模型</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=Noto+Serif+TC:wght@700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2747A0}a:hover{color:#1E3A85}
+</style>
+</helmet>
+<div style="min-height: 1000px; background: #F4F5F7; color: #161B26; font-family: 'Noto Sans TC', system-ui, sans-serif">
+  <header style="background: #161B26; color: #EEF0F4; padding: 0 24px; min-height: 60px; display: flex; flex-wrap: wrap; align-items: center; gap: 24px">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <div style="width: 32px; height: 32px; border-radius: 7px; background: #B4381F; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif TC', serif; font-size: 18px; font-weight: 700" aria-hidden="true">估</div>
+      <span style="font-weight: 700">○○不動產估價師事務所</span>
+    </div>
+    <nav style="display: flex; gap: 4px; flex-wrap: wrap; flex: 1" aria-label="主選單">
+      <a href="CaseList.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">案件</a>
+      <a href="Intake.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">接案初估</a>
+      <a href="Models.dc.html" style="padding: 8px 14px; border-radius: 8px; background: #2A3142; color: #FFFFFF; text-decoration: none; font-size: 15px">估價模型</a>
+      <a href="Settings.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">事務所設定</a>
+      <a href="Members.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">成員</a>
+    </nav>
+    <span style="font-size: 14px; color: #A9B1C2">林○○・估價師</span>
+  </header>
+
+  <main style="max-width: 1360px; margin: 0 auto; padding: 28px 24px 110px; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+          <h1 style="margin: 0; font-size: 28px">估價模型</h1>
+          <label for="model" style="position: absolute; left: -9999px">選擇模型</label>
+          <select id="model" style="height: 40px; padding: 0 10px; border: 1px solid #D9DDE4; border-radius: 8px; font: 500 15px 'Noto Sans TC', sans-serif; background: #FFFFFF"><option>本所標準模型</option><option>抵押權設定（銀行）</option></select>
+        </div>
+        <p style="margin: 0; font-size: 14px; color: #5C6475">本所一般案件使用。案件簽名時會把當時的模型一起保存，之後修改不影響已簽名的案件。</p>
+      </div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap">
+        <button type="button" style="height: 44px; padding: 0 16px; border: 1px solid #D9DDE4; border-radius: 8px; background: #FFFFFF; color: #161B26; font: 500 15px 'Noto Sans TC', sans-serif">複製成新模型</button>
+        <button type="button" style="height: 44px; padding: 0 16px; border: 1px solid #D9DDE4; border-radius: 8px; background: #FFFFFF; color: #161B26; font: 500 15px 'Noto Sans TC', sans-serif">和其他模型比較</button>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+      <nav aria-label="模型設定" style="flex: 1 1 220px; max-width: 280px; background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 8px; display: flex; flex-direction: column; gap: 2px">
+        <sc-for list="{{panels}}" as="m" hint-placeholder-count="10">
+          <button type="button" onClick="{{m.pick}}" style="text-align: left; min-height: 44px; padding: 0 12px; border: 0; border-radius: 8px; background: {{m.bg}}; color: {{m.ink}}; font: {{m.font}}; cursor: pointer">{{m.label}}</button>
+        </sc-for>
+      </nav>
+
+      <section style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+        <sc-if value="{{isWeights}}" hint-placeholder-val="{{ true }}">
+          <div style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+            <h2 style="margin: 0; font-size: 18px">依估價目的的方法權重（%）</h2>
+            <p style="margin: 0; font-size: 14px; color: #5C6475">新案件預設用這裡的權重；估價師在案件中仍可調整並寫理由。</p>
+            <div style="overflow-x: auto">
+              <table style="width: 100%; min-width: 620px; border-collapse: collapse; font-size: 15px">
+                <thead><tr style="text-align: left; color: #5C6475; font-size: 13px"><th style="padding: 10px 12px; font-weight: 500">估價目的</th><th style="padding: 10px 12px; font-weight: 500; text-align: right">比較法</th><th style="padding: 10px 12px; font-weight: 500; text-align: right">收益法</th><th style="padding: 10px 12px; font-weight: 500; text-align: right">成本法</th><th style="padding: 10px 12px; font-weight: 500; text-align: right">土地開發分析</th><th style="padding: 10px 12px; font-weight: 500; text-align: right">合計</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{purposes}}" as="r" hint-placeholder-count="6">
+                    <tr style="border-top: 1px solid #D9DDE4">
+                      <td style="padding: 8px 12px">{{r.name}}</td>
+                      <td style="padding: 8px 12px; text-align: right"><input aria-label="{{r.name}} 比較法" type="text" value="{{r.c}}" style="width: 56px; height: 36px; padding: 0 8px; border: 1px solid #D9DDE4; border-radius: 6px; font: 15px 'IBM Plex Mono', monospace; text-align: right"></td>
+                      <td style="padding: 8px 12px; text-align: right"><input aria-label="{{r.name}} 收益法" type="text" value="{{r.i}}" style="width: 56px; height: 36px; padding: 0 8px; border: 1px solid #D9DDE4; border-radius: 6px; font: 15px 'IBM Plex Mono', monospace; text-align: right; background: {{r.iBg}}"></td>
+                      <td style="padding: 8px 12px; text-align: right"><input aria-label="{{r.name}} 成本法" type="text" value="{{r.k}}" style="width: 56px; height: 36px; padding: 0 8px; border: 1px solid #D9DDE4; border-radius: 6px; font: 15px 'IBM Plex Mono', monospace; text-align: right"></td>
+                      <td style="padding: 8px 12px; text-align: right"><input aria-label="{{r.name}} 土地開發分析" type="text" value="{{r.l}}" style="width: 56px; height: 36px; padding: 0 8px; border: 1px solid #D9DDE4; border-radius: 6px; font: 15px 'IBM Plex Mono', monospace; text-align: right"></td>
+                      <td style="padding: 8px 12px; text-align: right; font-family: 'IBM Plex Mono', monospace; color: #1D6B43">100</td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isCheck}}" hint-placeholder-val="{{ false }}">
+          <div style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+            <h2 style="margin: 0; font-size: 18px">檢核門檻</h2>
+            <p style="margin: 0; font-size: 14px; color: #5C6475">可以比法規更嚴，不能比法規寬。比法規寬的數字系統會拒絕存檔。</p>
+            <sc-for list="{{checks}}" as="c" hint-placeholder-count="5">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #D9DDE4">
+                <label for="{{c.id}}" style="flex: 1 1 320px; font-size: 15px">{{c.label}}<span style="display: block; font-size: 13px; color: #5C6475">{{c.law}}</span></label>
+                <input id="{{c.id}}" type="text" value="{{c.v}}" style="width: 80px; height: 40px; padding: 0 10px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'IBM Plex Mono', monospace; text-align: right">
+                <span style="width: 32px; font-size: 14px">{{c.unit}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isOther}}" hint-placeholder-val="{{ false }}">
+          <div style="background: #FFFFFF; border: 1px dashed #D9DDE4; border-radius: 12px; padding: 40px 20px; text-align: center; color: #5C6475; font-size: 15px">「{{current}}」的畫面沿用舊版欄位，第三輪再畫。</div>
+        </sc-if>
+
+        <div style="background: #E6EBF7; border-radius: 12px; padding: 16px 20px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+          <span style="flex: 1 1 320px; font-size: 14px; color: #1E3A85; line-height: 1.7">企業版：AI 可以讀本所歷史案例，提出權重與調整率的建議草稿，估價師逐項確認後才寫入模型。</span>
+          <button type="button" style="height: 40px; padding: 0 14px; border: 1px solid #2747A0; border-radius: 8px; background: #FFFFFF; color: #2747A0; font: 500 14px 'Noto Sans TC', sans-serif">看 AI 建議</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div style="position: sticky; bottom: 0; background: #161B26; color: #EEF0F4; padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+    <span style="font-size: 15px; flex: 1 1 240px">未儲存 1 處：抵押權設定的收益法權重 30 → 25</span>
+    <button type="button" style="height: 44px; padding: 0 18px; border: 1px solid #2A3142; border-radius: 8px; background: transparent; color: #EEF0F4; font: 500 15px 'Noto Sans TC', sans-serif">取消修改</button>
+    <button type="button" style="height: 44px; padding: 0 20px; border: 0; border-radius: 8px; background: #FFFFFF; color: #161B26; font: 700 15px 'Noto Sans TC', sans-serif">確認儲存</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { panel: 'weights' }; }
+  renderVals() {
+    const P = [['model', '模型比較'], ['select', '選取規則'], ['adjust', '因素細項與經驗調整'], ['weights', '類型、目的與方法權重'], ['income', '收益參數'], ['lda', '土地開發參數'], ['sources', '資料來源'], ['cost', '成本參數'], ['texts', '報告書範本條文'], ['check', '檢核門檻']];
+    const cur = this.state.panel;
+    const panels = P.map((p) => {
+      const on = p[0] === cur;
+      return { label: p[1], bg: on ? '#E6EBF7' : 'transparent', ink: on ? '#2747A0' : '#161B26', font: (on ? '700' : '400') + " 15px 'Noto Sans TC', sans-serif", pick: () => this.setState({ panel: p[0] }) };
+    });
+    const purposes = [
+      ['買賣參考', 80, 20, 0, 0], ['抵押權設定', 70, 30, 0, 0], ['資產價值證明', 80, 20, 0, 0],
+      ['繼承、贈與', 80, 20, 0, 0], ['法院訴訟', 70, 30, 0, 0], ['都市更新權利變換', 60, 0, 0, 40]
+    ].map((r) => ({ name: r[0], c: r[1], i: r[2], k: r[3], l: r[4], iBg: r[0] === '抵押權設定' ? '#FDF0D8' : '#FFFFFF' }));
+    const checks = [
+      ['lim15', '單項調整率上限', '技術規則 §25：任一單獨項目超過 15% 應排除', 15, '%'],
+      ['lim30', '總調整率上限', '技術規則 §25：總調整率超過 30% 應排除', 30, '%'],
+      ['gap', '比較標的試算價格差距上限', '技術規則 §26：差距超過 20% 應排除', 20, '%'],
+      ['min', '比較標的最少件數', '技術規則：至少 3 件', 3, '件'],
+      ['diff', '各方法價格差異提醒', '本所設定：超過時要寫決定理由（§15）', 20, '%']
+    ].map((c) => ({ id: c[0], label: c[1], law: c[2], v: c[3], unit: c[4] }));
+    const label = (P.find((p) => p[0] === cur) || P[3])[1];
+    return { panels: panels, purposes: purposes, checks: checks, isWeights: cur === 'weights', isCheck: cur === 'check', isOther: cur !== 'weights' && cur !== 'check', current: label };
+  }
+}
+</script>
+</body>
+</html>

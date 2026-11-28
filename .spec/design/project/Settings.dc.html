@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<title>事務所設定</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=Noto+Serif+TC:wght@700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2747A0}a:hover{color:#1E3A85}
+</style>
+</helmet>
+<div style="min-height: 1000px; background: #F4F5F7; color: #161B26; font-family: 'Noto Sans TC', system-ui, sans-serif">
+  <header style="background: #161B26; color: #EEF0F4; padding: 0 24px; min-height: 60px; display: flex; flex-wrap: wrap; align-items: center; gap: 24px">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <div style="width: 32px; height: 32px; border-radius: 7px; background: #B4381F; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif TC', serif; font-size: 18px; font-weight: 700" aria-hidden="true">估</div>
+      <span style="font-weight: 700">○○不動產估價師事務所</span>
+    </div>
+    <nav style="display: flex; gap: 4px; flex-wrap: wrap; flex: 1" aria-label="主選單">
+      <a href="CaseList.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">案件</a>
+      <a href="Intake.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">接案初估</a>
+      <a href="Models.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">估價模型</a>
+      <a href="Settings.dc.html" style="padding: 8px 14px; border-radius: 8px; background: #2A3142; color: #FFFFFF; text-decoration: none; font-size: 15px">事務所設定</a>
+      <a href="Members.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">成員</a>
+    </nav>
+    <span style="font-size: 14px; color: #A9B1C2">林○○・估價師</span>
+  </header>
+
+  <main style="max-width: 1100px; margin: 0 auto; padding: 28px 24px; display: flex; flex-direction: column; gap: 20px">
+    <h1 style="margin: 0; font-size: 28px">事務所設定</h1>
+
+    <section style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 20px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center">
+      <div style="flex: 1 1 360px; display: flex; flex-direction: column; gap: 4px">
+        <div style="display: flex; gap: 10px; align-items: center"><h2 style="margin: 0; font-size: 18px">版本</h2><span style="padding: 2px 10px; border-radius: 12px; background: #E6EBF7; color: #2747A0; font-size: 13px; font-weight: 500">企業版</span></div>
+        <p style="margin: 0; font-size: 14px; color: #5C6475; line-height: 1.7">可以邀請成員、上傳本所報告範本與歷史案例，並使用 AI 依本所案例提出建議。</p>
+      </div>
+      <a href="#" style="font-size: 14px">版本差異</a>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-size: 18px">事務所資料（印在報告上）</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="on" style="font-size: 14px; font-weight: 500">事務所名稱</label><input id="on" type="text" value="○○不動產估價師事務所" style="height: 44px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'Noto Sans TC', sans-serif"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="lic" style="font-size: 14px; font-weight: 500">開業證書字號</label><input id="lic" type="text" placeholder="[開業證書字號]" style="height: 44px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'Noto Sans TC', sans-serif; background: #FFF3B0"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="guild" style="font-size: 14px; font-weight: 500">所屬公會</label><input id="guild" type="text" value="[縣市]不動產估價師公會" style="height: 44px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'Noto Sans TC', sans-serif"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="exp" style="font-size: 14px; font-weight: 500">開業證書有效期限</label><input id="exp" type="text" value="117/03/31" style="height: 44px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'IBM Plex Mono', monospace"></div>
+      </div>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 18px">報告範本</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid #D9DDE4; border-radius: 10px">
+        <span style="flex: 1 1 300px; font-size: 15px">敘述式：公會範本（系統內建）</span>
+        <span style="font-size: 13px; color: #5C6475">使用中</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid #D9DDE4; border-radius: 10px">
+        <span style="flex: 1 1 300px; font-size: 15px">摘要式：第十四號公報（系統內建）</span>
+        <span style="font-size: 13px; color: #5C6475">使用中</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+        <span style="flex: 1 1 300px; font-size: 14px; color: #5C6475; line-height: 1.7">上傳本所的 Word 範本。缺少法定必載章節時，系統會拒絕存檔並說明法條。</span>
+        <button type="button" style="height: 44px; padding: 0 16px; border: 1px solid #D9DDE4; border-radius: 8px; background: #FFFFFF; color: #161B26; font: 500 15px 'Noto Sans TC', sans-serif">上傳 Word 範本</button>
+      </div>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; gap: 10px; align-items: center"><h2 style="margin: 0; font-size: 18px">報價規則</h2><span style="padding: 2px 10px; border-radius: 12px; background: #FDF0D8; color: #7A4A00; font-size: 13px">待訪談</span></div>
+      <p style="margin: 0; font-size: 14px; color: #5C6475; line-height: 1.7">訪談知道報價目前用 Excel、常殘留上一件資料；還不知道各所怎麼計價（依件、依金額級距或依標的種類）。問清楚後再設計這一區。</p>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; gap: 10px; align-items: center"><h2 style="margin: 0; font-size: 18px">登入方式</h2><span style="padding: 2px 10px; border-radius: 12px; background: #FDF0D8; color: #7A4A00; font-size: 13px">待決定</span></div>
+      <label style="display: flex; gap: 10px; align-items: center; font-size: 15px; min-height: 44px"><input type="checkbox" checked="checked" style="width: 20px; height: 20px">系統帳號（電子郵件與密碼）</label>
+      <label style="display: flex; gap: 10px; align-items: center; font-size: 15px; min-height: 44px"><input type="checkbox" checked="checked" style="width: 20px; height: 20px">Google、Microsoft 帳號</label>
+      <label style="display: flex; gap: 10px; align-items: center; font-size: 15px; min-height: 44px; color: #5C6475"><input type="checkbox" disabled="disabled" style="width: 20px; height: 20px">事務所 NAS 帳號（要先知道 NAS 品牌與是否開了 LDAP）</label>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

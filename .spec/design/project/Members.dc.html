@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<title>成員與邀請</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=Noto+Serif+TC:wght@700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2747A0}a:hover{color:#1E3A85}
+</style>
+</helmet>
+<div style="min-height: 900px; background: #F4F5F7; color: #161B26; font-family: 'Noto Sans TC', system-ui, sans-serif">
+  <header style="background: #161B26; color: #EEF0F4; padding: 0 24px; min-height: 60px; display: flex; flex-wrap: wrap; align-items: center; gap: 24px">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <div style="width: 32px; height: 32px; border-radius: 7px; background: #B4381F; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif TC', serif; font-size: 18px; font-weight: 700" aria-hidden="true">估</div>
+      <span style="font-weight: 700">○○不動產估價師事務所</span>
+    </div>
+    <nav style="display: flex; gap: 4px; flex-wrap: wrap; flex: 1" aria-label="主選單">
+      <a href="CaseList.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">案件</a>
+      <a href="Intake.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">接案初估</a>
+      <a href="Models.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">估價模型</a>
+      <a href="Settings.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">事務所設定</a>
+      <a href="Members.dc.html" style="padding: 8px 14px; border-radius: 8px; background: #2A3142; color: #FFFFFF; text-decoration: none; font-size: 15px">成員</a>
+    </nav>
+    <span style="font-size: 14px; color: #A9B1C2">林○○・估價師</span>
+  </header>
+
+  <main style="max-width: 1200px; margin: 0 auto; padding: 28px 24px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+    <section style="flex: 999 1 620px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+      <h1 style="margin: 0; font-size: 28px">成員</h1>
+      <div style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; overflow-x: auto">
+        <table style="width: 100%; min-width: 640px; border-collapse: collapse; font-size: 15px">
+          <thead><tr style="text-align: left; color: #5C6475; font-size: 13px"><th style="padding: 12px 16px; font-weight: 500">姓名</th><th style="padding: 12px 16px; font-weight: 500">身分</th><th style="padding: 12px 16px; font-weight: 500">登入方式</th><th style="padding: 12px 16px; font-weight: 500">手上案件</th><th style="padding: 12px 16px; font-weight: 500">狀態</th></tr></thead>
+          <tbody>
+            <tr style="border-top: 1px solid #D9DDE4"><td style="padding: 14px 16px"><div style="font-weight: 500">林○○</div><div style="font-size: 13px; color: #5C6475">證書 [估價師證書字號]</div></td><td style="padding: 14px 16px">估價師</td><td style="padding: 14px 16px">系統帳號、Google</td><td style="padding: 14px 16px; font-family: 'IBM Plex Mono', monospace">4</td><td style="padding: 14px 16px"><span style="padding: 2px 10px; border-radius: 12px; background: #E2F2E8; color: #1D6B43; font-size: 13px">使用中</span></td></tr>
+            <tr style="border-top: 1px solid #D9DDE4"><td style="padding: 14px 16px"><div style="font-weight: 500">吳○○</div><div style="font-size: 13px; color: #5C6475">證書 [估價師證書字號]</div></td><td style="padding: 14px 16px">估價師</td><td style="padding: 14px 16px">Microsoft</td><td style="padding: 14px 16px; font-family: 'IBM Plex Mono', monospace">0</td><td style="padding: 14px 16px"><span style="padding: 2px 10px; border-radius: 12px; background: #E2F2E8; color: #1D6B43; font-size: 13px">使用中</span></td></tr>
+            <tr style="border-top: 1px solid #D9DDE4"><td style="padding: 14px 16px"><div style="font-weight: 500">陳○○</div></td><td style="padding: 14px 16px">助理</td><td style="padding: 14px 16px">系統帳號</td><td style="padding: 14px 16px; font-family: 'IBM Plex Mono', monospace">2</td><td style="padding: 14px 16px"><span style="padding: 2px 10px; border-radius: 12px; background: #E2F2E8; color: #1D6B43; font-size: 13px">使用中</span></td></tr>
+            <tr style="border-top: 1px solid #D9DDE4; color: #5C6475"><td style="padding: 14px 16px"><div style="font-weight: 500">黃○○</div></td><td style="padding: 14px 16px">經營管理</td><td style="padding: 14px 16px">系統帳號</td><td style="padding: 14px 16px; font-family: 'IBM Plex Mono', monospace">—</td><td style="padding: 14px 16px"><span style="padding: 2px 10px; border-radius: 12px; background: #EDEFF3; color: #3A4253; font-size: 13px">已停用</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.7">
+        <div style="font-weight: 700; font-size: 15px">身分能做的事</div>
+        <div><b>估價師</b>：所有步驟，只有估價師可以簽名。</div>
+        <div><b>助理</b>：調資料、現勘、比較標的、試算；不能簽名。</div>
+        <div><b>經營管理</b>：看案件進度、指派負責人與期限；不能改案件內容與數字。</div>
+      </div>
+    </section>
+
+    <aside style="flex: 1 1 340px; display: flex; flex-direction: column; gap: 16px">
+      <div style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+        <h2 style="margin: 0; font-size: 18px">邀請成員</h2>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="ie" style="font-size: 14px; font-weight: 500">電子郵件</label><input id="ie" type="email" placeholder="name@example.com" style="height: 44px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'Noto Sans TC', sans-serif"></div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="ir" style="font-size: 14px; font-weight: 500">身分</label><select id="ir" style="height: 44px; padding: 0 10px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'Noto Sans TC', sans-serif"><option>助理</option><option>估價師</option><option>經營管理</option></select></div>
+        <button type="button" style="height: 48px; border: 0; border-radius: 8px; background: #2747A0; color: #FFFFFF; font: 500 16px 'Noto Sans TC', sans-serif">寄邀請信</button>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+        <h2 style="margin: 0; font-size: 18px">等待接受</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 14px"><span>lee@example.com・助理<span style="display: block; font-size: 13px; color: #5C6475">115/11/20 寄出</span></span><button type="button" style="height: 40px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 8px; background: #FFFFFF; font: 14px 'Noto Sans TC', sans-serif">取消</button></div>
+      </div>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

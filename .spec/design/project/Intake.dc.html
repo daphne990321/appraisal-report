@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<title>接案初估與報價</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=Noto+Serif+TC:wght@700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2747A0}a:hover{color:#1E3A85}
+</style>
+</helmet>
+<div style="min-height: 1100px; background: #F4F5F7; color: #161B26; font-family: 'Noto Sans TC', system-ui, sans-serif">
+  <header style="background: #161B26; color: #EEF0F4; padding: 0 24px; min-height: 60px; display: flex; flex-wrap: wrap; align-items: center; gap: 24px">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <div style="width: 32px; height: 32px; border-radius: 7px; background: #B4381F; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif TC', serif; font-size: 18px; font-weight: 700" aria-hidden="true">估</div>
+      <span style="font-weight: 700">○○不動產估價師事務所</span>
+    </div>
+    <nav style="display: flex; gap: 4px; flex-wrap: wrap; flex: 1" aria-label="主選單">
+      <a href="CaseList.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">案件</a>
+      <a href="Intake.dc.html" style="padding: 8px 14px; border-radius: 8px; background: #2A3142; color: #FFFFFF; text-decoration: none; font-size: 15px">接案初估</a>
+      <a href="Models.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">估價模型</a>
+      <a href="Settings.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">事務所設定</a>
+      <a href="Members.dc.html" style="padding: 8px 14px; border-radius: 8px; color: #A9B1C2; text-decoration: none; font-size: 15px">成員</a>
+    </nav>
+    <span style="font-size: 14px; color: #A9B1C2">林○○・估價師</span>
+  </header>
+
+  <main style="max-width: 1360px; margin: 0 auto; padding: 28px 24px; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h1 style="margin: 0; font-size: 28px">接案初估</h1>
+        <p style="margin: 0; font-size: 15px; color: #5C6475">填少量資料，先看價格範圍再決定接不接。初估不是估價報告，不簽名、不出報告書。</p>
+      </div>
+      <div style="display: flex; gap: 4px; background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 10px; padding: 4px" role="tablist" aria-label="案件類別">
+        <button type="button" role="tab" onClick="{{toConsumer}}" style="height: 36px; padding: 0 14px; border: 0; border-radius: 7px; background: {{cBg}}; color: {{cInk}}; font: 500 14px 'Noto Sans TC', sans-serif; cursor: pointer">個人房貸（消金）</button>
+        <button type="button" role="tab" onClick="{{toCorporate}}" style="height: 36px; padding: 0 14px; border: 0; border-radius: 7px; background: {{eBg}}; color: {{eInk}}; font: 500 14px 'Noto Sans TC', sans-serif; cursor: pointer">企業金融（企金）</button>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+      <section aria-label="初估資料" style="flex: 1 1 380px; background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="addr" style="font-size: 14px; font-weight: 500">地址或地號</label>
+          <input id="addr" type="text" value="新竹縣竹北市○○路○段○號12樓" style="height: 44px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'Noto Sans TC', sans-serif">
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="kind" style="font-size: 14px; font-weight: 500">標的種類</label>
+            <select id="kind" style="height: 44px; padding: 0 10px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'Noto Sans TC', sans-serif"><option>區分所有建物</option><option>透天厝</option><option>土地</option></select>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="area" style="font-size: 14px; font-weight: 500">建物面積（坪）</label>
+            <input id="area" type="text" inputmode="decimal" value="38.5" style="height: 44px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'IBM Plex Mono', monospace">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="floor" style="font-size: 14px; font-weight: 500">樓層／總樓層</label>
+            <input id="floor" type="text" value="12／15" style="height: 44px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'IBM Plex Mono', monospace">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="done" style="font-size: 14px; font-weight: 500">建築完成</label>
+            <input id="done" type="text" value="107/06" style="height: 44px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'IBM Plex Mono', monospace">
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="client" style="font-size: 14px; font-weight: 500">委託人</label>
+            <input id="client" type="text" value="王○○" style="height: 44px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'Noto Sans TC', sans-serif">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="purpose" style="font-size: 14px; font-weight: 500">估價目的</label>
+            <select id="purpose" style="height: 44px; padding: 0 10px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'Noto Sans TC', sans-serif"><option>抵押權設定</option><option>買賣參考</option></select>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="tp" style="font-size: 14px; font-weight: 500">目標價格（萬元，委託人提出，可空白）</label>
+          <input id="tp" type="text" value="2,000" style="height: 44px; padding: 0 12px; border: 1px solid #D9DDE4; border-radius: 8px; font: 16px 'IBM Plex Mono', monospace">
+        </div>
+        <sc-if value="{{corporate}}" hint-placeholder-val="{{ false }}">
+          <div style="border: 1px dashed #D9DDE4; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; background: #F4F5F7">
+            <div style="font-size: 14px; font-weight: 700">企金接案問題清單</div>
+            <div style="font-size: 14px; color: #5C6475; line-height: 1.8">訪談說企金要問的問題和消金完全不同，但還不知道具體題目。這裡先留位置，題目待下次訪談補上。</div>
+          </div>
+        </sc-if>
+        <button type="button" style="height: 48px; border: 0; border-radius: 8px; background: #2747A0; color: #FFFFFF; font: 500 16px 'Noto Sans TC', sans-serif">重新初估</button>
+      </section>
+
+      <section aria-label="初估結果" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+        <div style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+          <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px">
+            <h2 style="margin: 0; font-size: 18px">價格範圍（初估）</h2>
+            <span style="font-size: 14px; color: #5C6475">依據 16 件：本所案例 2 件、實價登錄 14 件，近 5 個月</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: baseline">
+            <div><div style="font-size: 13px; color: #5C6475">中間 50% 的單價</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 26px">53.4 – 70.0<span style="font-size: 14px; font-family: 'Noto Sans TC', sans-serif"> 萬元／坪</span></div></div>
+            <div><div style="font-size: 13px; color: #5C6475">乘以 38.5 坪</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 26px">2,054 – 2,694<span style="font-size: 14px; font-family: 'Noto Sans TC', sans-serif"> 萬元</span></div></div>
+            <div><div style="font-size: 13px; color: #5C6475">中位數</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 26px">61.1<span style="font-size: 14px; font-family: 'Noto Sans TC', sans-serif"> 萬元／坪</span></div></div>
+          </div>
+          <div style="position: relative; height: 44px">
+            <div style="position: absolute; left: 0; right: 0; top: 18px; height: 8px; border-radius: 4px; background: #EDEFF3"></div>
+            <div style="position: absolute; left: 22%; width: 46%; top: 18px; height: 8px; border-radius: 4px; background: #2747A0"></div>
+            <div style="position: absolute; left: 19%; top: 6px; width: 2px; height: 32px; background: #7A4A00"></div>
+            <div style="position: absolute; left: 0; top: 0; font-size: 12px; color: #7A4A00">目標 2,000</div>
+          </div>
+          <div style="padding: 12px 14px; border-radius: 10px; background: #FDF0D8; color: #7A4A00; font-size: 15px; line-height: 1.7">目標價格 2,000 萬元比範圍下緣低 54 萬元（約 −2.6%），在合理範圍附近。是否接案由估價師判斷。</div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; overflow-x: auto">
+          <table style="width: 100%; min-width: 620px; border-collapse: collapse; font-size: 14px">
+            <thead><tr style="text-align: left; color: #5C6475; font-size: 13px"><th style="padding: 10px 14px; font-weight: 500">來源</th><th style="padding: 10px 14px; font-weight: 500">成交</th><th style="padding: 10px 14px; font-weight: 500">地點</th><th style="padding: 10px 14px; font-weight: 500; text-align: right">樓層</th><th style="padding: 10px 14px; font-weight: 500; text-align: right">屋齡</th><th style="padding: 10px 14px; font-weight: 500; text-align: right">單價（萬／坪）</th><th style="padding: 10px 14px; font-weight: 500; text-align: right">相似度</th></tr></thead>
+            <tbody>
+              <tr style="border-top: 1px solid #D9DDE4"><td style="padding: 10px 14px"><span style="padding: 1px 8px; border-radius: 10px; background: #E6EBF7; color: #2747A0; font-size: 12px">本所案例</span></td><td style="padding: 10px 14px">115/06</td><td style="padding: 10px 14px">竹北市○○路（115-0288 案）</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">11/15</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">8</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">53.4</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">93</td></tr>
+              <tr style="border-top: 1px solid #D9DDE4"><td style="padding: 10px 14px"><span style="padding: 1px 8px; border-radius: 10px; background: #E6EBF7; color: #2747A0; font-size: 12px">本所案例</span></td><td style="padding: 10px 14px">115/04</td><td style="padding: 10px 14px">竹北市○○街（115-0251 案）</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">9/14</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">8</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">52.1</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">76</td></tr>
+              <tr style="border-top: 1px solid #D9DDE4"><td style="padding: 10px 14px"><span style="padding: 1px 8px; border-radius: 10px; background: #EDEFF3; color: #3A4253; font-size: 12px">實價登錄</span></td><td style="padding: 10px 14px">115/07</td><td style="padding: 10px 14px">竹北市高鐵五路</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">15/15</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">5</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">80.7</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">73</td></tr>
+              <tr style="border-top: 1px solid #D9DDE4"><td style="padding: 10px 14px"><span style="padding: 1px 8px; border-radius: 10px; background: #EDEFF3; color: #3A4253; font-size: 12px">實價登錄</span></td><td style="padding: 10px 14px">115/06</td><td style="padding: 10px 14px">竹北市嘉興三街</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">11/14</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">9</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">58.0</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">73</td></tr>
+              <tr style="border-top: 1px solid #D9DDE4"><td style="padding: 10px 14px"><span style="padding: 1px 8px; border-radius: 10px; background: #EDEFF3; color: #3A4253; font-size: 12px">實價登錄</span></td><td style="padding: 10px 14px">115/07</td><td style="padding: 10px 14px">竹北市科大二街</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">13/14</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">1</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">62.5</td><td style="padding: 10px 14px; text-align: right; font-family: 'IBM Plex Mono', monospace">66</td></tr>
+            </tbody>
+          </table>
+          <div style="padding: 10px 14px; border-top: 1px solid #D9DDE4; font-size: 14px"><a href="#">看全部 16 件</a></div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #D9DDE4; border-radius: 12px; padding: 20px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+          <div style="flex: 1 1 280px; font-size: 14px; color: #5C6475; line-height: 1.7">報價單每次從空白範本產生，不會留下上一件的資料。報價規則在「事務所設定」。</div>
+          <button type="button" style="height: 44px; padding: 0 16px; border: 1px solid #D9DDE4; border-radius: 8px; background: #FFFFFF; color: #9A2818; font: 500 15px 'Noto Sans TC', sans-serif">婉拒</button>
+          <button type="button" style="height: 44px; padding: 0 16px; border: 1px solid #D9DDE4; border-radius: 8px; background: #FFFFFF; color: #161B26; font: 500 15px 'Noto Sans TC', sans-serif">產生報價單（Word）</button>
+          <a href="CaseStep.dc.html" style="height: 44px; padding: 0 18px; border-radius: 8px; background: #2747A0; color: #FFFFFF; font: 500 15px 'Noto Sans TC', sans-serif; display: inline-flex; align-items: center; text-decoration: none">建立正式案件</a>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { corp: false }; }
+  renderVals() {
+    const c = this.state.corp;
+    return {
+      corporate: c,
+      cBg: c ? 'transparent' : '#E6EBF7', cInk: c ? '#5C6475' : '#2747A0',
+      eBg: c ? '#E6EBF7' : 'transparent', eInk: c ? '#2747A0' : '#5C6475',
+      toConsumer: () => this.setState({ corp: false }), toCorporate: () => this.setState({ corp: true })
+    };
+  }
+}
+</script>
+</body>
+</html>
